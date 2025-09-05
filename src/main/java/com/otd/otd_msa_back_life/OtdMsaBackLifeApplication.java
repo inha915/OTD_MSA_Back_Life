@@ -3,8 +3,10 @@ package com.otd.otd_msa_back_life;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @ConfigurationPropertiesScan
+@EnableFeignClients(basePackages = "com.otd.otd_msa_back_life.application.otd_community.client")
 @SpringBootApplication
 public class OtdMsaBackLifeApplication {
 
