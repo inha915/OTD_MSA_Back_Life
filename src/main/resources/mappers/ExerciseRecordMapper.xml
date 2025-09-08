@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.otd_healthcare.application.exerciseRecord.ExerciseRecordMapper">
+
+    <!-- 운동기록 리스트 조회-->
+    <select id="findByLimitTo">
+        SELECT exercise_record_id, exercise_id, exercise_duration, exercise_kcal, effort_level, exercise_datetime
+        FROM exercise_record
+        ORDER BY exercise_datetime DESC
+        LIMIT #{startIdx}, #{size}
+    </select>
+
+
+</mapper>
