@@ -1,6 +1,6 @@
 package com.otd.otd_msa_back_life.otd_community.entity;
 
-import com.otd.otd_msa_back_life.entity.BaseTimeEntity;
+import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

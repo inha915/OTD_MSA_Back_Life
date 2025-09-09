@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.entity;
+package com.otd.otd_msa_back_life.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
