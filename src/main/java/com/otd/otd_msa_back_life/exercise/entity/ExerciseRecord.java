@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.Entity;
+package com.otd.otd_msa_back_life.exercise.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

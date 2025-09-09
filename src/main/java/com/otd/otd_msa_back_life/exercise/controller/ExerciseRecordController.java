@@ -1,8 +1,9 @@
-package com.otd.otd_msa_back_life.application.exercise_record;
+package com.otd.otd_msa_back_life.exercise.controller;
 
-import com.otd.otd_msa_back_life.application.common.model.PagingReq;
-import com.otd.otd_msa_back_life.application.exercise_record.model.ExerciseRecordGetRes;
-import com.otd.otd_msa_back_life.application.exercise_record.model.ExerciseRecordPostReq;
+import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
+import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

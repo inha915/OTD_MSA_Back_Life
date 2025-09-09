@@ -1,6 +1,6 @@
-package com.otd.otd_msa_back_life.application.exercise_record;
+package com.otd.otd_msa_back_life.exercise.repository;
 
-import com.otd.otd_msa_back_life.Entity.ExerciseRecord;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExerciseRecordRepository extends JpaRepository<ExerciseRecord, Long> {

@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.application.exercise_met.model;
+package com.otd.otd_msa_back_life.exercise.model;
 
 import lombok.*;
 

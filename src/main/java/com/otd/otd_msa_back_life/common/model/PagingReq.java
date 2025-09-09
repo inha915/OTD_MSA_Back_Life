@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.application.common.model;
+package com.otd.otd_msa_back_life.common.model;
 
 
 import lombok.Getter;

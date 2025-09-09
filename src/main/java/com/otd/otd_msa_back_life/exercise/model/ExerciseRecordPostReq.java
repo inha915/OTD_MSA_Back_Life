@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.application.exercise_record.model;
+package com.otd.otd_msa_back_life.exercise.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;

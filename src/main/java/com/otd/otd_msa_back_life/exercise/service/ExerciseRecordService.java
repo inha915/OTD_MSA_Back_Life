@@ -1,12 +1,14 @@
-package com.otd.otd_msa_back_life.application.exercise_record;
+package com.otd.otd_msa_back_life.exercise.service;
 
-import com.otd.otd_msa_back_life.Entity.ExerciseMet;
-import com.otd.otd_msa_back_life.Entity.ExerciseRecord;
-import com.otd.otd_msa_back_life.application.common.model.PagingDto;
-import com.otd.otd_msa_back_life.application.common.model.PagingReq;
-import com.otd.otd_msa_back_life.application.exercise_met.ExerciseMetRepository;
-import com.otd.otd_msa_back_life.application.exercise_record.model.ExerciseRecordGetRes;
-import com.otd.otd_msa_back_life.application.exercise_record.model.ExerciseRecordPostReq;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseMet;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
+import com.otd.otd_msa_back_life.common.model.PagingDto;
+import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.repository.ExerciseMetRepository;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
+import com.otd.otd_msa_back_life.exercise.mapper.ExerciseRecordMapper;
+import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
