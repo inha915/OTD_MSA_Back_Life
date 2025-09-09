@@ -20,14 +20,17 @@ public class MealRecord {
     @Column(nullable = false)
     private Long mealId;
 
-    @Column(nullable = false)
-    private Integer foodId;
-
     @Positive
     @Column(nullable = false)
     private Integer amount;
 
     @Column(nullable = false)
     private Long memberId;
+
+
+   private MealNutritionIds mealNutritionIds;
+
+
+
 
 }

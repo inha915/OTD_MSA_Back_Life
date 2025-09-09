@@ -17,7 +17,6 @@ public class Food {
     private Long foodId;
 
     @Column(nullable = false, length = 100)
-
     private String foodName;
 
     @Column(nullable = false, length = 30)
@@ -44,6 +43,7 @@ public class Food {
     private Double sugar;
 
     @Positive
-    private Double Natrium;
+    @Column(nullable = false)
+    private Double natrium;
 
 }
