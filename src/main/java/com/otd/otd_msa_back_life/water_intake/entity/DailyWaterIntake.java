@@ -4,7 +4,8 @@ import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 @Entity
 @Getter
@@ -23,8 +24,9 @@ public class DailyWaterIntake extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private Long memberId;
 
+
     @Column(nullable = false , unique = true)
-    private LocalDateTime intakeDate;
+    private LocalDate intakeDate;
 
 
 }
