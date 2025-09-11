@@ -31,9 +31,9 @@ public class ExerciseRecord{
     private Integer activityKcal;
 
     @Column(nullable = false)
-    private LocalDateTime startDatetime;
+    private LocalDateTime startAt;
 
     @Column(nullable = false)
-    private LocalDateTime endDatetime;
+    private LocalDateTime endAt;
 
 }

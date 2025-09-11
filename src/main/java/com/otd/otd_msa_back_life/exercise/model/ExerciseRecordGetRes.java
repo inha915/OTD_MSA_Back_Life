@@ -15,6 +15,6 @@ public class ExerciseRecordGetRes {
     private int exerciseDuration;
     private int activityKcal;
     private int effortLevel;
-    private LocalDateTime startDatetime;
-    private LocalDateTime endDatetime;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
 }
