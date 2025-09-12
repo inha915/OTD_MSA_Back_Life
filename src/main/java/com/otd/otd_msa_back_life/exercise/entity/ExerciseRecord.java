@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ExerciseRecord{
+public class ExerciseRecord  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -20,6 +20,8 @@ public class ExerciseRecord{
     @ManyToOne
     @JoinColumn(nullable = false, name = "exercise_id")
     private ExerciseCatalog exercise;
+
+    private Long memberId;
 
     @Column(nullable = false)
     private Integer effortLevel;

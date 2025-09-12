@@ -37,8 +37,8 @@ public class ExerciseRecordService {
                 .activityKcal(req.getActivityKcal())
                 .effortLevel(req.getEffortLevel())
                 .exercise(exerciseId)
-                .startDatetime(req.getStartDatetime())
-                .endDatetime(req.getEndDatetime())
+                .startAt(req.getStartAt())
+                .endAt(req.getEndAt())
                 .build();
 
 
