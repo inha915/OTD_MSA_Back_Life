@@ -19,7 +19,7 @@ public class ExerciseRecord{
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "exercise_id")
-    private ExerciseMet exercise;
+    private ExerciseCatalog exercise;
 
     @Column(nullable = false)
     private Integer effortLevel;

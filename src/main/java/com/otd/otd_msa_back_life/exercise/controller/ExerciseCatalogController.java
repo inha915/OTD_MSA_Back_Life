@@ -2,7 +2,7 @@ package com.otd.otd_msa_back_life.exercise.controller;
 
 
 import com.otd.otd_msa_back_life.exercise.model.ExerciseMetGetRes;
-import com.otd.otd_msa_back_life.exercise.service.ExerciseMetService;
+import com.otd.otd_msa_back_life.exercise.service.ExerciseCatalogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/OTD/health")
 @RequiredArgsConstructor
-public class ExerciseMetController {
-    private final ExerciseMetService exerciseMetService;
+public class ExerciseCatalogController {
+    private final ExerciseCatalogService exerciseCatalogService;
 
     //    [GET] exercises
     @GetMapping
     public ResponseEntity<?> getExercise() {
-        List<ExerciseMetGetRes> result = exerciseMetService.getExercises();
+        List<ExerciseMetGetRes> result = exerciseCatalogService.getExercises();
         return ResponseEntity.ok(result);
     }
 }

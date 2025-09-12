@@ -1,10 +1,10 @@
 package com.otd.otd_msa_back_life.exercise.service;
 
-import com.otd.otd_msa_back_life.exercise.entity.ExerciseMet;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.common.model.PagingDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
-import com.otd.otd_msa_back_life.exercise.repository.ExerciseMetRepository;
+import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
 import com.otd.otd_msa_back_life.exercise.mapper.ExerciseRecordMapper;
@@ -22,13 +22,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseRecordService {
     private final ExerciseRecordRepository exerciseRecordRepository;
-    private final ExerciseMetRepository exerciseMetRepository;
+    private final ExerciseCatalogRepository exerciseMetRepository;
     private final ExerciseRecordMapper exerciseRecordMapper;
 
     //    [post] exerciseRecord
     public Long saveExerciseRecord(ExerciseRecordPostReq req) {
 //        exercise 존재 여부 확인
-        ExerciseMet exerciseId = exerciseMetRepository.findById(req.getExerciseId())
+        ExerciseCatalog exerciseId = exerciseMetRepository.findById(req.getExerciseId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 운동입니다."));
 
 //                exerciseRecord 생성
