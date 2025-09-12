@@ -17,8 +17,8 @@ public class ExerciseCatalog {
     private String exerciseName;           // 운동종목
 
     @Column(nullable = false)
-    private double exerciseMet;           // 활동 에너지 계산할 때 사용할 MET
+    private Double exerciseMet;           // 활동 에너지 계산할 때 사용할 MET
 
     @Column(nullable = false)
-    private boolean has_distance;        // 거리기반운동여부
+    private boolean hasDistance;        // 거리기반운동여부
 }

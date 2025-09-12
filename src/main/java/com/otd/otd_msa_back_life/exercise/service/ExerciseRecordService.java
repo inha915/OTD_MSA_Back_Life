@@ -33,7 +33,6 @@ public class ExerciseRecordService {
 
 //                exerciseRecord 생성
         ExerciseRecord exerciseRecord = ExerciseRecord.builder()
-                .exerciseDuration(req.getExerciseDuration())
                 .activityKcal(req.getActivityKcal())
                 .effortLevel(req.getEffortLevel())
                 .exercise(exerciseId)

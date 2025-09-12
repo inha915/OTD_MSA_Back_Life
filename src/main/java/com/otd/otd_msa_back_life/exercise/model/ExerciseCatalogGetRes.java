@@ -7,8 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ExerciseMetGetRes {
+public class ExerciseCatalogGetRes {
     private Long exerciseId;
     private String exerciseName;
-    private double exerciseMet;
+    private Double exerciseMet;
+    private boolean hasDistance;
 }

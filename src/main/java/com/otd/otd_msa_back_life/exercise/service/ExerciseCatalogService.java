@@ -1,6 +1,6 @@
 package com.otd.otd_msa_back_life.exercise.service;
 
-import com.otd.otd_msa_back_life.exercise.model.ExerciseMetGetRes;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseCatalogGetRes;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +15,14 @@ public class ExerciseCatalogService {
     private final ExerciseCatalogRepository exerciseCatalogRepository;
 
     //    [GET] exercise
-    public List<ExerciseMetGetRes> getExercises(){
+    public List<ExerciseCatalogGetRes> getExercises(){
         return exerciseCatalogRepository.findAll().stream()
-                .map(e -> new ExerciseMetGetRes(
+                .map(e -> new ExerciseCatalogGetRes(
                         e.getExerciseId(),
                         e.getExerciseName(),
-                        e.getExerciseMet()
+                        e.getExerciseMet(),
+                        e.isHasDistance()
+
                 )).toList();
 
     }

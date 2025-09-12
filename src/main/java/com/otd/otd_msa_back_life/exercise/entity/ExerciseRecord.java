@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.exercise.entity;
 
+import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,31 +12,31 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ExerciseRecord  {
+public class ExerciseRecord extends BaseTimeEntity {
+    // createdAt, updatedAt
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long exerciseRecordId;
+    private Long exerciseRecordId;      // 운동기록 pk
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "exercise_id")
-    private ExerciseCatalog exercise;
+    private ExerciseCatalog exercise;       // 운동 종목 pk
 
-    private Long memberId;
-
-    @Column(nullable = false)
-    private Integer effortLevel;
+    private Long memberId;                  // 사용자 pk
 
     @Column(nullable = false)
-    private Integer exerciseDuration;
+    private Integer effortLevel;            // 노력 강도 (1~10)
 
     @Column(nullable = false)
-    private Integer activityKcal;
+    private Integer activityKcal;           // 활동 에너지
 
     @Column(nullable = false)
-    private LocalDateTime startAt;
+    private LocalDateTime startAt;          // 운동 시작 시점
 
     @Column(nullable = false)
-    private LocalDateTime endAt;
+    private LocalDateTime endAt;            // 운동 종료 시점
+
 
 }
