@@ -16,13 +16,9 @@ spring:
       max-file-size: 15MB
       max-request-size: 30MB
   datasource:
-#    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
-#    username: pih
-#    password: green502
-    url: jdbc:log4jdbc:mariadb://localhost/otd_life
-    username: root
-    password: educk2778
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
+    username: pih
+    password: green502
 
   jpa:
     database: mysql
