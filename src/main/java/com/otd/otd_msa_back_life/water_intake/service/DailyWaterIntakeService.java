@@ -2,6 +2,7 @@ package com.otd.otd_msa_back_life.water_intake.service;
 
 
 import com.otd.otd_msa_back_life.water_intake.entity.DailyWaterIntake;
+import com.otd.otd_msa_back_life.water_intake.model.DailyWaterIntakeGetRes;
 import com.otd.otd_msa_back_life.water_intake.model.DailyWaterIntakePostReq;
 import com.otd.otd_msa_back_life.water_intake.model.DailyWaterIntakePutReq;
 import com.otd.otd_msa_back_life.water_intake.repository.DailyWaterIntakeRepository;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -29,6 +32,13 @@ public class DailyWaterIntakeService {
                 .build();
         dailyWaterIntakeRepository.save(dailyWaterIntake);
         return dailyWaterIntake.getDailyWaterIntakeId();
+    }
+
+//    하루 총 음수량 조회
+    public DailyWaterIntakeGetRes getDailyWaterIntake(Long memberId, LocalDate intakeDate) {
+        DailyWaterIntake dailyWaterIntake = dailyWaterIntakeRepository.findByMemberIdAndIntakeDate(memberId, intakeDate);
+        return new DailyWaterIntakeGetRes(dailyWaterIntake);
+
     }
 
     //    음수량 수정
