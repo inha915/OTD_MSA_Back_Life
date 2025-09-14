@@ -28,5 +28,9 @@ public class DailyWaterIntake extends BaseTimeEntity {
     @Column(nullable = false , unique = true)
     private LocalDate intakeDate;
 
+//    값 변경을 위한 메서드
+    public void updateAmountLiter(Double amountLiter) {
+        this.amountLiter = amountLiter;
+    }
 
 }

@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8080
   servlet:
     encoding:
       charset: UTF-8
@@ -19,15 +19,14 @@ spring:
     url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
     username: pih
     password: green502
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
 
   jpa:
     database: mysql
     open-in-view: false            # 영속성 컨텍스트 요청-응답 분리
     defer-datasource-initialization: true
     hibernate:
-      #ddl-auto: update
-      ddl-auto: create
+      ddl-auto: update
+#      ddl-auto: create
     properties:
       hibernate:
         jdbc:
