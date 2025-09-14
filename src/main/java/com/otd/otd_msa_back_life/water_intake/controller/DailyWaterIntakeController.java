@@ -26,8 +26,8 @@ public class DailyWaterIntakeController {
     }
 
 //    음수량 수정
-    @PutMapping
-    public ResponseEntity<?> updateDailyWaterIntake(@PathVariable("daily_water_intake_id") Long dailyWaterIntakeId
+    @PutMapping("{dailyWaterIntakeId}")
+    public ResponseEntity<?> updateDailyWaterIntake(@PathVariable Long dailyWaterIntakeId
                                                     , @RequestBody DailyWaterIntakePutReq req){
         log.info("dailyWaterIntakeId:{}", dailyWaterIntakeId);
         log.info("req:{}", req);
