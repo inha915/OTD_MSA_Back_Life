@@ -2,27 +2,36 @@ package com.otd.otd_msa_back_life.water_intake.controller;
 
 
 import com.otd.otd_msa_back_life.water_intake.model.DailyWaterIntakePostReq;
+import com.otd.otd_msa_back_life.water_intake.model.DailyWaterIntakePutReq;
 import com.otd.otd_msa_back_life.water_intake.service.DailyWaterIntakeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/OTD/waterIntake")
 @RequiredArgsConstructor
 public class DailyWaterIntakeController {
-    private final DailyWaterIntakeService DailyWaterIntakeService;
+    private final DailyWaterIntakeService dailyWaterIntakeService;
 
+//    음수량 최초 한 번 기록
     @PostMapping
     public ResponseEntity<?> saveDailyWaterIntake(@RequestBody DailyWaterIntakePostReq req){
         log.info("req:{}", req);
-        Long result = DailyWaterIntakeService.saveDailyWaterIntake(req);
+        Long result = dailyWaterIntakeService.saveDailyWaterIntake(req);
         log.info("result:{}", result);
         return ResponseEntity.ok(result);
+    }
+
+//    음수량 수정
+    @PutMapping
+    public ResponseEntity<?> updateDailyWaterIntake(@PathVariable("daily_water_intake_id") Long dailyWaterIntakeId
+                                                    , @RequestBody DailyWaterIntakePutReq req){
+        log.info("dailyWaterIntakeId:{}", dailyWaterIntakeId);
+        log.info("req:{}", req);
+        dailyWaterIntakeService.updateDailyWaterIntake(dailyWaterIntakeId, req);
+        return ResponseEntity.ok("수정성공");
     }
 }
