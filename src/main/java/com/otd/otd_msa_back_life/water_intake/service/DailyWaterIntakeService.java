@@ -25,7 +25,7 @@ public class DailyWaterIntakeService {
         DailyWaterIntake dailyWaterIntake = DailyWaterIntake.builder()
                 .memberId(memberId)
                 .intakeDate(req.getIntakeDate())
-                .amountLiter(req.getAmountLiter()
+                .amountLiter(req.getAmountLiter())
                 .build();
         dailyWaterIntakeRepository.save(dailyWaterIntake);
         return dailyWaterIntake.getDailyWaterIntakeId();
