@@ -20,9 +20,12 @@ public class DailyWaterIntakeService {
 
     //    음수량 기록
     @Transactional
-    public Long saveDailyWaterIntake(DailyWaterIntakePostReq req) {
+    public Long saveDailyWaterIntake(Long memberId, DailyWaterIntakePostReq req) {
+
         DailyWaterIntake dailyWaterIntake = DailyWaterIntake.builder()
-                .amountLiter(req.getAmountLiter())
+                .memberId(memberId)
+                .intakeDate(req.getIntakeDate())
+                .amountLiter(req.getAmountLiter()
                 .build();
         dailyWaterIntakeRepository.save(dailyWaterIntake);
         return dailyWaterIntake.getDailyWaterIntakeId();

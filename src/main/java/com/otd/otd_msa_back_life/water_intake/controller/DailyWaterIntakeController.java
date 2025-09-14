@@ -18,9 +18,9 @@ public class DailyWaterIntakeController {
 
 //    음수량 최초 한 번 기록
     @PostMapping
-    public ResponseEntity<?> saveDailyWaterIntake(@RequestBody DailyWaterIntakePostReq req){
+    public ResponseEntity<?> saveDailyWaterIntake(@RequestBody DailyWaterIntakePostReq req, @RequestParam Long memberId){
         log.info("req:{}", req);
-        Long result = dailyWaterIntakeService.saveDailyWaterIntake(req);
+        Long result = dailyWaterIntakeService.saveDailyWaterIntake(memberId, req);
         log.info("result:{}", result);
         return ResponseEntity.ok(result);
     }
