@@ -46,8 +46,16 @@ public class ExerciseRecordController {
 
 //    [GET] detail
     @GetMapping("{exerciseRecordId}")
-    public ResponseEntity<?> getExerciseRecord(@RequestParam Long memberId, @PathVariable("exerciseRecordId") Long exerciseRecordId) {
+    public ResponseEntity<?> getExerciseRecord(@RequestParam Long memberId
+                                            , @PathVariable("exerciseRecordId") Long exerciseRecordId) {
         ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(memberId, exerciseRecordId);
         return ResponseEntity.ok(result);
+    }
+
+//    [DELETE]
+    @DeleteMapping
+    public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long memberId, @RequestParam Long exerciseRecordId) {
+        exerciseRecordService.deleteExerciseRecord(memberId, exerciseRecordId);
+        return ResponseEntity.ok("삭세 성공");
     }
 }

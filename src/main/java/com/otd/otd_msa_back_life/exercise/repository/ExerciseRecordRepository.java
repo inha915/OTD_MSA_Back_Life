@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExerciseRecordRepository extends JpaRepository<ExerciseRecord, Long> {
 ExerciseRecord findByMemberIdAndExerciseRecordId(Long memberId, Long exerciseRecordId);
+    Integer deleteByMemberIdAndExerciseRecordId(Long memberId, Long exerciseRecordId);
 }

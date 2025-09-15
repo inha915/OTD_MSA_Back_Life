@@ -10,6 +10,7 @@ import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
 import com.otd.otd_msa_back_life.exercise.mapper.ExerciseRecordMapper;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ExerciseRecordService {
     private final ExerciseRecordMapper exerciseRecordMapper;
 
     //    [post] exerciseRecord
+    @Transactional
     public Long saveExerciseRecord(ExerciseRecordPostReq req) {
 //        exercise 존재 여부 확인
         ExerciseCatalog exercise = exerciseCatalogRepository.findById(req.getExerciseId())
@@ -54,6 +56,7 @@ public class ExerciseRecordService {
     }
 
     //    [GET] recordList -> page
+    @Transactional
     public List<ExerciseRecordGetRes> getExerciseRecordList(Long memberId, PagingReq req) {
         PagingDto dto = PagingDto.builder()
                 .type(req.getType())
@@ -66,6 +69,7 @@ public class ExerciseRecordService {
     }
 
 //    [GET] detail
+    @Transactional
     public ExerciseRecordDetailGetRes getExerciseRecordDetail(Long memberId, Long exerciseRecordId) {
 
         ExerciseRecord exerciseRecord = exerciseRecordRepository
@@ -85,5 +89,11 @@ public class ExerciseRecordService {
                 .build();
 
         return result;
+    }
+
+//    [DELETE]
+    @Transactional
+    public void deleteExerciseRecord(Long memberId, Long exerciseRecordId) {
+        exerciseRecordRepository.deleteByMemberIdAndExerciseRecordId(memberId, exerciseRecordId);
     }
 }
