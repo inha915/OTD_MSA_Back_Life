@@ -56,6 +56,6 @@ public class ExerciseRecordController {
     @DeleteMapping
     public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long memberId, @RequestParam Long exerciseRecordId) {
         exerciseRecordService.deleteExerciseRecord(memberId, exerciseRecordId);
-        return ResponseEntity.ok("삭세 성공");
+        return ResponseEntity.ok("삭제 성공");
     }
 }
