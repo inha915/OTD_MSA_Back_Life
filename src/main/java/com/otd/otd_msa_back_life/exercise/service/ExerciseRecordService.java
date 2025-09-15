@@ -55,6 +55,8 @@ public class ExerciseRecordService {
     //    [GET] recordList -> page
     public List<ExerciseRecordGetRes> getExerciseRecordList(Long memberId, PagingReq req) {
         PagingDto dto = PagingDto.builder()
+                .type(req.getType())
+                .date(req.getDate())
                 .size(req.getRowPerPage())
                 .startIdx((req.getPage() - 1) * req.getRowPerPage())
                 .memberId(memberId)
