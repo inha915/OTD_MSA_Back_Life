@@ -38,5 +38,6 @@ public class ExerciseRecord extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime endAt;            // 운동 종료 시점
 
+    private Double distance;
 
 }

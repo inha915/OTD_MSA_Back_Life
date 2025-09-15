@@ -22,24 +22,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseRecordService {
     private final ExerciseRecordRepository exerciseRecordRepository;
-    private final ExerciseCatalogRepository exerciseMetRepository;
+    private final ExerciseCatalogRepository exerciseCatalogRepository;
     private final ExerciseRecordMapper exerciseRecordMapper;
 
     //    [post] exerciseRecord
     public Long saveExerciseRecord(ExerciseRecordPostReq req) {
 //        exercise 존재 여부 확인
-        ExerciseCatalog exerciseId = exerciseMetRepository.findById(req.getExerciseId())
+        ExerciseCatalog exercise = exerciseCatalogRepository.findById(req.getExerciseId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 운동입니다."));
+
+//        distance 입력 유효성 검사
+        if(exercise.isHasDistance() && req.getDistance() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "거리기반 운동은 distance 입력이 필수입니다.");
+        }
+        if (!exercise.isHasDistance() && req.getDistance() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "거리 기반 운동이 아닌 경우 distance 입력이 불가합니다.");
+        }
 
 //                exerciseRecord 생성
         ExerciseRecord exerciseRecord = ExerciseRecord.builder()
                 .activityKcal(req.getActivityKcal())
                 .effortLevel(req.getEffortLevel())
-                .exercise(exerciseId)
+                .exercise(exercise)
                 .startAt(req.getStartAt())
                 .endAt(req.getEndAt())
+                .distance(req.getDistance())
                 .build();
-
 
         return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
     }

@@ -21,28 +21,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/OTD/health")
+@RequestMapping("/api/OTD/exercise_record")
 @RequiredArgsConstructor
 public class ExerciseRecordController {
-
     private final ExerciseRecordService exerciseRecordService;
 
-    @PostMapping("/elog")
+//    운동기록
+    @PostMapping
     public ResponseEntity<?> saveExerciseRecord(@Valid @RequestBody ExerciseRecordPostReq req) {
         log.info("req:{}", req);
-
         Long result = exerciseRecordService.saveExerciseRecord(req);
         return ResponseEntity.ok(result);
-
     }
 
     // 페이징
-    @GetMapping("/elog/list")
+    @GetMapping("/list")
     public ResponseEntity<?> getExerciseLogList(@ModelAttribute PagingReq req) {
         log.info("req:{}", req);
         List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseLogList(req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
-
     }
 }
