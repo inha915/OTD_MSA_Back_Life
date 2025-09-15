@@ -53,13 +53,12 @@ public class ExerciseRecordService {
     }
 
     //    [GET] recordList -> page
-    public List<ExerciseRecordGetRes> getExerciseLogList(PagingReq req) {
+    public List<ExerciseRecordGetRes> getExerciseRecordList(Long memberId, PagingReq req) {
         PagingDto dto = PagingDto.builder()
                 .size(req.getRowPerPage())
                 .startIdx((req.getPage() - 1) * req.getRowPerPage())
+                .memberId(memberId)
                 .build();
-
         return exerciseRecordMapper.findByLimitTo(dto);
     }
-
 }

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class PagingDto {
     private Integer startIdx;
     private Integer size;
+    private Long memberId;
 }

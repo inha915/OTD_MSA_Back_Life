@@ -36,9 +36,9 @@ public class ExerciseRecordController {
 
     // 페이징
     @GetMapping("/list")
-    public ResponseEntity<?> getExerciseLogList(@ModelAttribute PagingReq req) {
+    public ResponseEntity<?> getExerciseLogList(@RequestParam Long memberId, @ModelAttribute PagingReq req ) {
         log.info("req:{}", req);
-        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseLogList(req);
+        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(memberId, req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
     }
