@@ -1,6 +1,7 @@
 package com.otd.otd_msa_back_life.exercise.controller;
 
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
 import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
@@ -40,6 +41,13 @@ public class ExerciseRecordController {
         log.info("req:{}", req);
         List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(memberId, req);
         log.info("exerciseLogList_result:{}", result);
+        return ResponseEntity.ok(result);
+    }
+
+//    [GET] detail
+    @GetMapping("{exerciseRecordId}")
+    public ResponseEntity<?> getExerciseRecord(@RequestParam Long memberId, @PathVariable("exerciseRecordId") Long exerciseRecordId) {
+        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(memberId, exerciseRecordId);
         return ResponseEntity.ok(result);
     }
 }

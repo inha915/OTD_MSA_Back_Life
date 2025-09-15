@@ -4,6 +4,7 @@ import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.common.model.PagingDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
@@ -62,5 +63,27 @@ public class ExerciseRecordService {
                 .memberId(memberId)
                 .build();
         return exerciseRecordMapper.findByLimitTo(dto);
+    }
+
+//    [GET] detail
+    public ExerciseRecordDetailGetRes getExerciseRecordDetail(Long memberId, Long exerciseRecordId) {
+
+        ExerciseRecord exerciseRecord = exerciseRecordRepository
+                                        .findByMemberIdAndExerciseRecordId(memberId, exerciseRecordId);
+        ExerciseCatalog exercise = exerciseCatalogRepository.findById(exerciseRecord.getExercise().getExerciseId())
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않은 운동입니다."));
+
+        ExerciseRecordDetailGetRes result = ExerciseRecordDetailGetRes.builder()
+                .exerciseRecordId(exerciseRecordId)
+                .distance(exerciseRecord.getDistance())
+                .activityKcal(exerciseRecord.getActivityKcal())
+                .effortLevel(exerciseRecord.getEffortLevel())
+                .startAt(exerciseRecord.getStartAt())
+                .endAt(exerciseRecord.getEndAt())
+                .exerciseId(exercise.getExerciseId())
+                .exerciseName(exercise.getExerciseName())
+                .build();
+
+        return result;
     }
 }
