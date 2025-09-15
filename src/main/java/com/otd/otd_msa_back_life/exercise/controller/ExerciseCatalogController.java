@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/OTD/health")
+@RequestMapping("/api/OTD/exercise")
 @RequiredArgsConstructor
 public class ExerciseCatalogController {
     private final ExerciseCatalogService exerciseCatalogService;
@@ -22,7 +22,8 @@ public class ExerciseCatalogController {
     //    [GET] exercises
     @GetMapping
     public ResponseEntity<?> getExercise() {
-        List<ExerciseCatalogGetRes> result = exerciseCatalogService.getExercises();
+        List<ExerciseCatalogGetRes> result = exerciseCatalogService.getExerciseCatalog();
         return ResponseEntity.ok(result);
     }
+
 }

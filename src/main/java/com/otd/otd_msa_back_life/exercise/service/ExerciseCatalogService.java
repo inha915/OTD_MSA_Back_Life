@@ -15,7 +15,7 @@ public class ExerciseCatalogService {
     private final ExerciseCatalogRepository exerciseCatalogRepository;
 
     //    [GET] exercise
-    public List<ExerciseCatalogGetRes> getExercises(){
+    public List<ExerciseCatalogGetRes> getExerciseCatalog(){
         return exerciseCatalogRepository.findAll().stream()
                 .map(e -> new ExerciseCatalogGetRes(
                         e.getExerciseId(),
