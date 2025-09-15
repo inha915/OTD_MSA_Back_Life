@@ -19,7 +19,6 @@ spring:
     url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
     username: pih
     password: green502
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
 
   jpa:
     database: mysql
@@ -28,6 +27,7 @@ spring:
     hibernate:
       ddl-auto: update
       #ddl-auto: create
+
     properties:
       hibernate:
         jdbc:
