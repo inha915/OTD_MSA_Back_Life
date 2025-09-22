@@ -1,0 +1,120 @@
+package com.otd.otd_msa_back_life.otd_meal.controller;
+
+
+
+import com.otd.otd_msa_back_life.otd_meal.model.FindFoodNameReq;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/OTD/meal")
+@Slf4j
+@Builder
+public class MealController {
+    private final MealService mealService;
+
+    //음식 찾기
+    @GetMapping()
+    public ResponseEntity<?> findFood(HttpServletRequest httpReq, @ModelAttribute FindFoodNameReq foodInfo)
+    {
+        Integer memberId = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
+//        log.info("foodInfo: {}", foodInfo);
+
+        if (foodInfo.getFoodName() == null || foodInfo.getFoodName().isEmpty()) {
+            List<FindFoodCategoryRes> res =  mealService.findFoodCategory(foodInfo);
+
+            return ResponseEntity.ok(res);
+        }
+        else {
+            List<FindFoodNameRes> res =  mealService.findFoodName(foodInfo);
+            return ResponseEntity.ok(res);
+        }
+    }
+
+    // 먹은거 처음 화면 위에 바
+    @GetMapping("/eatenMeal")
+    public ResponseEntity<?> eatenFood(HttpServletRequest httpReq, @RequestParam String mealDay)
+    {
+        Integer memberNoLogin = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
+        if (memberNoLogin == null) {
+            return ResponseEntity.ok("로그인 안함");
+        }
+        GetOnEatenDataRes result = mealService.getOnEatenDataRes(memberNoLogin, mealDay);
+        log.info("result: {}", result);
+
+        return ResponseEntity.ok(result);
+    }
+
+    //  주간 칼로리 데이터
+    @GetMapping("/statsMeal")
+    public ResponseEntity<?> eatenFood(HttpServletRequest httpReq, @ModelAttribute GetMealStatisticReq weekly)
+    {
+        Integer memberNoLogin = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
+        if (memberNoLogin == null) {
+            return ResponseEntity.ok("로그인 안함");
+        }
+        weekly.setMemberNoLogin(memberNoLogin);
+        log.info("result 주간 데이터: {}", weekly);
+        List<GetMealStatisticRes> result = mealService.getMealStatistic( weekly);
+        log.info("result: {}", result);
+
+        return ResponseEntity.ok(result);
+    }
+
+
+    // 먹은 음식 저장
+    @PostMapping ("/saveMeal")
+    public ResponseEntity<?> mealCalculation(HttpServletRequest httpReq, @RequestBody findFoodDetailInfoReq mealInfo)
+    {
+        Integer memberNoLogin = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
+        //들어오는 날짜 데이터 변조
+//        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(mealInfo.getMealDay());
+        log.info("foodInfo: {}", mealInfo);
+
+//        return ResponseEntity.ok(res);
+        int result = mealService.inputDayMealData( memberNoLogin,mealInfo);
+        log.info("result: {}", result);
+        return ResponseEntity.ok(1);
+    }
+
+    // 해당요일의 해당 시점에 먹은 음식 칼로리 검색
+    @GetMapping("/getMeal")
+    public ResponseEntity<?> getMealList (HttpServletRequest httpReq, @ModelAttribute GetMealListReq getData)
+    {
+        Integer memberNoLogin = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
+        if (memberNoLogin == null) {
+            return ResponseEntity.ok("로그인 안함");
+        }
+
+        getData.setMemberNoLogin(memberNoLogin);
+
+        log.info("getMealList: {}", getData);
+        List<GetMealListRes> result = mealService.getDataByMemberNoId(getData);
+        log.info("result: {}", result);
+        return ResponseEntity.ok(result);
+
+    }
+    // 음식 수정
+    @PutMapping("/modifyMeal")
+    public ResponseEntity<?> modifyMeal(HttpServletRequest httpReq, @RequestBody findFoodDetailInfoReq mealInfo)
+    {
+        Integer memberNoLogin = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
+        //들어오는 날짜 데이터 변조
+//        log.info("여기여기여기 foodInfo: {}", mealInfo);
+//        return ResponseEntity.ok(res);
+        int result = mealService.modifyMeal( memberNoLogin,mealInfo);
+        log.info("result: {}", result);
+        return ResponseEntity.ok(result);
+//
+    }
+
+
+
+}
