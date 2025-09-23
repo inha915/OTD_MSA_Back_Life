@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.web.bind.annotation.BindParam;
 
-import java.time.LocalDate;
 
 @Getter
 @ToString

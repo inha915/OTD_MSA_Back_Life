@@ -17,4 +17,5 @@ public class ExerciseRecordGetRes {
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private Double distance;
+    private Integer reps;
 }

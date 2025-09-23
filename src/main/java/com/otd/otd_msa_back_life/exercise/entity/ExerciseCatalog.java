@@ -20,5 +20,8 @@ public class ExerciseCatalog {
     private Double exerciseMet;           // 활동 에너지 계산할 때 사용할 MET
 
     @Column(nullable = false)
-    private boolean hasDistance;        // 거리기반운동여부
+    private Boolean hasDistance;        // 거리기반운동여부
+
+    @Column(nullable = false)           // 반복횟수운동여부
+    private Boolean hasReps;
 }
