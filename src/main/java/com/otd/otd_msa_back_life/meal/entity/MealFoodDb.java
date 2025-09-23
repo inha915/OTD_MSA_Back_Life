@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Food {
+public class MealFoodDb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long foodId;
@@ -19,8 +19,8 @@ public class Food {
     @Column(nullable = false, length = 100)
     private String foodName;
 
-    @Column(nullable = false, length = 30)
-    private String foodCategory;
+    @Column(nullable = false, length = 10)
+    private String flag;
 
     @Positive
     @Column(nullable = false)
@@ -45,5 +45,9 @@ public class Food {
     @Positive
     @Column(nullable = false)
     private Double natrium;
+
+
+    @Column(nullable = false, length = 10)
+    private int foodCapacity;
 
 }

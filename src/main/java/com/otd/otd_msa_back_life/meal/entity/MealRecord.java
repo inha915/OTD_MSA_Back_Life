@@ -4,9 +4,6 @@ package com.otd.otd_msa_back_life.meal.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
-import org.springframework.security.core.parameters.P;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class MealRecord {
+public class MealRecord extends MealFoodDb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -22,13 +19,17 @@ public class MealRecord {
 
     @Positive
     @Column(nullable = false)
-    private Integer amount;
+    private Integer foodAmount;
 
     @Column(nullable = false)
-    private Long memberId;
+    private Long userId;
+
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "food_id")
+    private MealFoodDb foodDb; // food db의  foodid와 연결
 
 
-   private MealNutritionIds mealNutritionIds;
+    private MealRecordIds mealRecordIds;
 
 
 

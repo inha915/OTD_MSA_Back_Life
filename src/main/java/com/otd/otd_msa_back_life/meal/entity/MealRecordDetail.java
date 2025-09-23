@@ -12,9 +12,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class MealNutrition {
+public class MealRecordDetail {
     @EmbeddedId
-    MealNutritionIds mealNutritionIds;
+    MealRecordIds mealRecordIds;
 
     @Column(nullable = false)
     private Long memberId;
