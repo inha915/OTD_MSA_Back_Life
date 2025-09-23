@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class MealRecord extends MealFoodDb {
+public class MealRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -28,10 +28,6 @@ public class MealRecord extends MealFoodDb {
     @JoinColumn(nullable = false, name = "food_id")
     private MealFoodDb foodDb; // food db의  foodid와 연결
 
-
+    @Embedded
     private MealRecordIds mealRecordIds;
-
-
-
-
 }
