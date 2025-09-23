@@ -35,11 +35,19 @@ public class ExerciseRecordService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 운동입니다."));
 
 //        distance 입력 유효성 검사
-        if(exercise.isHasDistance() && req.getDistance() == null){
+        if(exercise.getHasDistance() && req.getDistance() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "거리기반 운동은 distance 입력이 필수입니다.");
         }
-        if (!exercise.isHasDistance() && req.getDistance() != null) {
+        if (!exercise.getHasDistance() && req.getDistance() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "거리 기반 운동이 아닌 경우 distance 입력이 불가합니다.");
+        }
+        
+//        service 입력 유효성 검사
+        if (exercise.getHasReps() && req.getReps() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "반복횟수기반 운동은 reps 입력이 필수입니다. ");
+        }
+        if (!exercise.getHasReps() && req.getReps() != null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "반복횟수기반 운동은 reps 입력이 불가합니다. ");
         }
 
 //                exerciseRecord 생성
@@ -50,6 +58,7 @@ public class ExerciseRecordService {
                 .startAt(req.getStartAt())
                 .endAt(req.getEndAt())
                 .distance(req.getDistance())
+                .reps(req.getReps())
                 .build();
 
         return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
@@ -80,6 +89,7 @@ public class ExerciseRecordService {
         ExerciseRecordDetailGetRes result = ExerciseRecordDetailGetRes.builder()
                 .exerciseRecordId(exerciseRecordId)
                 .distance(exerciseRecord.getDistance())
+                .reps(exerciseRecord.getReps())
                 .activityKcal(exerciseRecord.getActivityKcal())
                 .effortLevel(exerciseRecord.getEffortLevel())
                 .startAt(exerciseRecord.getStartAt())
