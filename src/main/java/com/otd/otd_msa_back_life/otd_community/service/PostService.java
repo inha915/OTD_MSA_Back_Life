@@ -2,7 +2,7 @@ package com.otd.otd_msa_back_life.otd_community.service;
 
 import com.otd.otd_msa_back_life.otd_community.entity.CommunityPost;
 import com.otd.otd_msa_back_life.otd_community.repository.CommunityPostRepository;
-import com.otd.otd_msa_back_life.application.otd_community.web.dto.post.*;
+
 import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostCreateReq;
 import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostListRes;
 import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostRes;
