@@ -26,12 +26,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/OTD/meal")
 @Slf4j
-@Builder
 public class MealController {
     public final MealService mealService;
 
     @GetMapping
-    public ResponseEntity<?> getMeal(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @ModelAttribute String foodName) {
+    public ResponseEntity<?> getMeal(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam String foodName) {
 
         log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
         log.info("넘어오는 값: {}", foodName);

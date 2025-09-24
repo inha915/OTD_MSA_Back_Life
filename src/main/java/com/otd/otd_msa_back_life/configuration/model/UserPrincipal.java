@@ -36,6 +36,12 @@ public class UserPrincipal implements UserDetails, OAuth2User {
         return jwtUser.getSignedUserId();
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
     @Override
     public String getPassword() { return null; }
 
