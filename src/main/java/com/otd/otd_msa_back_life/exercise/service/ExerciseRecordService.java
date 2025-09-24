@@ -1,14 +1,15 @@
 package com.otd.otd_msa_back_life.exercise.service;
 
-import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
-import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.common.model.PagingDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
+import com.otd.otd_msa_back_life.exercise.mapper.ExerciseRecordMapper;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
-import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
-import com.otd.otd_msa_back_life.exercise.mapper.ExerciseRecordMapper;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordWeeklyGetReq;
+import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,12 @@ public class ExerciseRecordService {
                 .userId(userId)
                 .build();
         return exerciseRecordMapper.findByLimitTo(dto);
+    }
+
+    //    [GET] weeklyRecord
+    @Transactional
+    public List<ExerciseRecord> getExerciseRecordWeekly(Long userId, ExerciseRecordWeeklyGetReq req) {
+        return exerciseRecordRepository.findByUserIdAndStartAtBetween(userId, req.getStartOfWeek(), req.getEndOfWeek());
     }
 
 //    [GET] detail
