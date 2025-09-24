@@ -1,6 +1,7 @@
 package com.otd.otd_msa_back_life.exercise.controller;
 
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
 import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
@@ -21,28 +22,40 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/OTD/health")
+@RequestMapping("/api/OTD/exercise_record")
 @RequiredArgsConstructor
 public class ExerciseRecordController {
-
     private final ExerciseRecordService exerciseRecordService;
 
-    @PostMapping("/elog")
+//    운동기록
+    @PostMapping
     public ResponseEntity<?> saveExerciseRecord(@Valid @RequestBody ExerciseRecordPostReq req) {
         log.info("req:{}", req);
-
         Long result = exerciseRecordService.saveExerciseRecord(req);
         return ResponseEntity.ok(result);
-
     }
 
     // 페이징
-    @GetMapping("/elog/list")
-    public ResponseEntity<?> getExerciseLogList(@ModelAttribute PagingReq req) {
+    @GetMapping("/list")
+    public ResponseEntity<?> getExerciseLogList(@RequestParam Long userId, @ModelAttribute PagingReq req ) {
         log.info("req:{}", req);
-        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseLogList(req);
+        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userId, req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
+    }
 
+//    [GET] detail
+    @GetMapping("{exerciseRecordId}")
+    public ResponseEntity<?> getExerciseRecord(@RequestParam Long userId
+                                            , @PathVariable("exerciseRecordId") Long exerciseRecordId) {
+        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userId, exerciseRecordId);
+        return ResponseEntity.ok(result);
+    }
+
+//    [DELETE]
+    @DeleteMapping
+    public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long userId, @RequestParam Long exerciseRecordId) {
+        exerciseRecordService.deleteExerciseRecord(userId, exerciseRecordId);
+        return ResponseEntity.ok("삭제 성공");
     }
 }

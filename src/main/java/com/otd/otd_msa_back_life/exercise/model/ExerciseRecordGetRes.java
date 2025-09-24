@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class ExerciseRecordGetRes {
-    private int exerciseRecordId;
-    private int exerciseId;
-    private int exerciseDuration;
-    private int activityKcal;
-    private int effortLevel;
-    private LocalDateTime startDatetime;
-    private LocalDateTime endDatetime;
+    private Integer exerciseRecordId;
+    private Integer exerciseId;
+    private Integer activityKcal;
+    private Integer effortLevel;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
+    private Double distance;
+    private Integer reps;
 }

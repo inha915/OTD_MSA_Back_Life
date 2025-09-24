@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8083
   servlet:
     encoding:
       charset: UTF-8
@@ -7,6 +7,7 @@ server:
       force: true
 
 spring:
+
   application:
     name: otd_life
   jackson:
@@ -16,17 +17,19 @@ spring:
       max-file-size: 15MB
       max-request-size: 30MB
   datasource:
-    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
+    url: jdbc:log4jdbc:mariadb://112.222.157.157:5012/pih
     username: pih
     password: green502
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+
   jpa:
     database: mysql
     open-in-view: false            # 영속성 컨텍스트 요청-응답 분리
     defer-datasource-initialization: true
     hibernate:
-      #ddl-auto: update
-      ddl-auto: create
+      ddl-auto: none
+      #ddl-auto: create
+
     properties:
       hibernate:
         jdbc:
@@ -38,6 +41,11 @@ spring:
   sql:
     init:
       mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080
 
 feign:                              # 서버-투-서버 통신(유저 서비스 등)
   client:
@@ -57,6 +65,9 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.springframework.cloud.openfeign: info   # 필요시 debug로 내리면 상세통신 확인
+#    org.springframework.security: TRACE
+#    org.springframework.beans.factory.support: DEBUG #빈등록시 실패하는부분확인
+#    org.springframework.web: DEBUG
 
 mybatis:
   configuration:
@@ -68,3 +79,7 @@ mybatis:
 constants:
   file:
     directory: D:\inha\healthcare\img
+
+  comment:
+    start-index: 0
+    need-for-view-count: 3
