@@ -37,25 +37,25 @@ public class ExerciseRecordController {
 
     // 페이징
     @GetMapping("/list")
-    public ResponseEntity<?> getExerciseLogList(@RequestParam Long memberId, @ModelAttribute PagingReq req ) {
+    public ResponseEntity<?> getExerciseLogList(@RequestParam Long userId, @ModelAttribute PagingReq req ) {
         log.info("req:{}", req);
-        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(memberId, req);
+        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userId, req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
     }
 
 //    [GET] detail
     @GetMapping("{exerciseRecordId}")
-    public ResponseEntity<?> getExerciseRecord(@RequestParam Long memberId
+    public ResponseEntity<?> getExerciseRecord(@RequestParam Long userId
                                             , @PathVariable("exerciseRecordId") Long exerciseRecordId) {
-        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(memberId, exerciseRecordId);
+        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userId, exerciseRecordId);
         return ResponseEntity.ok(result);
     }
 
 //    [DELETE]
     @DeleteMapping
-    public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long memberId, @RequestParam Long exerciseRecordId) {
-        exerciseRecordService.deleteExerciseRecord(memberId, exerciseRecordId);
+    public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long userId, @RequestParam Long exerciseRecordId) {
+        exerciseRecordService.deleteExerciseRecord(userId, exerciseRecordId);
         return ResponseEntity.ok("삭제 성공");
     }
 }

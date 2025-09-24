@@ -22,7 +22,7 @@ public class DailyWaterIntake extends BaseTimeEntity {
     private Double amountLiter;
 
     @Column(nullable = false, unique = true)
-    private Long memberId;
+    private Long userId;
 
 
     @Column(nullable = false , unique = true)

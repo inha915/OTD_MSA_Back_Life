@@ -9,5 +9,5 @@ import java.time.LocalDate;
 
 
 public interface DailyWaterIntakeRepository extends JpaRepository<DailyWaterIntake, Long> {
-    DailyWaterIntake findByMemberIdAndIntakeDate(Long memberId, LocalDate date);
+    DailyWaterIntake findByUserIdAndIntakeDate(Long userId, LocalDate date);
 }

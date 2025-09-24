@@ -6,7 +6,7 @@
     <select id="findByLimitTo">
         SELECT exercise_record_id, exercise_id, activity_kcal, effort_level, start_at, end_at, distance, reps
         FROM exercise_record
-        WHERE member_id = #{memberId}
+        WHERE user_id = #{userId}
         <if test="type == 'daily' and date != null">
             AND DATE(start_at) = #{date}
         </if>

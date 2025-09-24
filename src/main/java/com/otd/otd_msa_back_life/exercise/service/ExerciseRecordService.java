@@ -66,23 +66,23 @@ public class ExerciseRecordService {
 
     //    [GET] recordList -> page
     @Transactional
-    public List<ExerciseRecordGetRes> getExerciseRecordList(Long memberId, PagingReq req) {
+    public List<ExerciseRecordGetRes> getExerciseRecordList(Long userId, PagingReq req) {
         PagingDto dto = PagingDto.builder()
                 .type(req.getType())
                 .date(req.getDate())
                 .size(req.getRowPerPage())
                 .startIdx((req.getPage() - 1) * req.getRowPerPage())
-                .memberId(memberId)
+                .userId(userId)
                 .build();
         return exerciseRecordMapper.findByLimitTo(dto);
     }
 
 //    [GET] detail
     @Transactional
-    public ExerciseRecordDetailGetRes getExerciseRecordDetail(Long memberId, Long exerciseRecordId) {
+    public ExerciseRecordDetailGetRes getExerciseRecordDetail(Long userId, Long exerciseRecordId) {
 
         ExerciseRecord exerciseRecord = exerciseRecordRepository
-                                        .findByMemberIdAndExerciseRecordId(memberId, exerciseRecordId);
+                                        .findByUserIdAndExerciseRecordId(userId, exerciseRecordId);
         ExerciseCatalog exercise = exerciseCatalogRepository.findById(exerciseRecord.getExercise().getExerciseId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않은 운동입니다."));
 
@@ -103,7 +103,7 @@ public class ExerciseRecordService {
 
 //    [DELETE]
     @Transactional
-    public void deleteExerciseRecord(Long memberId, Long exerciseRecordId) {
-        exerciseRecordRepository.deleteByMemberIdAndExerciseRecordId(memberId, exerciseRecordId);
+    public void deleteExerciseRecord(Long userId, Long exerciseRecordId) {
+        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
     }
 }
