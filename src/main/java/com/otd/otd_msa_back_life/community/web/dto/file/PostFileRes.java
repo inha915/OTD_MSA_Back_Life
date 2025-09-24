@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class PostFileRes {
     private Long fileId;
     private Long postId;
-    private Long memberNoLogin;
+    private Long userId;
     private String fileName;     // 원본 파일명
     private String filePath;     // 저장된 경로(상대/절대)
     private String fileType;     // MIME or 확장자

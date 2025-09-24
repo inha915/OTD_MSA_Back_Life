@@ -5,9 +5,12 @@ import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostListRes;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostRes;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostUpdateReq;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/community/posts")
@@ -17,8 +20,14 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public PostRes create(@RequestBody PostCreateReq req) {
-        return postService.create(req);
+    public ResponseEntity<PostRes> create(@Valid @RequestBody PostCreateReq req,
+                                          @RequestHeader("X-MEMBER-ID") Long requesterId,
+                                          UriComponentsBuilder uriBuilder) {
+        PostRes res = postService.create(req, requesterId);
+        return ResponseEntity
+                .created(uriBuilder.path("/api/v1/community/posts/{id}")
+                        .buildAndExpand(res.getPostId()).toUri())
+                .body(res);
     }
 
     @GetMapping

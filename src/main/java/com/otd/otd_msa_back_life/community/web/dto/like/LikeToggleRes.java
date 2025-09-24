@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class LikeToggleRes {
     private Long postId;
-    private Long memberId;
+    private Long userId;
     private boolean liked;
     private int likeCount;
 }

@@ -14,7 +14,10 @@ import java.time.LocalDateTime;
 @Table(
         name = "community_like",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_like_post_member", columnNames = {"post_id", "member_id"})
+                @UniqueConstraint(
+                        name = "uk_like_post_user",
+                        columnNames = {"post_id", "user_id"}
+                )
         }
 )
 public class CommunityLike {
@@ -24,12 +27,15 @@ public class CommunityLike {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(
+            name = "post_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_like_post")
+    )
     private CommunityPost post;
 
-    // User 서비스 참조 대신 ID만 저장
-    @Column(name = "member_id", nullable = false)
-    private Long memberId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

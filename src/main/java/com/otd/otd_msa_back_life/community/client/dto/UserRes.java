@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserRes {
-    private Long memberId;
+    private Long userId;
     private String nickname;
     private String email;
     private String profileImg;

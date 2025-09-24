@@ -19,12 +19,15 @@ public class CommunityPostFile {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(
+            name = "post_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_postfile_post")
+    )
     private CommunityPost post;
 
-    // 업로드한 유저의 memberId만 기록
-    @Column(name = "member_no_login", nullable = false)
-    private Long memberNoLogin;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "file_name", length = 255, nullable = false)
     private String fileName;

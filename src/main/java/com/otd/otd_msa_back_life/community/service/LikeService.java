@@ -13,32 +13,39 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LikeService {
 
-    private final CommunityLikeRepository likeRepository;
     private final CommunityPostRepository postRepository;
+    private final CommunityLikeRepository likeRepository;
 
     @Transactional
-    public LikeToggleRes toggle(Long postId, Long memberId) {
+    public LikeToggleRes toggle(Long postId, Long userId) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + postId));
 
-        var existing = likeRepository.findByPostAndMemberId(post, memberId);
-        boolean likedNow;
-        if (existing.isPresent()) {
-            likeRepository.delete(existing.get());
+        var likeOpt = likeRepository.findByPostAndUserId(post, userId);
+        boolean liked;
+        if (likeOpt.isPresent()) {
+            // 이미 좋아요 → 취소
+            likeRepository.delete(likeOpt.get());
             post.setLikeCount(Math.max(0, post.getLikeCount() - 1));
-            likedNow = false;
+            liked = false;
         } else {
-            likeRepository.save(CommunityLike.builder()
+            // 좋아요 추가
+            CommunityLike like = CommunityLike.builder()
                     .post(post)
-                    .memberId(memberId)
-                    .build());
+                    .userId(userId)
+                    .build();
+            likeRepository.save(like);
             post.setLikeCount(post.getLikeCount() + 1);
-            likedNow = true;
+            liked = true;
         }
+
+        // 즉시 반영 원하면 flush (선택)
+        // postRepository.save(post);
+
         return LikeToggleRes.builder()
-                .postId(postId)
-                .memberId(memberId)
-                .liked(likedNow)
+                .postId(post.getPostId())
+                .userId(userId)
+                .liked(liked)
                 .likeCount(post.getLikeCount())
                 .build();
     }
