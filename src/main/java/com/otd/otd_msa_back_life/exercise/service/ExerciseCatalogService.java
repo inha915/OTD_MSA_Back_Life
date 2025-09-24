@@ -21,8 +21,8 @@ public class ExerciseCatalogService {
                         e.getExerciseId(),
                         e.getExerciseName(),
                         e.getExerciseMet(),
-                        e.isHasDistance()
-
+                        e.getHasDistance(),
+                        e.getHasReps()
                 )).toList();
 
     }

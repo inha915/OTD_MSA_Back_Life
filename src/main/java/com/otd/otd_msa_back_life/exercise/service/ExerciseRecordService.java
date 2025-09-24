@@ -35,11 +35,19 @@ public class ExerciseRecordService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 운동입니다."));
 
 //        distance 입력 유효성 검사
-        if(exercise.isHasDistance() && req.getDistance() == null){
+        if(exercise.getHasDistance() && req.getDistance() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "거리기반 운동은 distance 입력이 필수입니다.");
         }
-        if (!exercise.isHasDistance() && req.getDistance() != null) {
+        if (!exercise.getHasDistance() && req.getDistance() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "거리 기반 운동이 아닌 경우 distance 입력이 불가합니다.");
+        }
+        
+//        service 입력 유효성 검사
+        if (exercise.getHasReps() && req.getReps() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "반복횟수기반 운동은 reps 입력이 필수입니다. ");
+        }
+        if (!exercise.getHasReps() && req.getReps() != null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "반복횟수기반 운동은 reps 입력이 불가합니다. ");
         }
 
 //                exerciseRecord 생성
@@ -50,6 +58,7 @@ public class ExerciseRecordService {
                 .startAt(req.getStartAt())
                 .endAt(req.getEndAt())
                 .distance(req.getDistance())
+                .reps(req.getReps())
                 .build();
 
         return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
@@ -57,29 +66,30 @@ public class ExerciseRecordService {
 
     //    [GET] recordList -> page
     @Transactional
-    public List<ExerciseRecordGetRes> getExerciseRecordList(Long memberId, PagingReq req) {
+    public List<ExerciseRecordGetRes> getExerciseRecordList(Long userId, PagingReq req) {
         PagingDto dto = PagingDto.builder()
                 .type(req.getType())
                 .date(req.getDate())
                 .size(req.getRowPerPage())
                 .startIdx((req.getPage() - 1) * req.getRowPerPage())
-                .memberId(memberId)
+                .userId(userId)
                 .build();
         return exerciseRecordMapper.findByLimitTo(dto);
     }
 
 //    [GET] detail
     @Transactional
-    public ExerciseRecordDetailGetRes getExerciseRecordDetail(Long memberId, Long exerciseRecordId) {
+    public ExerciseRecordDetailGetRes getExerciseRecordDetail(Long userId, Long exerciseRecordId) {
 
         ExerciseRecord exerciseRecord = exerciseRecordRepository
-                                        .findByMemberIdAndExerciseRecordId(memberId, exerciseRecordId);
+                                        .findByUserIdAndExerciseRecordId(userId, exerciseRecordId);
         ExerciseCatalog exercise = exerciseCatalogRepository.findById(exerciseRecord.getExercise().getExerciseId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않은 운동입니다."));
 
         ExerciseRecordDetailGetRes result = ExerciseRecordDetailGetRes.builder()
                 .exerciseRecordId(exerciseRecordId)
                 .distance(exerciseRecord.getDistance())
+                .reps(exerciseRecord.getReps())
                 .activityKcal(exerciseRecord.getActivityKcal())
                 .effortLevel(exerciseRecord.getEffortLevel())
                 .startAt(exerciseRecord.getStartAt())
@@ -93,7 +103,7 @@ public class ExerciseRecordService {
 
 //    [DELETE]
     @Transactional
-    public void deleteExerciseRecord(Long memberId, Long exerciseRecordId) {
-        exerciseRecordRepository.deleteByMemberIdAndExerciseRecordId(memberId, exerciseRecordId);
+    public void deleteExerciseRecord(Long userId, Long exerciseRecordId) {
+        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
     }
 }

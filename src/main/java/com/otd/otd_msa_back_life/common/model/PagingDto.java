@@ -16,5 +16,5 @@ public class PagingDto {
     private String date;
     private Integer startIdx;
     private Integer size;
-    private Long memberId;
+    private Long userId;
 }
