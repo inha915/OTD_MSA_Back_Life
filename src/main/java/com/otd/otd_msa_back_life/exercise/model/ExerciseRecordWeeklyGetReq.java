@@ -1,7 +1,5 @@
 package com.otd.otd_msa_back_life.exercise.model;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,10 +12,10 @@ import java.time.LocalDateTime;
 public class ExerciseRecordWeeklyGetReq {
 
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDateTime startOfWeek;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDateTime endOfWeek;
 
     public ExerciseRecordWeeklyGetReq(LocalDateTime startOfWeek, LocalDateTime endOfWeek) {
