@@ -1,10 +1,10 @@
-package com.otd.otd_msa_back_life.community.web.controller;
+package com.otd.otd_msa_back_life.otd_community.web.controller;
 
-import com.otd.otd_msa_back_life.community.service.PostService;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostListRes;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostRes;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostUpdateReq;
+import com.otd.otd_msa_back_life.otd_community.service.PostService;
+import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostCreateReq;
+import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostListRes;
+import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostRes;
+import com.otd.otd_msa_back_life.otd_community.web.dto.post.PostUpdateReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

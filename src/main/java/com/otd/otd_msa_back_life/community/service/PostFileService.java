@@ -41,7 +41,7 @@ public class PostFileService {
 
             CommunityPostFile entity = CommunityPostFile.builder()
                     .post(post)
-                    .memberNoLogin(memberNoLogin)
+                    .userId(memberNoLogin)
                     .fileName(f.getOriginalFilename())
                     .filePath(savedPath)
                     .fileType(fileType)
@@ -53,7 +53,7 @@ public class PostFileService {
             return PostFileRes.builder()
                     .fileId(saved.getId())
                     .postId(post.getPostId())
-                    .memberNoLogin(memberNoLogin)
+                    .userId(memberNoLogin)
                     .fileName(saved.getFileName())
                     .filePath(saved.getFilePath())
                     .fileType(saved.getFileType())
@@ -74,7 +74,7 @@ public class PostFileService {
                 .map(saved -> PostFileRes.builder()
                         .fileId(saved.getId())
                         .postId(post.getPostId())
-                        .memberNoLogin(saved.getMemberNoLogin())
+                        .userId(saved.getUserId())
                         .fileName(saved.getFileName())
                         .filePath(saved.getFilePath())
                         .fileType(saved.getFileType())
@@ -89,7 +89,7 @@ public class PostFileService {
                 .orElseThrow(() -> new IllegalArgumentException("파일 없음: " + fileId));
 
         // 업로더만 삭제 가능 (필요 시 권한 정책 강화)
-        if (!file.getMemberNoLogin().equals(requesterId)) {
+        if (!file.getUserId().equals(requesterId)) {
             throw new IllegalStateException("삭제 권한 없음");
         }
 

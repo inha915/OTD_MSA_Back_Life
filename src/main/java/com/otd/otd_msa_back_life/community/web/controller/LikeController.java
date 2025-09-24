@@ -14,7 +14,7 @@ public class LikeController {
 
     @PostMapping("/posts/{postId}/like/toggle")
     public LikeToggleRes toggle(@PathVariable Long postId,
-                                @RequestHeader("X-MEMBER-ID") Long memberId) {
-        return likeService.toggle(postId, memberId);
+                                @RequestHeader("X-MEMBER-ID") Long userId) {
+        return likeService.toggle(postId, userId);
     }
 }

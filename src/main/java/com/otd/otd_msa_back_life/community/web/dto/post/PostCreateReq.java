@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostCreateReq {
-    private Long memberNoLogin;
     private String title;
     private String content;
 }

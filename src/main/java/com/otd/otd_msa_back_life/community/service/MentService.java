@@ -26,7 +26,7 @@ public class MentService {
 
         Ment ment = Ment.builder()
                 .post(post)
-                .memberNoLogin(req.getMemberNoLogin())
+                .userId(req.getUserId())   // ✅ userId로 변경
                 .content(req.getContent())
                 .build();
 
@@ -34,7 +34,7 @@ public class MentService {
         return MentRes.builder()
                 .mentId(saved.getCommentId())
                 .postId(post.getPostId())
-                .memberNoLogin(saved.getMemberNoLogin())
+                .userId(saved.getUserId()) // ✅ userId로 변경
                 .content(saved.getContent())
                 .createdAt(saved.getCreatedAt())
                 .build();
@@ -49,7 +49,7 @@ public class MentService {
                 .map(m -> MentRes.builder()
                         .mentId(m.getCommentId())
                         .postId(post.getPostId())
-                        .memberNoLogin(m.getMemberNoLogin())
+                        .userId(m.getUserId())   // ✅ userId로 변경
                         .content(m.getContent())
                         .createdAt(m.getCreatedAt())
                         .build())
@@ -60,7 +60,7 @@ public class MentService {
     public void delete(Long mentId, Long requesterId) {
         Ment ment = mentRepository.findById(mentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 없음: " + mentId));
-        if (!ment.getMemberNoLogin().equals(requesterId)) {
+        if (!ment.getUserId().equals(requesterId)) {
             throw new IllegalStateException("삭제 권한 없음");
         }
         mentRepository.delete(ment);

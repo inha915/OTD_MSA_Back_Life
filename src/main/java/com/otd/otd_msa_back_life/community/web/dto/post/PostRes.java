@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public class PostRes {
     private Long postId;
-    private Long memberNoLogin;
+    private Long userId;
     private String title;
     private String content;
     private Integer likeCount;
