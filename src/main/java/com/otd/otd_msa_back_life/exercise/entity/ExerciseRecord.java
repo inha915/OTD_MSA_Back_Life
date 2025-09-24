@@ -24,7 +24,7 @@ public class ExerciseRecord extends BaseTimeEntity {
     @JoinColumn(nullable = false, name = "exercise_id")
     private ExerciseCatalog exercise;       // 운동 종목 pk
 
-    private Long memberId;                  // 사용자 pk
+    private Long userId;                  // 사용자 pk
 
     @Column(nullable = false)
     private Integer effortLevel;            // 노력 강도 (1~10)
