@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface CommunityLikeRepository extends JpaRepository<CommunityLike, Long> {
+    Optional<CommunityLike> findByPostAndUserId(CommunityPost post, Long userId);
     long countByPost(CommunityPost post);
 }
