@@ -33,8 +33,8 @@ public class MealController {
     @GetMapping
     public ResponseEntity<?> getMeal(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @ModelAttribute String foodName) {
 
-        log.info("signedUserId: {}", userPrincipal.getSignedUserId());
-        log.info("foodInfo: {}", foodName);
+        log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
+        log.info("넘어오는 값: {}", foodName);
         List<MealFoodDb> res = mealService.findFood(foodName);
         return ResponseEntity.ok(res);
 
