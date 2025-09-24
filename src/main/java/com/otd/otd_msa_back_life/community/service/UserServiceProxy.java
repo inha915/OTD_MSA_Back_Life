@@ -11,7 +11,7 @@ public class UserServiceProxy {
 
     private final UserClient userClient;
 
-    public UserRes getUserInfo(Long memberId) {
-        return userClient.getUserById(memberId);
+    public UserRes getUserInfo(Long userId) {
+        return userClient.getUserById(userId);
     }
 }

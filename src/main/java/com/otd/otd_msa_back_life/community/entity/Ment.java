@@ -22,8 +22,8 @@ public class Ment extends BaseTimeEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private CommunityPost post;
 
-    @Column(name = "member_no_login", nullable = false)
-    private Long memberNoLogin;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Lob
     @Column(nullable = false)

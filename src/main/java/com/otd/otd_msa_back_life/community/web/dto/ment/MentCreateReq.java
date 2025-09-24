@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MentCreateReq {
-    private Long memberNoLogin;
+    private Long userId;
     private String content;
 }

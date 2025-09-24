@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class PostListRes {
     private Long postId;
     private String title;
-    private Long memberNoLogin;
+    private Long userId;
     private Integer likeCount;
     private LocalDateTime createdAt;
 }

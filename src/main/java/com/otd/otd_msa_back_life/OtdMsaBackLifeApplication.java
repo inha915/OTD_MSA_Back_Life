@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @ConfigurationPropertiesScan
-@EnableFeignClients(basePackages = "com.otd.otd_msa_back_life.application.otd_community.client")
+@EnableFeignClients(basePackages = "com.otd.otd_msa_back_life.community.client")
 @SpringBootApplication
 public class OtdMsaBackLifeApplication {
 

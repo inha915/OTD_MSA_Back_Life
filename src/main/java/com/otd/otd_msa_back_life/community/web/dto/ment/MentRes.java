@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class MentRes {
     private Long mentId;
     private Long postId;
-    private Long memberNoLogin;
+    private Long userId;
     private String content;
     private LocalDateTime createdAt;
 }
