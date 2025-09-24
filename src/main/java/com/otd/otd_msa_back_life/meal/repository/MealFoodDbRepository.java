@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface MealFoodDbRepository extends JpaRepository<MealFoodDb, Long> {
 
-    List<MealFoodDb> findByFoodName(String foodName, Limit limit);
+    List<MealFoodDb> findByFoodNameContaining(String foodName, Limit limit);
 }

@@ -3,10 +3,12 @@ package com.otd.otd_msa_back_life.configuration.model;
 import com.otd.otd_msa_back_life.configuration.enumcode.model.EnumUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class JwtUser {
     private long signedUserId;

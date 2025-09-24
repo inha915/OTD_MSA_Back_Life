@@ -19,7 +19,7 @@ public class MealService {
     public List<MealFoodDb> findFood(String foodName)
     {
         int limit = 20;// 검색할때 몇개 까지 받을 건지
-        List<MealFoodDb> mealFoodDb = mealFoodDbRepository.findByFoodName(foodName,Limit.of(limit));
+        List<MealFoodDb> mealFoodDb = mealFoodDbRepository.findByFoodNameContaining(foodName,Limit.of(limit));
         return mealFoodDb;
     }
 

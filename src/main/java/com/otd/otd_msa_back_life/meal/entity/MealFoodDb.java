@@ -14,7 +14,7 @@ import lombok.*;
 public class MealFoodDb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long foodId;
+    private Long foodDbId;
 
     @Column(nullable = false, length = 100)
     private String foodName;
