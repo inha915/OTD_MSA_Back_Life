@@ -9,6 +9,9 @@ import lombok.Setter;
 public class PostCreateReq {
     private Long userId;
 
+    @NotBlank
+    private String categoryKey;
+
     @NotBlank(message = "제목은 필수입니다.")
     private String title;
 

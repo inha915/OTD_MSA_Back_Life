@@ -12,4 +12,7 @@ public class PostListRes {
     private Long userId;
     private Integer likeCount;
     private LocalDateTime createdAt;
+
+    private String categoryKey;
+    private String categoryName;
 }

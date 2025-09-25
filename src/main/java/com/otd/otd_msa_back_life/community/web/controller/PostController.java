@@ -13,42 +13,57 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/v1/community/posts")
+@RequestMapping("/api/OTD/community")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity<PostRes> create(@Valid @RequestBody PostCreateReq req,
-                                          @RequestHeader("X-MEMBER-ID") Long requesterId,
-                                          UriComponentsBuilder uriBuilder) {
+
+    // 생성 (JSON 본문)
+    @PostMapping("/posts")
+    public ResponseEntity<PostRes> create(
+            @Valid @RequestBody PostCreateReq req,
+            @RequestHeader("X-MEMBER-ID") Long requesterId,
+            UriComponentsBuilder uriBuilder
+    ) {
         PostRes res = postService.create(req, requesterId);
         return ResponseEntity
-                .created(uriBuilder.path("/api/v1/community/posts/{id}")
+                .created(uriBuilder.path("/api/OTD/community/posts/{id}")
                         .buildAndExpand(res.getPostId()).toUri())
                 .body(res);
     }
 
-    @GetMapping
-    public Page<PostListRes> list(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "20") int size) {
-        return postService.list(page, size);
+    // 목록
+    @GetMapping("/posts")
+    public Page<PostListRes> list(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String categoryKey,
+            @RequestParam(required = false) String searchText
+    ) {
+        return postService.list(page, size, categoryKey, searchText);
     }
 
-    @GetMapping("/{postId}")
+
+    // 상세
+    @GetMapping("/posts/{postId}")
     public PostRes get(@PathVariable Long postId) {
         return postService.get(postId);
     }
 
-    @PutMapping("/{postId}")
-    public PostRes update(@PathVariable Long postId,
-                          @RequestBody PostUpdateReq req,
-                          @RequestHeader("X-MEMBER-ID") Long requesterId) {
+    // 수정
+    @PutMapping("/posts/{postId}")
+    public PostRes update(
+            @PathVariable Long postId,
+            @RequestBody PostUpdateReq req,
+            @RequestHeader("X-MEMBER-ID") Long requesterId
+    ) {
         return postService.update(postId, req, requesterId);
     }
 
-    @DeleteMapping("/{postId}")
+    // 삭제
+    @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable Long postId,
                        @RequestHeader("X-MEMBER-ID") Long requesterId) {
         postService.deleteSoft(postId, requesterId);
