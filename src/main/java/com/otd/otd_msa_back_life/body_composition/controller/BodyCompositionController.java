@@ -1,16 +1,13 @@
 package com.otd.otd_msa_back_life.body_composition.controller;
 
-import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionSeriesGetReq;
-import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionSeriesGetRes;
-import com.otd.otd_msa_back_life.body_composition.model.LastestBodyCompositionGetRes;
+import com.otd.otd_msa_back_life.body_composition.model.*;
 import com.otd.otd_msa_back_life.body_composition.service.BodyCompositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -36,5 +33,14 @@ public class BodyCompositionController {
         return ResponseEntity.ok(result);
     }
 
+//    체성분 기록 목록 조회
+    @GetMapping("/list")
+    public ResponseEntity<?> getList(@RequestParam Long userId, @ModelAttribute BodyCompositionListGetReq req) {
+        log.info("userId:{}", userId);
+        log.info("getListReq:{}", req);
+        List<BodyCompositionListGetRes> result = bodyCompositionService.getBodyCompositionList(userId, req);
+        log.info("getList:{}", result);
+        return ResponseEntity.ok(result);
+    }
 
 }

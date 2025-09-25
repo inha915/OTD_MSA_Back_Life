@@ -2,19 +2,16 @@ package com.otd.otd_msa_back_life.body_composition.service;
 
 import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
 import com.otd.otd_msa_back_life.body_composition.entity.BodyCompositionMetric;
-import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionPointDto;
-import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionSeriesGetReq;
-import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionSeriesGetRes;
-import com.otd.otd_msa_back_life.body_composition.model.LastestBodyCompositionGetRes;
+import com.otd.otd_msa_back_life.body_composition.mapper.BodyCompositionMapper;
+import com.otd.otd_msa_back_life.body_composition.model.*;
 import com.otd.otd_msa_back_life.body_composition.repository.BodyCompositionMetricRepository;
 import com.otd.otd_msa_back_life.body_composition.repository.BodyCompositionRepository;
 import com.otd.otd_msa_back_life.common.model.DateRangeDto;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +25,7 @@ import java.util.stream.Collectors;
 public class BodyCompositionService {
     private final BodyCompositionRepository bodyCompositionRepository;
     private final BodyCompositionMetricRepository metricRepository;
+    private final BodyCompositionMapper bodyCompositionMapper;
 
 //    최신 기록 조회
     public LastestBodyCompositionGetRes getLastestBodyComposition(Long userId) {
@@ -109,4 +107,22 @@ public class BodyCompositionService {
                 .build();
         return result;
     }
+
+    //    체성분 기록 리스트 보기
+    @Transactional
+    public List<BodyCompositionListGetRes> getBodyCompositionList(Long userId, BodyCompositionListGetReq req) {
+        BodyCompositionListGetDto dto = BodyCompositionListGetDto.builder()
+                .startDate(req.getStartDate())
+                .endDate(req.getEndDate())
+                .size(req.getRowPerPage())
+                .startIdx((req.getPage() - 1) * req.getRowPerPage())
+                .deviceType(req.getDeviceType())
+                .userId(userId)
+                .build();
+
+        return bodyCompositionMapper.findByLimitTo(
+                dto
+        );
+    }
+
 }
