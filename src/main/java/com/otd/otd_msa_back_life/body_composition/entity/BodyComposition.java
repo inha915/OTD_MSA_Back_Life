@@ -53,4 +53,20 @@ public class BodyComposition extends BaseTimeEntity {
     String deviceType;          // 인바디 기기타입
 
 
+    // metricCode 기반 값 반환 메서드
+    public Double getValueByMetricCode(String metricCode) {
+        return switch (metricCode) {
+            case "weight" -> getWeight();
+            case "bmi" -> getBmi();
+            case "skeletal_muscle_mass" -> getSkeletalMuscleMass();
+            case "body_fat_mass" -> getBodyFatMass();
+            case "percent_body_fat" -> getPercentBodyFat();
+            case "basal_metabolic_rate" -> getBasalMetabolicRate();
+            case "total_body_water" -> getTotalBodyWater();
+            case "protein" -> getProtein();
+            case "mineral" -> getMineral();
+            default -> null; // 해당 metricCode가 없으면 null 반환
+        };
+    }
+
 }

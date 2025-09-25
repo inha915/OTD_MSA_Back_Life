@@ -1,5 +1,7 @@
 package com.otd.otd_msa_back_life.body_composition.controller;
 
+import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionSeriesGetReq;
+import com.otd.otd_msa_back_life.body_composition.model.BodyCompositionSeriesGetRes;
 import com.otd.otd_msa_back_life.body_composition.model.LastestBodyCompositionGetRes;
 import com.otd.otd_msa_back_life.body_composition.service.BodyCompositionService;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +26,15 @@ public class BodyCompositionController {
         log.info("lastestBodyComposition:{}", result);
        return ResponseEntity.ok(result);
     }
+
+//    체성분 변화 그래프 조회
+    @GetMapping("/series")
+    public ResponseEntity<?> getSeries(@RequestParam Long userId, BodyCompositionSeriesGetReq req) {
+        log.info("getSeries:{}", req);
+        BodyCompositionSeriesGetRes result = bodyCompositionService.getBodyCompositionSeries(userId, req);
+        log.info("getSeries:{}", result);
+        return ResponseEntity.ok(result);
+    }
+
 
 }
