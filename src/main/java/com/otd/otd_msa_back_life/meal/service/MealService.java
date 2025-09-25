@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,5 +23,19 @@ public class MealService {
         List<MealFoodDb> mealFoodDb = mealFoodDbRepository.findByFoodNameContaining(foodName,Limit.of(limit));
         return mealFoodDb;
     }
+
+//    public List<MealFoodDb> findFood(String foodName) {
+//        int limit = 20;
+//        String[] keywords = foodName.split("\\s+");
+//
+//        List<MealFoodDb> result = new ArrayList<>();
+//        for (String keyword : keywords) {
+//            result.addAll(mealFoodDbRepository.findByFoodNameContaining(keyword, Limit.of(limit)));
+//        }
+//        return result.stream()
+//                .distinct()
+//                .limit(limit)
+//                .toList();
+//    }
 
 }
