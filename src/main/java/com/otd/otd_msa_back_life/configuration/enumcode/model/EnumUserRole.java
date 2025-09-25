@@ -9,12 +9,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EnumUserRole implements EnumMapperType {
-    USER_1("01", "사용자")
-    ,USER_2("02", "소셜")
-    , MANAGER("03", "매니저")
-    , ADMIN("04", "관리자")
+    USER_1("01", "USER")
+    ,USER_2("02", "SOCIAL")
+    , MANAGER("03", "MANAGER")
+    , ADMIN("04", "ADMIN");
 
-    ;
 
     private final String code;
     private final String value;

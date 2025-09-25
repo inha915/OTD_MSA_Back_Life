@@ -30,7 +30,7 @@ public class MealController {
     public final MealService mealService;
 
     @GetMapping
-    public ResponseEntity<?> getMeal(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam String foodName) {
+    public ResponseEntity<?> getMeal(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("foodName") String foodName) {
 
         log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
         log.info("넘어오는 값: {}", foodName);

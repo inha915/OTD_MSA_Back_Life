@@ -23,7 +23,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
         this.jwtUser = jwtUser;
         List<SimpleGrantedAuthority> list = new ArrayList<>();
         for(EnumUserRole role : jwtUser.getRoles()){
-            String roleName = String.format("ROLE_%s", role.name());
+            String roleName =  role.name();
             log.info("roleName: {}", roleName);
             list.add(new SimpleGrantedAuthority(roleName));
         }
