@@ -15,14 +15,20 @@ import java.time.LocalDateTime;
 public class BodyCompositionService {
     private final BodyCompositionRepository bodyCompositionRepository;
 
+//    최신 기록 조회
     public LastestBodyCompositionGetRes getLastestBodyComposition(Long userId) {
         BodyComposition bodyComposition = bodyCompositionRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
         LastestBodyCompositionGetRes res = LastestBodyCompositionGetRes.builder()
-                .Bmi(bodyComposition.getBmi())
-                .cratedAt(LocalDateTime.now())
-
-
+                .bmi(bodyComposition.getBmi())
+                .cratedAt(bodyComposition.getCreatedAt())
+                .PercentBodyFat(bodyComposition.getPercentBodyFat())
+                .height(bodyComposition.getHeight())
+                .weight(bodyComposition.getWeight())
+                .skeletalMuscleMass(bodyComposition.getSkeletalMuscleMass())
+                .measured_id(bodyComposition.getMeasuredId())
+                .user_id(userId)
                 .build();
-        return null;
+
+        return res;
     }
 }

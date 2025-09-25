@@ -16,6 +16,6 @@ public class LastestBodyCompositionGetRes {
     private Double height;
     private Double weight;
     private Double skeletalMuscleMass;
-    private Double Bmi;
+    private Double bmi;
     private Double PercentBodyFat;
 }
