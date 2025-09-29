@@ -1,9 +1,11 @@
 package com.otd.otd_msa_back_life.exercise.controller;
 
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
+import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordWeeklyGetReq;
 import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,17 @@ public class ExerciseRecordController {
         log.info("req:{}", req);
         List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userId, req);
         log.info("exerciseLogList_result:{}", result);
+        return ResponseEntity.ok(result);
+    }
+
+//    [GET] Weekly record
+    @GetMapping("/weekly")
+    public ResponseEntity<?> getExerciseRecordWeekly(@RequestParam Long userId
+                                                    , @ModelAttribute ExerciseRecordWeeklyGetReq req) {
+        log.info("req:{}", req);
+        List<ExerciseRecord> result = exerciseRecordService
+                                            .getExerciseRecordWeekly(userId, req);
+        log.info("exerciseRecordWeekly_result:{}", result);
         return ResponseEntity.ok(result);
     }
 
