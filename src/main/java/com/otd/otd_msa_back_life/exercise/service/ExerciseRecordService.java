@@ -68,12 +68,13 @@ public class ExerciseRecordService {
 
     //    [GET] recordList -> page
     @Transactional
-    public List<ExerciseRecordGetRes> getExerciseRecordList( PagingReq req) {
+    public List<ExerciseRecordGetRes> getExerciseRecordList(Long userId, PagingReq req) {
         PagingDto dto = PagingDto.builder()
                 .type(req.getType())
                 .date(req.getDate())
                 .size(req.getRowPerPage())
                 .startIdx((req.getPage() - 1) * req.getRowPerPage())
+                .userId(userId)
                 .build();
         return exerciseRecordMapper.findByLimitTo(dto);
     }

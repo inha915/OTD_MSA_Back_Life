@@ -34,6 +34,7 @@ public class ExerciseRecordController {
 //    운동기록
     @PostMapping
     public ResponseEntity<?> saveExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @RequestBody ExerciseRecordPostReq req) {
+        log.info("userPrincipal={}", userPrincipal);
         log.info("req:{}", req);
         Long result = exerciseRecordService.saveExerciseRecord(userPrincipal.getSignedUserId(), req);
         return ResponseEntity.ok(result);
@@ -44,7 +45,7 @@ public class ExerciseRecordController {
     public ResponseEntity<?> getExerciseLogList(@AuthenticationPrincipal UserPrincipal userPrincipal, @ModelAttribute PagingReq req ) {
        log.info("userPrincipal:{}", userPrincipal);
         log.info("req:{}", req);
-        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList( req);
+        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userPrincipal.getSignedUserId(), req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
     }
