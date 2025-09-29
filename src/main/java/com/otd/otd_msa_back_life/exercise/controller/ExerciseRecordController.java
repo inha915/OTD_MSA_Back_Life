@@ -52,27 +52,27 @@ public class ExerciseRecordController {
 
 //    [GET] Weekly record
     @GetMapping("/weekly")
-    public ResponseEntity<?> getExerciseRecordWeekly(@RequestParam Long userId
+    public ResponseEntity<?> getExerciseRecordWeekly(@AuthenticationPrincipal UserPrincipal userPrincipal
                                                     , @ModelAttribute ExerciseRecordWeeklyGetReq req) {
         log.info("req:{}", req);
         List<ExerciseRecord> result = exerciseRecordService
-                                            .getExerciseRecordWeekly(userId, req);
+                                            .getExerciseRecordWeekly(userPrincipal.getSignedUserId(), req);
         log.info("exerciseRecordWeekly_result:{}", result);
         return ResponseEntity.ok(result);
     }
 
 //    [GET] detail
     @GetMapping("{exerciseRecordId}")
-    public ResponseEntity<?> getExerciseRecord(@RequestParam Long userId
+    public ResponseEntity<?> getExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal
                                             , @PathVariable("exerciseRecordId") Long exerciseRecordId) {
-        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userId, exerciseRecordId);
+        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok(result);
     }
 
 //    [DELETE]
     @DeleteMapping
-    public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long userId, @RequestParam Long exerciseRecordId) {
-        exerciseRecordService.deleteExerciseRecord(userId, exerciseRecordId);
+    public ResponseEntity<?>  deleteExerciseRecord( @RequestParam Long exerciseRecordId) {
+        exerciseRecordService.deleteExerciseRecord(exerciseRecordId);
         return ResponseEntity.ok("삭제 성공");
     }
 }
