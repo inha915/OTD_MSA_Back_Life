@@ -30,7 +30,7 @@ public class ExerciseRecordService {
 
     //    [post] exerciseRecord
     @Transactional
-    public Long saveExerciseRecord(ExerciseRecordPostReq req) {
+    public Long saveExerciseRecord(Long userId, ExerciseRecordPostReq req) {
 //        exercise 존재 여부 확인
         ExerciseCatalog exercise = exerciseCatalogRepository.findById(req.getExerciseId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 운동입니다."));
@@ -60,6 +60,7 @@ public class ExerciseRecordService {
                 .endAt(req.getEndAt())
                 .distance(req.getDistance())
                 .reps(req.getReps())
+                .userId(userId)
                 .build();
 
         return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
@@ -67,13 +68,12 @@ public class ExerciseRecordService {
 
     //    [GET] recordList -> page
     @Transactional
-    public List<ExerciseRecordGetRes> getExerciseRecordList(Long userId, PagingReq req) {
+    public List<ExerciseRecordGetRes> getExerciseRecordList( PagingReq req) {
         PagingDto dto = PagingDto.builder()
                 .type(req.getType())
                 .date(req.getDate())
                 .size(req.getRowPerPage())
                 .startIdx((req.getPage() - 1) * req.getRowPerPage())
-                .userId(userId)
                 .build();
         return exerciseRecordMapper.findByLimitTo(dto);
     }

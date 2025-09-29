@@ -1,6 +1,7 @@
 package com.otd.otd_msa_back_life.exercise.controller;
 
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,17 +33,18 @@ public class ExerciseRecordController {
 
 //    운동기록
     @PostMapping
-    public ResponseEntity<?> saveExerciseRecord(@Valid @RequestBody ExerciseRecordPostReq req) {
+    public ResponseEntity<?> saveExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @RequestBody ExerciseRecordPostReq req) {
         log.info("req:{}", req);
-        Long result = exerciseRecordService.saveExerciseRecord(req);
+        Long result = exerciseRecordService.saveExerciseRecord(userPrincipal.getSignedUserId(), req);
         return ResponseEntity.ok(result);
     }
 
     // 페이징
     @GetMapping("/list")
-    public ResponseEntity<?> getExerciseLogList(@RequestParam Long userId, @ModelAttribute PagingReq req ) {
+    public ResponseEntity<?> getExerciseLogList(@AuthenticationPrincipal UserPrincipal userPrincipal, @ModelAttribute PagingReq req ) {
+       log.info("userPrincipal:{}", userPrincipal);
         log.info("req:{}", req);
-        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userId, req);
+        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList( req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
     }
