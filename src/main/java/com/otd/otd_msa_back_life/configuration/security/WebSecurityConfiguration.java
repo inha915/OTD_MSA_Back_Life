@@ -23,10 +23,9 @@ public class WebSecurityConfiguration {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/OTD/exercise/**").authenticated()
-                        .requestMatchers("/api/OTD/communuty/**").authenticated()
                         .requestMatchers("/api/OTD/meal/**").authenticated()
+                        .requestMatchers("/api/OTD/community/**,/api/OTD/community/posts/** ").authenticated()
                         .anyRequest().permitAll())
         .build();
     }
-
 }

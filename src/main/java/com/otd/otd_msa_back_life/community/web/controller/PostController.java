@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.community.web.controller;
+package com.otd.otd_msa_back_life.otd_community.web.controller;
 
 import com.otd.otd_msa_back_life.community.service.PostService;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
