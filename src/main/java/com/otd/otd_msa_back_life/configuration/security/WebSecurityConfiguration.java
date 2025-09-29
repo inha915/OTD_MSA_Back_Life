@@ -23,10 +23,8 @@ public class WebSecurityConfiguration {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/OTD/exercise/**").authenticated()
-                        .requestMatchers("/api/OTD/communuty/**").authenticated()
                         .requestMatchers("/api/OTD/meal/**").authenticated()
                         .anyRequest().permitAll())
         .build();
     }
-
 }
