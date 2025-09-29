@@ -53,8 +53,6 @@ public class PostService {
      * - 프론트가 1-based로 보낸다고 가정하여 0-based로 변환
      * - 기본 정렬: 최신 글(postId desc)
      */
-    // com.otd...community.service.PostService
-    // PostService.java
     @Transactional(readOnly = true)
     public Page<PostListRes> list(int page, int size, String categoryKey, String searchText) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postId"));
@@ -75,15 +73,21 @@ public class PostService {
 
         return pageData.map(p -> PostListRes.builder()
                 .postId(p.getPostId())
-                .title(p.getTitle())
                 .userId(p.getUserId())
+                .title(p.getTitle())
+                .content(summarize(p.getContent(), 140)) // ★ 추가
                 .likeCount(p.getLikeCount())
                 .createdAt(p.getCreatedAt())
-                .categoryKey(p.getCategory() != null ? p.getCategory().getCategoryKey() : null) // ★ 프론트 분류용
+                .categoryKey(p.getCategory() != null ? p.getCategory().getCategoryKey() : null)
                 .build()
         );
     }
-
+    //본문(content)을 목록에 보여줄 때 너무 길면 잘라내는 역할을 하는 유틸리티 함수
+    private String summarize(String text, int max) {
+        if (text == null) return "";
+        text = text.strip();
+        return text.length() <= max ? text : text.substring(0, max) + "...";
+    }
 
     /**
      * 게시글 단건 조회

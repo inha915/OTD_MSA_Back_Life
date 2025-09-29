@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 @Builder
 public class PostListRes {
     private Long postId;
-    private String title;
     private Long userId;
+    private String title;
+    private String content;
     private Integer likeCount;
     private LocalDateTime createdAt;
-
     private String categoryKey;
     private String categoryName;
 }
