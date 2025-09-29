@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/community")
+@RequestMapping("/api/community")
 public class PostFileController {
 
     private final PostFileService postFileService;
