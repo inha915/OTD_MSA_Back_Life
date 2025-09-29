@@ -9,10 +9,6 @@ import java.util.List;
 public interface ExerciseRecordRepository extends JpaRepository<ExerciseRecord, Long> {
 ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordId);
 
-    Integer deleteByUserIdAndExerciseRecordId(
-            Long userId,
-            Long exerciseRecordId
-    );
 
     List<ExerciseRecord> findByUserIdAndStartAtBetween(
             Long userId,

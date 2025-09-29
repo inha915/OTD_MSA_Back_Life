@@ -111,7 +111,7 @@ public class ExerciseRecordService {
 
 //    [DELETE]
     @Transactional
-    public void deleteExerciseRecord(Long userId, Long exerciseRecordId) {
-        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
+    public void deleteExerciseRecord(Long exerciseRecordId) {
+        exerciseRecordRepository.deleteById(exerciseRecordId);
     }
 }
