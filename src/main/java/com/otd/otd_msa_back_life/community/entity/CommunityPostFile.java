@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.community.entity;
 
+import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "community_post_file")
-public class CommunityPostFile {
+public class CommunityPostFile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

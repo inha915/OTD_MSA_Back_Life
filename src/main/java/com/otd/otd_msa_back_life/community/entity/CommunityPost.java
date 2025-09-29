@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.community.entity;
 
+import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class CommunityPost {
+public class CommunityPost extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,10 @@ public class CommunityPost {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CommunityCategory category;
 
     @Column(nullable = false, length = 150)
     private String title;
@@ -36,11 +41,4 @@ public class CommunityPost {
 
     @Column(nullable = false)
     private Boolean isDeleted;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 }
