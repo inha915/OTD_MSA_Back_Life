@@ -30,7 +30,7 @@ public class ExerciseRecordService {
 
     //    [post] exerciseRecord
     @Transactional
-    public Long saveExerciseRecord(ExerciseRecordPostReq req) {
+    public Long saveExerciseRecord(Long userId, ExerciseRecordPostReq req) {
 //        exercise 존재 여부 확인
         ExerciseCatalog exercise = exerciseCatalogRepository.findById(req.getExerciseId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 운동입니다."));
@@ -60,6 +60,7 @@ public class ExerciseRecordService {
                 .endAt(req.getEndAt())
                 .distance(req.getDistance())
                 .reps(req.getReps())
+                .userId(userId)
                 .build();
 
         return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
@@ -111,6 +112,14 @@ public class ExerciseRecordService {
 //    [DELETE]
     @Transactional
     public void deleteExerciseRecord(Long userId, Long exerciseRecordId) {
-        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
+        ExerciseRecord record = exerciseRecordRepository.findById(exerciseRecordId)
+                .orElseThrow(() -> new IllegalArgumentException("운동 기록을 찾을 수 없습니다."));
+
+        if(!record.getUserId().equals(userId)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "운동 기록을 삭제할 수 없습니다.");
+        }
+
+        exerciseRecordRepository.delete(record);
+//        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
     }
 }

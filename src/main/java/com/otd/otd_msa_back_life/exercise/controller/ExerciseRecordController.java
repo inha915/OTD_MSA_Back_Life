@@ -1,6 +1,7 @@
 package com.otd.otd_msa_back_life.exercise.controller;
 
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,44 +33,47 @@ public class ExerciseRecordController {
 
 //    운동기록
     @PostMapping
-    public ResponseEntity<?> saveExerciseRecord(@Valid @RequestBody ExerciseRecordPostReq req) {
+    public ResponseEntity<?> saveExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @RequestBody ExerciseRecordPostReq req) {
+        log.info("userPrincipal={}", userPrincipal);
         log.info("req:{}", req);
-        Long result = exerciseRecordService.saveExerciseRecord(req);
+        Long result = exerciseRecordService.saveExerciseRecord(userPrincipal.getSignedUserId(), req);
         return ResponseEntity.ok(result);
     }
 
     // 페이징
     @GetMapping("/list")
-    public ResponseEntity<?> getExerciseLogList(@RequestParam Long userId, @ModelAttribute PagingReq req ) {
+    public ResponseEntity<?> getExerciseLogList(@AuthenticationPrincipal UserPrincipal userPrincipal, @ModelAttribute PagingReq req ) {
+       log.info("userPrincipal:{}", userPrincipal);
         log.info("req:{}", req);
-        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userId, req);
+        List<ExerciseRecordGetRes> result = exerciseRecordService.getExerciseRecordList(userPrincipal.getSignedUserId(), req);
         log.info("exerciseLogList_result:{}", result);
         return ResponseEntity.ok(result);
     }
 
 //    [GET] Weekly record
     @GetMapping("/weekly")
-    public ResponseEntity<?> getExerciseRecordWeekly(@RequestParam Long userId
+    public ResponseEntity<?> getExerciseRecordWeekly(@AuthenticationPrincipal UserPrincipal userPrincipal
                                                     , @ModelAttribute ExerciseRecordWeeklyGetReq req) {
         log.info("req:{}", req);
         List<ExerciseRecord> result = exerciseRecordService
-                                            .getExerciseRecordWeekly(userId, req);
+                                            .getExerciseRecordWeekly(userPrincipal.getSignedUserId(), req);
         log.info("exerciseRecordWeekly_result:{}", result);
         return ResponseEntity.ok(result);
     }
 
 //    [GET] detail
     @GetMapping("{exerciseRecordId}")
-    public ResponseEntity<?> getExerciseRecord(@RequestParam Long userId
+    public ResponseEntity<?> getExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal
                                             , @PathVariable("exerciseRecordId") Long exerciseRecordId) {
-        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userId, exerciseRecordId);
+        ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok(result);
     }
 
 //    [DELETE]
     @DeleteMapping
-    public ResponseEntity<?>  deleteExerciseRecord(@RequestParam Long userId, @RequestParam Long exerciseRecordId) {
-        exerciseRecordService.deleteExerciseRecord(userId, exerciseRecordId);
+    public ResponseEntity<?>  deleteExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal
+            ,  @RequestParam("exercise_record_id") Long exerciseRecordId) {
+        exerciseRecordService.deleteExerciseRecord(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok("삭제 성공");
     }
 }
