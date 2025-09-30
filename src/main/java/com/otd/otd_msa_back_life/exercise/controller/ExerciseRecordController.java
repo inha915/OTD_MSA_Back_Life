@@ -71,8 +71,9 @@ public class ExerciseRecordController {
 
 //    [DELETE]
     @DeleteMapping
-    public ResponseEntity<?>  deleteExerciseRecord( @RequestParam Long exerciseRecordId) {
-        exerciseRecordService.deleteExerciseRecord(exerciseRecordId);
+    public ResponseEntity<?>  deleteExerciseRecord(@AuthenticationPrincipal UserPrincipal userPrincipal
+            ,  @RequestParam("exercise_record_id") Long exerciseRecordId) {
+        exerciseRecordService.deleteExerciseRecord(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok("삭제 성공");
     }
 }

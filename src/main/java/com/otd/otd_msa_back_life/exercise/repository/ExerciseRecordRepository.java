@@ -15,4 +15,6 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
             LocalDateTime startOfWeek,
             LocalDateTime endOfWeek
     );
+
+    void deleteByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordId);
 }

@@ -111,7 +111,15 @@ public class ExerciseRecordService {
 
 //    [DELETE]
     @Transactional
-    public void deleteExerciseRecord(Long exerciseRecordId) {
-        exerciseRecordRepository.deleteById(exerciseRecordId);
+    public void deleteExerciseRecord(Long userId, Long exerciseRecordId) {
+        ExerciseRecord record = exerciseRecordRepository.findById(exerciseRecordId)
+                .orElseThrow(() -> new IllegalArgumentException("운동 기록을 찾을 수 없습니다."));
+
+        if(!record.getUserId().equals(userId)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "운동 기록을 삭제할 수 없습니다.");
+        }
+
+        exerciseRecordRepository.delete(record);
+//        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
     }
 }
