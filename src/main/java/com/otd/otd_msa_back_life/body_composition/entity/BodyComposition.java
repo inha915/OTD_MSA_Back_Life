@@ -26,7 +26,7 @@ public class BodyComposition extends BaseTimeEntity {
     Double height;          // 신장
 
     @Column(nullable = false)
-    Double TotalBodyWater;  // 체수분
+    Double totalBodyWater;  // 체수분
 
     @Column(nullable = false)
     Double protein;         // 단백질

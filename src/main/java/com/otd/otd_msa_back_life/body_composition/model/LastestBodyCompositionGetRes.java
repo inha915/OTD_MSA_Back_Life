@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class LastestBodyCompositionGetRes {
-    private Long measured_id;
-    private Long user_id;
-    private LocalDateTime cratedAt;
+    private Long measuredId;
+    private Long userId;
+    private LocalDateTime createdAt;
     private Double height;
     private Double weight;
     private Double skeletalMuscleMass;
     private Double bmi;
-    private Double PercentBodyFat;
+    private Double percentBodyFat;
 }

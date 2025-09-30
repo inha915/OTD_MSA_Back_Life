@@ -19,7 +19,7 @@ public class BodyCompositionController {
     private final BodyCompositionService bodyCompositionService;
 
 //    최신 기록 조회
-    @GetMapping("/lastest")
+@GetMapping("/lastest")
     public ResponseEntity<?> getLastestBodyComposition(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         LastestBodyCompositionGetRes result = bodyCompositionService.getLastestBodyComposition(userPrincipal.getSignedUserId());
         log.info("lastestBodyComposition:{}", result);

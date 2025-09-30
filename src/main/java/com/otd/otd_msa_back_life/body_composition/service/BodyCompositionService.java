@@ -32,13 +32,13 @@ public class BodyCompositionService {
         BodyComposition bodyComposition = bodyCompositionRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
         LastestBodyCompositionGetRes res = LastestBodyCompositionGetRes.builder()
                 .bmi(bodyComposition.getBmi())
-                .cratedAt(bodyComposition.getCreatedAt())
-                .PercentBodyFat(bodyComposition.getPercentBodyFat())
+                .createdAt(bodyComposition.getCreatedAt())
+                .percentBodyFat(bodyComposition.getPercentBodyFat())
                 .height(bodyComposition.getHeight())
                 .weight(bodyComposition.getWeight())
                 .skeletalMuscleMass(bodyComposition.getSkeletalMuscleMass())
-                .measured_id(bodyComposition.getMeasuredId())
-                .user_id(userId)
+                .measuredId(bodyComposition.getMeasuredId())
+                .userId(userId)
                 .build();
 
         return res;
