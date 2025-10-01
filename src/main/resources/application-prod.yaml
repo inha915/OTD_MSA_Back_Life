@@ -1,10 +1,6 @@
 constants:
   file:
-    upload-directory: /home/download
-
-eureka:
-  client:
-    enabled: false
+    directory: /home/download
 
 server:
   port: 8080
