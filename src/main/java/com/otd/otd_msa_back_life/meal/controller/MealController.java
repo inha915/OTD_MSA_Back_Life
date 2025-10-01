@@ -34,6 +34,7 @@ public class MealController {
 
         log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
         log.info("넘어오는 값: {}", foodName);
+        log.info("넘어오는 값: {}", foodName);
         List<MealFoodDb> res = mealService.findFood(foodName);
         return ResponseEntity.ok(res);
 

@@ -1,3 +1,7 @@
+constants:
+  file:
+    directory: /home/download
+
 server:
   port: 8080
 
@@ -8,7 +12,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: "*"
 
 spring:
   cloud:
@@ -19,6 +23,10 @@ spring:
         enabled: true
         strategy: refresh
 
+  datasource:
+    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
+    username: pih
+    password: green502
   jpa:
     hibernate:
       ddl-auto: update
