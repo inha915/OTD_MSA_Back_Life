@@ -11,5 +11,6 @@ public class ExerciseCatalogGetRes {
     private Long exerciseId;
     private String exerciseName;
     private Double exerciseMet;
-    private boolean hasDistance;
+    private Boolean hasDistance;
+    private Boolean hasReps;
 }

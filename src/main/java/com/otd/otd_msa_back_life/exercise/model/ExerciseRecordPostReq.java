@@ -40,6 +40,10 @@ public class ExerciseRecordPostReq {
     @DecimalMin(value = "0.01", message = "거리는 0.01km 이상이어야 합니다.")
     private Double distance;
 
+    //    반복횟수
+    @Min(value = 1, message = "반복횟수는 최소 1 이상이어야 합니다")
+    private Integer reps;
+
 //   운동 종료 시점 validation
     @AssertTrue(message = "종료일시는 시작일시 이후여야 합니다. ")
     public boolean isEndAfterStart() {

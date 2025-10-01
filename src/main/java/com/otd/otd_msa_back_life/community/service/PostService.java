@@ -1,0 +1,146 @@
+package com.otd.otd_msa_back_life.community.service;
+
+import com.otd.otd_msa_back_life.community.entity.CommunityCategory;
+import com.otd.otd_msa_back_life.community.entity.CommunityPost;
+import com.otd.otd_msa_back_life.community.repository.CommunityCategoryRepository;
+import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
+import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
+import com.otd.otd_msa_back_life.community.web.dto.post.PostListRes;
+import com.otd.otd_msa_back_life.community.web.dto.post.PostRes;
+import com.otd.otd_msa_back_life.community.web.dto.post.PostUpdateReq;
+import io.micrometer.common.lang.Nullable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class PostService {
+
+    private final CommunityPostRepository postRepository;
+    private final CommunityCategoryRepository categoryRepository;
+
+    /**
+     * 게시글 생성
+     * - categoryKey로 카테고리 조회 후 엔티티에 세팅
+     * - likeCount/isDeleted 기본값 보장
+     */
+    @Transactional
+    public PostRes create(PostCreateReq req, Long requesterId) {
+        // 카테고리 조회 (없으면 400으로 처리하도록 IllegalArgumentException)
+        CommunityCategory category = categoryRepository.findByCategoryKey(req.getCategoryKey())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid categoryKey: " + req.getCategoryKey()));
+
+        CommunityPost post = CommunityPost.builder()
+                .userId(requesterId)
+                .category(category)        // 반드시 세팅
+                .title(req.getTitle())
+                .content(req.getContent())
+                .likeCount(0)
+                .isDeleted(false)
+                .build();
+
+        CommunityPost saved = postRepository.save(post);
+        return toRes(saved);
+    }
+
+    /**
+     * 게시글 목록
+     * - 프론트가 1-based로 보낸다고 가정하여 0-based로 변환
+     * - 기본 정렬: 최신 글(postId desc)
+     */
+    @Transactional(readOnly = true)
+    public Page<PostListRes> list(int page, int size, String categoryKey, String searchText) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postId"));
+
+        boolean hasCat = categoryKey != null && !categoryKey.isBlank();
+        boolean hasQ   = searchText != null && !searchText.isBlank();
+
+        Page<CommunityPost> pageData;
+        if (hasCat && hasQ) {
+            pageData = postRepository.searchInCategory(categoryKey, searchText, pageable);
+        } else if (hasCat) {
+            pageData = postRepository.findByIsDeletedFalseAndCategory_CategoryKey(categoryKey, pageable);
+        } else if (hasQ) {
+            pageData = postRepository.search(searchText, pageable);
+        } else {
+            pageData = postRepository.findByIsDeletedFalse(pageable);
+        }
+
+        return pageData.map(p -> PostListRes.builder()
+                .postId(p.getPostId())
+                .userId(p.getUserId())
+                .title(p.getTitle())
+                .content(summarize(p.getContent(), 140)) // ★ 추가
+                .likeCount(p.getLikeCount())
+                .createdAt(p.getCreatedAt())
+                .categoryKey(p.getCategory() != null ? p.getCategory().getCategoryKey() : null)
+                .build()
+        );
+    }
+    //본문(content)을 목록에 보여줄 때 너무 길면 잘라내는 역할을 하는 유틸리티 함수
+    private String summarize(String text, int max) {
+        if (text == null) return "";
+        text = text.strip();
+        return text.length() <= max ? text : text.substring(0, max) + "...";
+    }
+
+    /**
+     * 게시글 단건 조회
+     */
+    @Transactional(readOnly = true)
+    public PostRes get(Long postId) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + postId));
+        return toRes(post);
+    }
+
+    /**
+     * 게시글 수정
+     */
+    @Transactional
+    public PostRes update(Long postId, PostUpdateReq req, Long requesterId) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + postId));
+
+        if (!post.getUserId().equals(requesterId)) {
+            throw new IllegalStateException("수정 권한 없음");
+        }
+
+        post.setTitle(req.getTitle());
+        post.setContent(req.getContent());
+        return toRes(post);
+    }
+
+    /**
+     * 게시글 소프트 삭제
+     */
+    @Transactional
+    public void deleteSoft(Long postId, Long requesterId) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + postId));
+
+        if (!post.getUserId().equals(requesterId)) {
+            throw new IllegalStateException("삭제 권한 없음");
+        }
+
+        post.setIsDeleted(true);
+    }
+
+    private PostRes toRes(CommunityPost p) {
+        return PostRes.builder()
+                .postId(p.getPostId())
+                .userId(p.getUserId())
+                .title(p.getTitle())
+                .content(p.getContent())
+                .likeCount(p.getLikeCount())
+                .isDeleted(p.getIsDeleted())
+                .createdAt(p.getCreatedAt())
+                .updatedAt(p.getUpdatedAt())
+                .build();
+    }
+}
