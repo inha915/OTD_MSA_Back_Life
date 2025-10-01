@@ -32,6 +32,3 @@ spring:
       ddl-auto: update
 
 
-constants:
-  file:
-    directory: /home/download
