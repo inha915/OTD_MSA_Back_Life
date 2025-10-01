@@ -1,9 +1,8 @@
 package com.otd.otd_msa_back_life.community.entity;
 
+import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,14 +12,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(
         name = "community_like",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_like_post_user",
-                        columnNames = {"post_id", "user_id"}
-                )
-        }
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_like_post_user",
+                columnNames = {"post_id", "user_id"}
+        )
 )
-public class CommunityLike {
+public class CommunityLike extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +33,4 @@ public class CommunityLike {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
 }
