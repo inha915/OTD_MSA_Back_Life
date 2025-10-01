@@ -1,5 +1,7 @@
 package com.otd.otd_msa_back_life.exercise.service;
 
+import com.otd.otd_msa_back_life.challenge.ChallengeClient;
+import com.otd.otd_msa_back_life.challenge.ChallengeProgressUpdateReq;
 import com.otd.otd_msa_back_life.common.model.PagingDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
@@ -27,7 +29,7 @@ public class ExerciseRecordService {
     private final ExerciseRecordRepository exerciseRecordRepository;
     private final ExerciseCatalogRepository exerciseCatalogRepository;
     private final ExerciseRecordMapper exerciseRecordMapper;
-
+    private final ChallengeClient challengeClient;
     //    [post] exerciseRecord
     @Transactional
     public Long saveExerciseRecord(Long userId, ExerciseRecordPostReq req) {
@@ -62,6 +64,12 @@ public class ExerciseRecordService {
                 .reps(req.getReps())
                 .userId(userId)
                 .build();
+        ChallengeProgressUpdateReq feign = ChallengeProgressUpdateReq.builder()
+                .userId(userId)
+                .name(exercise.getExerciseName())
+                .record(req.getDistance())
+                .build();
+        challengeClient.updateProgressByExercise(feign);
 
         return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
     }
