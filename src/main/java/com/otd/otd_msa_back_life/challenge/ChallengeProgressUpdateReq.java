@@ -4,11 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
 public class ChallengeProgressUpdateReq {
     private Long userId;
     private String name;
-    private double record;
+    private Double record;
+    private LocalDate recordDate;
+    private LocalDate today;
 }

@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -67,7 +68,9 @@ public class ExerciseRecordService {
         ChallengeProgressUpdateReq feign = ChallengeProgressUpdateReq.builder()
                 .userId(userId)
                 .name(exercise.getExerciseName())
-                .record(req.getDistance())
+                .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
+                .recordDate(req.getStartAt().toLocalDate())
+                .today(LocalDate.now())
                 .build();
         challengeClient.updateProgressByExercise(feign);
 
