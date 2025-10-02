@@ -9,12 +9,15 @@ import java.time.LocalDate;
 
 @Setter
 @Getter
-public class InpuMealDetailDto {
-    private int  memberNoLogin;
+public class InputMealRecordDetailDto {
     private String mealBrLuDi;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate mealDay;
+
     private int totalCalorie;
+
+    private int  memberNoLogin;
+
     private float totalProtein;
     private float totalFat;
     private float totalCarbohydrate;

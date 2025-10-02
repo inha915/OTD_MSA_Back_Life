@@ -6,6 +6,7 @@ import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.meal.entity.MealFoodDb;
 import com.otd.otd_msa_back_life.meal.model.FindFoodNameReq;
 import com.otd.otd_msa_back_life.meal.model.FindFoodNameRes;
+import com.otd.otd_msa_back_life.meal.model.InputMealRecordReq;
 import com.otd.otd_msa_back_life.meal.service.MealService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -34,9 +35,18 @@ public class MealController {
 
         log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
         log.info("넘어오는 값: {}", foodName);
+
         List<MealFoodDb> res = mealService.findFood(foodName);
         return ResponseEntity.ok(res);
 
+    }
+
+    @PostMapping("/record")
+    public ResponseEntity<?> inputMealRecord (@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam InputMealRecordReq mealRecordReq)
+    {
+        log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
+        log.info("넘어오는 값: {}", mealRecordReq);
+        return ResponseEntity.ok(null);
     }
 
 
