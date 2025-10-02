@@ -1,4 +1,4 @@
-package com.otd.otd_msa_back_life.challenge;
+package com.otd.otd_msa_back_life.challenge.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class ChallengeProgressUpdateReq {
     private Long userId;
+    private Long recordId;
     private String name;
     private Double record;
     private LocalDate recordDate;

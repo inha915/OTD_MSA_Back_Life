@@ -11,11 +11,13 @@ import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,5 +77,12 @@ public class ExerciseRecordController {
             ,  @RequestParam("exercise_record_id") Long exerciseRecordId) {
         exerciseRecordService.deleteExerciseRecord(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok("삭제 성공");
+    }
+// challenge feign client
+    @GetMapping("/exercise/feign")
+    public int getAllExerciseRecordCount(@RequestParam Long userId,
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                         LocalDate recDate){
+        return exerciseRecordService.countExerciseRecordByDate(userId, recDate);
     }
 }

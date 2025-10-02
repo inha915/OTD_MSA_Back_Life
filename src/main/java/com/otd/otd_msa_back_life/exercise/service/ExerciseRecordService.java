@@ -1,7 +1,8 @@
 package com.otd.otd_msa_back_life.exercise.service;
 
 import com.otd.otd_msa_back_life.challenge.ChallengeClient;
-import com.otd.otd_msa_back_life.challenge.ChallengeProgressUpdateReq;
+import com.otd.otd_msa_back_life.challenge.model.ChallengeProgressUpdateReq;
+import com.otd.otd_msa_back_life.challenge.model.ChallengeRecordDeleteReq;
 import com.otd.otd_msa_back_life.common.model.PagingDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
@@ -65,16 +66,20 @@ public class ExerciseRecordService {
                 .reps(req.getReps())
                 .userId(userId)
                 .build();
-        ChallengeProgressUpdateReq feign = ChallengeProgressUpdateReq.builder()
-                .userId(userId)
-                .name(exercise.getExerciseName())
-                .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
-                .recordDate(req.getStartAt().toLocalDate())
-                .today(LocalDate.now())
-                .build();
-        challengeClient.updateProgressByExercise(feign);
+        Long recordId = exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
+        if (req.getReps() != null || req.getDistance() != null) {
+            ChallengeProgressUpdateReq feign = ChallengeProgressUpdateReq.builder()
+                    .userId(userId)
+                    .recordId(recordId)
+                    .name(exercise.getExerciseName())
+                    .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
+                    .recordDate(req.getStartAt().toLocalDate())
+                    .today(LocalDate.now())
+                    .build();
+            challengeClient.updateProgressByExercise(feign);
+        }
 
-        return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
+        return recordId;
     }
 
     //    [GET] recordList -> page
@@ -129,8 +134,26 @@ public class ExerciseRecordService {
         if(!record.getUserId().equals(userId)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "운동 기록을 삭제할 수 없습니다.");
         }
-
+        ChallengeRecordDeleteReq req = ChallengeRecordDeleteReq.builder()
+                .userId(userId)
+                .name(record.getExercise().getExerciseName())
+                .recordId(record.getExerciseRecordId())
+                .recordDate(record.getStartAt().toLocalDate())
+                .today(LocalDate.now())
+                .build();
         exerciseRecordRepository.delete(record);
+        challengeClient.deleteRecordByExercise(req);
+
+
+
 //        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
+    }
+
+    public int countExerciseRecordByDate(Long userId, LocalDate recordDate) {
+        return exerciseRecordRepository.countByUserIdAndStartAtBetween(
+                userId,
+                recordDate.atStartOfDay(),           // 2025-10-02 00:00:00
+                recordDate.plusDays(1).atStartOfDay() // 2025-10-03 00:00:00 (exclusive)
+        );
     }
 }
