@@ -15,6 +15,7 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
             LocalDateTime startOfWeek,
             LocalDateTime endOfWeek
     );
+    int countByUserIdAndStartAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
     void deleteByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordId);
 }
