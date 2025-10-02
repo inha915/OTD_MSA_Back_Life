@@ -6,15 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/community")
+@RequestMapping("/api/OTD/community")
 @RequiredArgsConstructor
 public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("/posts/{postId}/like/toggle")
-    public LikeToggleRes toggle(@PathVariable Long postId,
-                                @RequestHeader("X-MEMBER-ID") Long userId) {
-        return likeService.toggle(postId, userId);
+    // 게이트웨이/보안 연동 전: X-MEMBER-ID 헤더로 사용자 식별
+    @PostMapping("/posts/{postId}/likes/toggle")
+    public LikeToggleRes toggleLike(
+            @PathVariable Long postId,
+            @RequestHeader("X-MEMBER-ID") Long requesterId
+    ) {
+        return likeService.toggle(postId, requesterId);
     }
 }
