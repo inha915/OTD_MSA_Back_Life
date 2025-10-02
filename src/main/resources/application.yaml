@@ -77,3 +77,7 @@ constants:
   comment:
     start-index: 0
     need-for-view-count: 3
+
+  feign-client:
+    challenge:
+      url: http://localhost:8082/api/OTD/challenge
