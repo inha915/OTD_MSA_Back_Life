@@ -1,4 +1,17 @@
 package com.otd.otd_msa_back_life.meal.repository;
 
-public interface MealRecordDetailRepository {
+import com.otd.otd_msa_back_life.meal.entity.MealFoodMakeDb;
+import com.otd.otd_msa_back_life.meal.entity.MealRecordDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+
+public interface MealRecordDetailRepository extends JpaRepository<MealRecordDetail, Long> {
+    @Modifying
+    @Transactional
+    int deleteByUserIdAndMealRecordIdsMealDayAndMealRecordIdsMealTime(
+            Long userId, LocalDate mealDay, String mealTime
+    );
 }

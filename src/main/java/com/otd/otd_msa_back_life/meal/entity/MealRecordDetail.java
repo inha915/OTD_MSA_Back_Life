@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -17,25 +18,25 @@ public class MealRecordDetail {
     MealRecordIds mealRecordIds;
 
     @Column(nullable = false)
-    private Long memberId;
+    private Long userId;
 
     @Positive
     private Integer totalKcal;
 
-    @Positive
-    private Double totalProtein;
+    @PositiveOrZero
+    private float totalProtein;
 
-    @Positive
-    private Double totalCarbohydrate;
+    @PositiveOrZero
+    private float totalCarbohydrate;
 
-    @Positive
-    private Double totalFat;
+    @PositiveOrZero
+    private float totalFat;
 
-    @Positive
-    private Double totalSugar;
+    @PositiveOrZero
+    private float totalSugar;
 
-    @Positive
-    private Double totalNatrium;
+    @PositiveOrZero
+    private float totalNatrium;
 
 
 }

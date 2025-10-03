@@ -9,13 +9,17 @@ import lombok.*;
 @Entity
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class MealFoodDb {
+public class MealFoodMakeDb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long foodDbId;
+    private Long userFoodId;
+
+    @Column(nullable = false)
+    private Long userId;
 
     @Column(nullable = false, length = 100)
     private String foodName;
@@ -29,26 +33,27 @@ public class MealFoodDb {
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double protein;
+    private float protein;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double carbohydrate;
+    private float carbohydrate;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double fat;
+    private float fat;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double sugar;
+    private float sugar;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double natrium;
+    private float natrium;
 
 
-    @Column(nullable = false, length = 10)
-    private int foodCapacity;
+    @Positive
+    private int amount;
+
 
 }

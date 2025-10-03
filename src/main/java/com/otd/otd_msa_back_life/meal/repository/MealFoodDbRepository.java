@@ -9,4 +9,7 @@ import java.util.List;
 public interface MealFoodDbRepository extends JpaRepository<MealFoodDb, Long> {
 
     List<MealFoodDb> findByFoodNameContaining(String foodName, Limit limit);
+
+
+    MealFoodDb findByFoodDbId(Long foodDbId);
 }
