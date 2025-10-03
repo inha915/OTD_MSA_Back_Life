@@ -25,9 +25,17 @@ public class MealRecord {
     private Long userId;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "food_id")
-    private MealFoodDb foodDb; // food db의  foodid와 연결
+    @JoinColumn(name = "food_id")
+    private MealFoodDb foodDb;
 
+    @ManyToOne
+    @JoinColumn(name = "user_food_id")
+    private MealFoodMakeDb userFood;
+
+    @PrePersist @PreUpdate
+    void validate() {
+        if ((foodDb == null) == (userFood == null)) throw new IllegalStateException("Exactly one must be set");
+    }
     @Embedded
     private MealRecordIds mealRecordIds;
 }
