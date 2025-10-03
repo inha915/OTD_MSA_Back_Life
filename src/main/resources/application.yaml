@@ -72,8 +72,12 @@ mybatis:
 # 커뮤니티 파일 저장 루트(로컬 저장 시) — LocalFileStorageService에서 사용
 constants:
   file:
-    directory: D:\inha\healthcare\img
+    directory: "D:\\inha\\healthcare\\img\\item"
 
   comment:
     start-index: 0
     need-for-view-count: 3
+
+  feign-client:
+    challenge:
+      url: http://localhost:8082/api/OTD/challenge

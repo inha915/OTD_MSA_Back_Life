@@ -11,6 +11,9 @@ import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordWeeklyGetReq;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
+import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
+import com.otd.otd_msa_back_life.feign.model.ChallengeProgressUpdateReq;
+import com.otd.otd_msa_back_life.feign.model.ChallengeRecordDeleteReq;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -27,6 +31,7 @@ public class ExerciseRecordService {
     private final ExerciseRecordRepository exerciseRecordRepository;
     private final ExerciseCatalogRepository exerciseCatalogRepository;
     private final ExerciseRecordMapper exerciseRecordMapper;
+    private final ChallengeFeignClient challengeFeignClient;
 
     //    [post] exerciseRecord
     @Transactional
@@ -62,8 +67,22 @@ public class ExerciseRecordService {
                 .reps(req.getReps())
                 .userId(userId)
                 .build();
+        Long recordId = exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
+        if (req.getReps() != null || req.getDistance() != null) {
+            int count = countExerciseRecordByDate(userId, req.getStartAt().toLocalDate());
+            ChallengeProgressUpdateReq feign = ChallengeProgressUpdateReq.builder()
+                    .userId(userId)
+                    .recordId(recordId)
+                    .name(exercise.getExerciseName())
+                    .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
+                    .recordDate(req.getStartAt().toLocalDate())
+                    .count(count)
+                    .today(LocalDate.now())
+                    .build();
+            challengeFeignClient.updateProgressByExercise(feign);
+        }
 
-        return exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
+        return recordId;
     }
 
     //    [GET] recordList -> page
@@ -118,8 +137,26 @@ public class ExerciseRecordService {
         if(!record.getUserId().equals(userId)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "운동 기록을 삭제할 수 없습니다.");
         }
-
+        ChallengeRecordDeleteReq req = ChallengeRecordDeleteReq.builder()
+                .userId(userId)
+                .name(record.getExercise().getExerciseName())
+                .recordId(record.getExerciseRecordId())
+                .recordDate(record.getStartAt().toLocalDate())
+                .today(LocalDate.now())
+                .build();
         exerciseRecordRepository.delete(record);
+        int count = countExerciseRecordByDate(userId, record.getStartAt().toLocalDate());
+        req.setCount(count);
+        challengeFeignClient.deleteRecordByExercise(req);
 //        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
+    }
+
+    // challenge에 delete때 보내는 삭제하는 날의 운동 기록들
+    private int countExerciseRecordByDate(Long userId, LocalDate recordDate) {
+        return exerciseRecordRepository.countByUserIdAndStartAtBetween(
+                userId,
+                recordDate.atStartOfDay(),
+                recordDate.plusDays(1).atStartOfDay()
+        );
     }
 }
