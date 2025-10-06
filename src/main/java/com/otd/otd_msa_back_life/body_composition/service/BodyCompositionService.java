@@ -85,6 +85,7 @@ public class BodyCompositionService {
 //        측정항목 조회 및 매핑
         List<BodyCompositionMetric> metrics = metricRepository.findAll();
 
+
         List<BodyCompositionPointDto> pointDto = bodyCompositions.stream()
                 .map(item -> {
                     Map<String, Double> values = new HashMap<>();
@@ -120,9 +121,12 @@ public class BodyCompositionService {
                 .userId(userId)
                 .build();
 
-        return bodyCompositionMapper.findByLimitTo(
-                dto
-        );
+        return bodyCompositionMapper.findByLimitTo(dto);
     }
 
+//    [GET] metrics
+    public List<BodyCompositionMetric> getMetrics() {
+        List<BodyCompositionMetric> metrics = metricRepository.findAll();
+    return metrics;
+    }
 }
