@@ -10,6 +10,7 @@ import java.util.List;
 public interface BodyCompositionRepository extends JpaRepository<BodyComposition, Long> {
 
     BodyComposition findTopByUserIdOrderByCreatedAtDesc(Long userId);
+    BodyComposition findTopByUserIdOrderByCreatedAtAsc(Long userId);
     List<BodyComposition> findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtDesc(
             Long userId
             , String deviceType

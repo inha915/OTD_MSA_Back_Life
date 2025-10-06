@@ -50,6 +50,9 @@ public class BodyCompositionService {
         // 디바이스 타입 전체 선택하면 "All" 로 지정
         String deviceType = req.getDeviceType() != null ? req.getDeviceType() : "ALL";
 
+        BodyComposition firstRecord = bodyCompositionRepository
+                .findTopByUserIdOrderByCreatedAtAsc(userId);
+
         // 받아 온 날짜 범위
         DateRangeDto range;
         if (req.getRange() != null) {
@@ -59,7 +62,7 @@ public class BodyCompositionService {
                     .build();
         } else {
             range = DateRangeDto.builder()
-                    .startDate(LocalDateTime.now().minusDays(7))
+                    .startDate(firstRecord.getCreatedAt())
                     .endDate(LocalDateTime.now())
                     .build();
         }

@@ -4,8 +4,11 @@ package com.otd.otd_msa_back_life.meal.controller;
 
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.meal.entity.MealFoodDb;
+import com.otd.otd_msa_back_life.meal.entity.MealRecord;
 import com.otd.otd_msa_back_life.meal.entity.MealSaveResultDto;
+import com.otd.otd_msa_back_life.meal.model.FoodSearchResultDto;
 import com.otd.otd_msa_back_life.meal.model.InputMealRecordReq;
+import com.otd.otd_msa_back_life.meal.model.MealMainListRes;
 import com.otd.otd_msa_back_life.meal.service.MealService;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -30,7 +34,7 @@ public class MealController {
         log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
         log.info("넘어오는 값: {}", foodName);
 
-        List<MealFoodDb> res = mealService.findFood(foodName);
+        List<FoodSearchResultDto> res = mealService.findFood(foodName, userPrincipal.getSignedUserId());
         return ResponseEntity.ok(res);
 
     }
@@ -46,13 +50,15 @@ public class MealController {
         return ResponseEntity.ok(result);
     }
 
-//    @GetMapping
-//    public ResponseEntity<?> inputMealRecord(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-//        log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
-//
-//
-//        return ResponseEntity.ok(0);
-//    }
+    @GetMapping
+    public ResponseEntity<?> inputMealRecord(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam LocalDate mealDay) {
+        log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
+        log.info("선택 날 : {}", mealDay);
+
+        List<MealRecord> result = mealService.mealMainListRes(userPrincipal.getSignedUserId(), mealDay);
+
+        return ResponseEntity.ok(result);
+    }
 }
 
 

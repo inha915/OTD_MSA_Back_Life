@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Embeddable
 @EqualsAndHashCode
+@ToString
 public class MealRecordIds implements Serializable {
 
     @Column(nullable = false, length = 10)
