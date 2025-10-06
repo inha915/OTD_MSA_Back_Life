@@ -63,6 +63,7 @@ public class ExerciseRecordService {
                 .exercise(exercise)
                 .startAt(req.getStartAt())
                 .endAt(req.getEndAt())
+                .duration(req.getDuration())
                 .distance(req.getDistance())
                 .reps(req.getReps())
                 .userId(userId)
@@ -121,6 +122,7 @@ public class ExerciseRecordService {
                 .effortLevel(exerciseRecord.getEffortLevel())
                 .startAt(exerciseRecord.getStartAt())
                 .endAt(exerciseRecord.getEndAt())
+                .duration(exerciseRecord.getDuration())
                 .exerciseId(exercise.getExerciseId())
                 .exerciseName(exercise.getExerciseName())
                 .build();
