@@ -13,4 +13,6 @@ public interface MealFoodMakeDbRepository extends JpaRepository<MealFoodMakeDb, 
     MealFoodMakeDb getReferenceByFoodName(String foodName);
 
     MealFoodMakeDb findByUserIdAndFoodName(Long memberNoLogin, String foodName);
+
+    List<MealFoodMakeDb> findByUserIdAndFoodNameContaining( Long userId, String foodName,Limit limit);
 }
