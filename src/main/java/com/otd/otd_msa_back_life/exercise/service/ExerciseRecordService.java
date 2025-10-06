@@ -34,6 +34,15 @@ public class ExerciseRecordService {
     private final ExerciseRecordMapper exerciseRecordMapper;
     private final ChallengeFeignClient challengeFeignClient;
 
+    public String challengeName(String str) {
+        return switch (str) {
+            case "조깅" -> "러닝";
+            case "하이킹" -> "등산";
+            case "요가", "필라테스" -> "자세교정";
+            case "실내 사이클", "자전거 타기" -> "라이딩";
+            default -> str;
+        };
+    }
     //    [post] exerciseRecord
     @Transactional
     public Long saveExerciseRecord(Long userId, ExerciseRecordPostReq req) {
@@ -69,20 +78,31 @@ public class ExerciseRecordService {
                 .userId(userId)
                 .build();
         Long recordId = exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
-        if (req.getReps() != null || req.getDistance() != null) {
-            int count = countExerciseRecordByDate(userId, req.getStartAt().toLocalDate());
-            ExerciseDataReq feign = ExerciseDataReq.builder()
-                    .userId(userId)
-                    .recordId(recordId)
-                    .name(exercise.getExerciseName())
-                    .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
-                    .recordDate(req.getStartAt().toLocalDate())
-                    .count(count)
-                    .today(LocalDate.now())
-                    .build();
-            ResponseEntity<Integer> response = challengeFeignClient.updateProgressByExercise(feign);
-            Integer feignResult = response.getBody();
+
+        LocalDate recordDate = req.getStartAt().toLocalDate();
+        ResponseEntity<List<String>> response = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
+        List<String> activeChallenges = response.getBody();
+        if (activeChallenges != null && !activeChallenges.isEmpty()) {
+            for (String ch : activeChallenges) {
+                String mappedChallengeName = challengeName(exercise.getExerciseName());
+                if (ch.equals(mappedChallengeName)) {
+                    int count = countExerciseRecordByDate(userId, req.getStartAt().toLocalDate());
+                    ExerciseDataReq feign = ExerciseDataReq.builder()
+                            .userId(userId)
+                            .recordId(recordId)
+                            .name(ch)
+                            .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
+                            .recordDate(req.getStartAt().toLocalDate())
+                            .count(count)
+                            .today(LocalDate.now())
+                            .build();
+                    ResponseEntity<Integer> response2 = challengeFeignClient.updateProgressByExercise(feign);
+                    Integer feignResult = response2.getBody();
+                }
+            }
+
         }
+
 
         return recordId;
     }
@@ -139,9 +159,12 @@ public class ExerciseRecordService {
         if(!record.getUserId().equals(userId)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "운동 기록을 삭제할 수 없습니다.");
         }
+
+        String mappedChallengeName = challengeName(record.getExercise().getExerciseName());
+
         ChallengeRecordDeleteReq req = ChallengeRecordDeleteReq.builder()
                 .userId(userId)
-                .name(record.getExercise().getExerciseName())
+                .name(mappedChallengeName)
                 .recordId(record.getExerciseRecordId())
                 .recordDate(record.getStartAt().toLocalDate())
                 .today(LocalDate.now())
