@@ -29,6 +29,10 @@ public class ExerciseRecordPostReq {
     @PastOrPresent(message = "운동종료시점은 과거나 현재여야 합니다")
     private LocalDateTime endAt;
 
+//    운동소요시간
+@Positive(message = "소모된 활동 에너지는 양수여야 합니다")
+    private Integer duration;
+
 //    운동 강도
     @NotNull(message = "운동강도 입력은 필수")
     @Min(value = 1, message = "운동강도는 최소 1 이상이어야 합니다")
