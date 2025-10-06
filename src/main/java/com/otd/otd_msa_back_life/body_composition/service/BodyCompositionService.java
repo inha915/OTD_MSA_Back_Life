@@ -70,14 +70,14 @@ public class BodyCompositionService {
         List<BodyComposition> bodyCompositions;
         if("ALL".equalsIgnoreCase(deviceType)) {
             bodyCompositions = bodyCompositionRepository
-                    .findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(
+                    .findByUserIdAndCreatedAtBetweenOrderByCreatedAtAsc(
                       userId
                     , range.getStartDate()
                     , range.getEndDate()
             );
         } else {
             bodyCompositions = bodyCompositionRepository
-                    .findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtDesc(
+                    .findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtAsc(
                               userId
                             , deviceType
                             , range.getStartDate()
