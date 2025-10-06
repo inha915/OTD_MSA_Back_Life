@@ -1,6 +1,8 @@
 package com.otd.otd_msa_back_life.meal.service;
 
-import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
+import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
+import com.otd.otd_msa_back_life.feign.model.ExerciseDataReq;
+import com.otd.otd_msa_back_life.feign.model.MealDataReq;
 import com.otd.otd_msa_back_life.meal.entity.*;
 import com.otd.otd_msa_back_life.meal.model.*;
 import com.otd.otd_msa_back_life.meal.repository.MealFoodDbRepository;
@@ -10,6 +12,7 @@ import com.otd.otd_msa_back_life.meal.repository.MealRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Limit;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -27,6 +30,7 @@ public class MealService {
     private final MealFoodMakeDbRepository mealFoodMakeDbRepository;
     private final MealRecordRepository mealRecordRepository;
     private final MealRecordDetailRepository mealRecordDetailRepository;
+    private final ChallengeFeignClient challengeFeignClient;
 
     public List<FoodSearchResultDto> findFood(String foodName , Long userId)
     {
@@ -175,6 +179,7 @@ public class MealService {
         mealRecordDetail = mealRecordDetailRepository.save(mealRecordDetail);
         
         return new MealSaveResultDto( result!=0 || result2!=0  ? -1 : recordIds.size()  , recordIds, newUserFoodIds);
+
     }
 
     public List<MealRecord> mealMainListRes(Long userId , LocalDate mealDay) {
