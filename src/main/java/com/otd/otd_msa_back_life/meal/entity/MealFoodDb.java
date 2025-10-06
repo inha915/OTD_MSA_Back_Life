@@ -29,23 +29,23 @@ public class MealFoodDb {
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double protein;
+    private Float protein;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double carbohydrate;
+    private Float carbohydrate;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double fat;
+    private Float fat;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double sugar;
+    private Float sugar;
 
     @PositiveOrZero
     @Column(nullable = false)
-    private Double natrium;
+    private Float natrium;
 
 
     @Column(nullable = false, length = 10)

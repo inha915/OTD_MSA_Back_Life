@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.body_composition.controller;
 
+import com.otd.otd_msa_back_life.body_composition.entity.BodyCompositionMetric;
 import com.otd.otd_msa_back_life.body_composition.model.*;
 import com.otd.otd_msa_back_life.body_composition.service.BodyCompositionService;
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
@@ -45,4 +46,9 @@ public class BodyCompositionController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getMetrics() {
+    List<BodyCompositionMetric> result = bodyCompositionService.getMetrics();
+    return ResponseEntity.ok(result);
+    }
 }

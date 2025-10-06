@@ -20,7 +20,7 @@ public class MealRecordDetail {
     @Column(nullable = false)
     private Long userId;
 
-    @Positive
+    @PositiveOrZero
     private Integer totalKcal;
 
     @PositiveOrZero

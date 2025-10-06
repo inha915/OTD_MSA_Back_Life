@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class MealRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +33,13 @@ public class MealRecord {
     @JoinColumn(name = "user_food_id")
     private MealFoodMakeDb userFood;
 
-    @PrePersist @PreUpdate
+    @PrePersist
+    @PreUpdate
     void validate() {
         if ((foodDb == null) == (userFood == null)) throw new IllegalStateException("Exactly one must be set");
     }
     @Embedded
     private MealRecordIds mealRecordIds;
+
+
 }

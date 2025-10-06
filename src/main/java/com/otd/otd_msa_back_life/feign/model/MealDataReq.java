@@ -6,17 +6,13 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@ToString
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ChallengeRecordDeleteReq {
+@NoArgsConstructor
+@Builder
+public class MealDataReq {
     private Long userId;
+    private LocalDate mealDay;
+    private Double totalProtein;
     private String name;
-    private Long recordId;
-    private LocalDate recordDate;
     private LocalDate today;
-    private int count;
-    private int totalKcal;
 }
-

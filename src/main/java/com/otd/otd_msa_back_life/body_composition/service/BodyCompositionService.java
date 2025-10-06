@@ -50,6 +50,9 @@ public class BodyCompositionService {
         // 디바이스 타입 전체 선택하면 "All" 로 지정
         String deviceType = req.getDeviceType() != null ? req.getDeviceType() : "ALL";
 
+        BodyComposition firstRecord = bodyCompositionRepository
+                .findTopByUserIdOrderByCreatedAtAsc(userId);
+
         // 받아 온 날짜 범위
         DateRangeDto range;
         if (req.getRange() != null) {
@@ -59,7 +62,7 @@ public class BodyCompositionService {
                     .build();
         } else {
             range = DateRangeDto.builder()
-                    .startDate(LocalDateTime.now().minusDays(7))
+                    .startDate(firstRecord.getCreatedAt())
                     .endDate(LocalDateTime.now())
                     .build();
         }
@@ -67,14 +70,14 @@ public class BodyCompositionService {
         List<BodyComposition> bodyCompositions;
         if("ALL".equalsIgnoreCase(deviceType)) {
             bodyCompositions = bodyCompositionRepository
-                    .findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(
+                    .findByUserIdAndCreatedAtBetweenOrderByCreatedAtAsc(
                       userId
                     , range.getStartDate()
                     , range.getEndDate()
             );
         } else {
             bodyCompositions = bodyCompositionRepository
-                    .findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtDesc(
+                    .findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtAsc(
                               userId
                             , deviceType
                             , range.getStartDate()
@@ -84,6 +87,7 @@ public class BodyCompositionService {
 
 //        측정항목 조회 및 매핑
         List<BodyCompositionMetric> metrics = metricRepository.findAll();
+
 
         List<BodyCompositionPointDto> pointDto = bodyCompositions.stream()
                 .map(item -> {
@@ -120,9 +124,12 @@ public class BodyCompositionService {
                 .userId(userId)
                 .build();
 
-        return bodyCompositionMapper.findByLimitTo(
-                dto
-        );
+        return bodyCompositionMapper.findByLimitTo(dto);
     }
 
+//    [GET] metrics
+    public List<BodyCompositionMetric> getMetrics() {
+        List<BodyCompositionMetric> metrics = metricRepository.findAll();
+    return metrics;
+    }
 }

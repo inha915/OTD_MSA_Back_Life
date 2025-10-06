@@ -1,19 +1,29 @@
 package com.otd.otd_msa_back_life.feign;
 
-import com.otd.otd_msa_back_life.feign.model.ChallengeProgressUpdateReq;
+import com.otd.otd_msa_back_life.feign.model.ExerciseDataReq;
 import com.otd.otd_msa_back_life.feign.model.ChallengeRecordDeleteReq;
+import com.otd.otd_msa_back_life.feign.model.MealDataReq;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @FeignClient(name = "challenge",
         url = "${constants.feign-client.challenge.url}")
 public interface ChallengeFeignClient {
 
-    @PostMapping("/progress/update")
-    void updateProgressByExercise(@RequestBody ChallengeProgressUpdateReq req);
+    @PostMapping("/progress/exercise")
+    ResponseEntity<Integer> updateProgressByExercise(@RequestBody ExerciseDataReq req);
 
     @DeleteMapping("/record/delete")
-    void deleteRecordByExercise(@RequestBody ChallengeRecordDeleteReq req);
+    ResponseEntity<Integer> deleteRecordByExercise(@RequestBody ChallengeRecordDeleteReq req);
+
+    @PostMapping("/progress/meal")
+    ResponseEntity<Integer> updateProgressByMeal(@RequestBody MealDataReq req);
+
+    @GetMapping("/progress/challenges/{userId}")
+    ResponseEntity<List<String>> getActiveChallengeNames(@PathVariable("userId") Long userId
+                                                        ,@RequestParam("recordDate") LocalDate recordDate);
 }

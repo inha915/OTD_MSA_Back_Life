@@ -51,9 +51,4 @@ public class MealFoodMakeDb {
     @Column(nullable = false)
     private float natrium;
 
-
-    @Positive
-    private int amount;
-
-
 }
