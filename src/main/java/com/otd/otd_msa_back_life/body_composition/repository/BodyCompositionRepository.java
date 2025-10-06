@@ -3,7 +3,6 @@ package com.otd.otd_msa_back_life.body_composition.repository;
 import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,13 +10,13 @@ public interface BodyCompositionRepository extends JpaRepository<BodyComposition
 
     BodyComposition findTopByUserIdOrderByCreatedAtDesc(Long userId);
     BodyComposition findTopByUserIdOrderByCreatedAtAsc(Long userId);
-    List<BodyComposition> findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtDesc(
+    List<BodyComposition> findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtAsc(
             Long userId
             , String deviceType
             , LocalDateTime startDate
             , LocalDateTime endDate
     );
-    List<BodyComposition> findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(
+    List<BodyComposition> findByUserIdAndCreatedAtBetweenOrderByCreatedAtAsc(
             Long userId
             , LocalDateTime startDate
             , LocalDateTime endDate
