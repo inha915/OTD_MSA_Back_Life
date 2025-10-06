@@ -12,6 +12,7 @@ import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordWeeklyGetReq;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
 import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
+import com.otd.otd_msa_back_life.feign.model.ExerciseCountAndSum;
 import com.otd.otd_msa_back_life.feign.model.ExerciseDataReq;
 import com.otd.otd_msa_back_life.feign.model.ChallengeRecordDeleteReq;
 import jakarta.transaction.Transactional;
@@ -83,24 +84,29 @@ public class ExerciseRecordService {
         ResponseEntity<List<String>> response = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
         List<String> activeChallenges = response.getBody();
         if (activeChallenges != null && !activeChallenges.isEmpty()) {
+            ExerciseCountAndSum summary = exerciseRecordRepository.getDailyExerciseSummary(
+                    userId,
+                    req.getStartAt().toLocalDate().atStartOfDay(),
+                    req.getStartAt().toLocalDate().plusDays(1).atStartOfDay()
+            );
             for (String ch : activeChallenges) {
                 String mappedChallengeName = challengeName(exercise.getExerciseName());
                 if (ch.equals(mappedChallengeName)) {
-                    int count = countExerciseRecordByDate(userId, req.getStartAt().toLocalDate());
                     ExerciseDataReq feign = ExerciseDataReq.builder()
                             .userId(userId)
                             .recordId(recordId)
                             .name(ch)
                             .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
                             .recordDate(req.getStartAt().toLocalDate())
-                            .count(count)
+                            .count(summary.getCount())
+                            .totalKcal(summary.getTotalKcal())
                             .today(LocalDate.now())
                             .build();
+                    log.info("feign{}", feign);
                     ResponseEntity<Integer> response2 = challengeFeignClient.updateProgressByExercise(feign);
                     Integer feignResult = response2.getBody();
                 }
             }
-
         }
 
 
@@ -170,19 +176,16 @@ public class ExerciseRecordService {
                 .today(LocalDate.now())
                 .build();
         exerciseRecordRepository.delete(record);
-        int count = countExerciseRecordByDate(userId, record.getStartAt().toLocalDate());
-        req.setCount(count);
+        ExerciseCountAndSum summary = exerciseRecordRepository.getDailyExerciseSummary(
+                userId,
+                record.getStartAt().toLocalDate().atStartOfDay(),
+                record.getStartAt().toLocalDate().plusDays(1).atStartOfDay()
+        );
+        req.setCount(summary.getCount());
+        req.setTotalKcal(summary.getTotalKcal());
         ResponseEntity<Integer> response = challengeFeignClient.deleteRecordByExercise(req);
         Integer feignResult = response.getBody();
 //        exerciseRecordRepository.deleteByUserIdAndExerciseRecordId(userId, exerciseRecordId);
     }
 
-    // challenge에 delete때 보내는 삭제하는 날의 운동 기록들
-    private int countExerciseRecordByDate(Long userId, LocalDate recordDate) {
-        return exerciseRecordRepository.countByUserIdAndStartAtBetween(
-                userId,
-                recordDate.atStartOfDay(),
-                recordDate.plusDays(1).atStartOfDay()
-        );
-    }
 }
