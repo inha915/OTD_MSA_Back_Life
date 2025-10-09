@@ -1,8 +1,11 @@
 package com.otd.otd_msa_back_life.meal.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
+import com.otd.otd_msa_back_life.body_composition.repository.BodyCompositionRepository;
+import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
+import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
 import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
-import com.otd.otd_msa_back_life.feign.model.ExerciseDataReq;
-import com.otd.otd_msa_back_life.feign.model.MealDataReq;
 import com.otd.otd_msa_back_life.meal.entity.*;
 import com.otd.otd_msa_back_life.meal.model.*;
 import com.otd.otd_msa_back_life.meal.repository.MealFoodDbRepository;
@@ -12,11 +15,11 @@ import com.otd.otd_msa_back_life.meal.repository.MealRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Limit;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,6 +34,10 @@ public class MealService {
     private final MealRecordRepository mealRecordRepository;
     private final MealRecordDetailRepository mealRecordDetailRepository;
     private final ChallengeFeignClient challengeFeignClient;
+
+    // 운동 기록 가져올려는거
+    private final BodyCompositionRepository bodyCompositionRepository;
+    private final ExerciseRecordRepository exerciseRecordRepository;
 
     public List<FoodSearchResultDto> findFood(String foodName , Long userId)
     {
@@ -80,6 +87,7 @@ public class MealService {
     }
 
 
+
     public MealSaveResultDto inputMealData (Long userId, InputMealRecordReq mealRecordReq)
     {
         List<Long> recordIds = new ArrayList<>();
@@ -91,7 +99,8 @@ public class MealService {
         float totalSugar =0;
         float totalNatrium =0;
 
-
+        MealRecordIds mealRecordIds =
+                new MealRecordIds(mealRecordReq.getMealTime(), mealRecordReq.getMealDay());
 
 
        int result = mealRecordDetailRepository.deleteByUserIdAndMealRecordIdsMealDayAndMealRecordIdsMealTime(userId,mealRecordReq.getMealDay(),mealRecordReq.getMealTime());
@@ -102,10 +111,30 @@ public class MealService {
         {
             return new MealSaveResultDto(-1, null, null);
         }
+// 금식 단식 했어요 부분
+        if (!mealRecordReq.getFoods().isEmpty()) {
+            InputMealRecordDetailDto food = mealRecordReq.getFoods().get(0);
+            if (food.getFoodDbId() != null && food.getFoodDbId() == -10000L) {
+                MealRecordIds ids = new MealRecordIds(mealRecordReq.getMealTime(), mealRecordReq.getMealDay());
+                MealFoodDb dummy =  mealFoodDbRepository.findByFoodDbId(food.getFoodDbId()); // fetch 안 함
+
+                MealRecord saved = mealRecordRepository.save(
+                        MealRecord.builder()
+                                .userId(userId)
+                                .mealRecordIds(ids)
+                                .foodAmount(1)
+                                .foodDb(dummy)   //  더미 food 참조
+                                .userFood(null)
+                                .build()
+                );
+                return new MealSaveResultDto(1, List.of(saved.getMealId()),newUserFoodIds );
+            }
+            else if (food.getFoodDbId() != null && food.getFoodDbId() == 0) {
+                return new MealSaveResultDto(-1, null, null);
+            }
+        }
 
 
-        MealRecordIds mealRecordIds =
-                new MealRecordIds(mealRecordReq.getMealTime(), mealRecordReq.getMealDay());
         for (InputMealRecordDetailDto listFood : mealRecordReq.getFoods()) {
             totalKcal         += listFood.getKcal();
             totalProtein      += listFood.getProtein();
@@ -186,39 +215,52 @@ public class MealService {
 
             List<MealRecord> mealRecord = mealRecordRepository.findForMain(userId,mealDay);
         log.info("<UNK> <UNK> <UNK> {} ", mealRecord);
-//        List<FoodSearchResultDto> mealFoodDbs = mealFoodDbRepository
-//                .findByFoodDbId(mealRecord.getFoodId()).stream()
-//                .map(m -> FoodSearchResultDto.builder()
-//                        .foodDbId(m.getFoodDbId())
-//                        .foodName(m.getFoodName())
-//                        .flag(m.getFlag())
-//                        .kcal(m.getKcal())
-//                        .protein(m.getProtein())
-//                        .carbohydrate(m.getCarbohydrate())
-//                        .fat(m.getFat())
-//                        .sugar(m.getSugar())
-//                        .natrium(m.getNatrium())
-//                        .foodCapacity(m.getFoodCapacity())
-//                        .build()
-//                )
-//                .toList();
 
         return mealRecord;
     }
 
 
-//    public List<MealFoodDb> findFood(String foodName) {
-//        int limit = 20;
-//        String[] keywords = foodName.split("\\s+");
-//
-//        List<MealFoodDb> result = new ArrayList<>();
-//        for (String keyword : keywords) {
-//            result.addAll(mealFoodDbRepository.findByFoodNameContaining(keyword, Limit.of(limit)));
-//        }
-//        return result.stream()
-//                .distinct()
-//                .limit(limit)
-//                .toList();
-//    }
+    public GetMyDayDateDto getToDay (Long userId, LocalDate mealDay) {
+        BodyComposition bodyComposition = bodyCompositionRepository.findByUserIdAndCreatedDate(userId,mealDay);
+        List<ExerciseRecord> exerciseRecord = exerciseRecordRepository.findByUserIdAndCreatedDate(userId,mealDay);
+
+        int totalKcal =0;
+        for (ExerciseRecord record : exerciseRecord) {
+            totalKcal += record.getActivityKcal();
+        }
+
+        double basalMetabolicRate = (bodyComposition == null ? 0 : bodyComposition.getBasalMetabolicRate())  ;
+
+        GetMyDayDateDto result = GetMyDayDateDto.builder()
+                .selectDay(mealDay)
+                .activityKcal(totalKcal)
+                .basalMetabolicRate(basalMetabolicRate)
+                .build();
+        log.info("바디 :{} ", bodyComposition);
+        log.info("운동 :{} ", exerciseRecord);
+
+        return  result;
+    }
+
+    /** 일간 합계 */
+    public GetSummaryTotalDto getDailyTotal(Long userId, LocalDate day) {
+        // 재사용을 위한 다음날을 보냄
+        LocalDate start = day;
+        LocalDate end = day.plusDays(1);
+        return mealRecordDetailRepository.sumBetween(userId, start, end);
+    }
+
+    /** 주간 합계 (요청에 start/end가 들어오는 케이스) */
+    public GetSummaryTotalDto getWeeklyTotal(Long userId, LocalDate startDay, LocalDate endDay) {
+        return mealRecordDetailRepository.sumBetween(userId, startDay, endDay);
+    }
+
+    /** 월간 합계 */
+    public GetSummaryTotalDto getMonthlyTotal(Long userId, YearMonth ym) {
+        LocalDate startDay = ym.atDay(1);
+        LocalDate endDay = ym.plusMonths(1).atDay(1); // exclusive
+        return mealRecordDetailRepository.sumBetween(userId, startDay, endDay);
+    }
+
 
 }

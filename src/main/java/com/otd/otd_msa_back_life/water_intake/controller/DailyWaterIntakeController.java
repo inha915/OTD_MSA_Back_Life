@@ -24,6 +24,8 @@ public class DailyWaterIntakeController {
 //    음수량 최초 한 번 기록
     @PostMapping
     public ResponseEntity<?> saveDailyWaterIntake(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody DailyWaterIntakePostReq req){
+
+
         Long result = dailyWaterIntakeService.saveDailyWaterIntake(userPrincipal.getSignedUserId(), req);
         return ResponseEntity.ok(result);
     }
@@ -36,12 +38,12 @@ public class DailyWaterIntakeController {
     }
 
 //    음수량 수정
-    @PutMapping("{dailyWaterIntakeId}")
-    public ResponseEntity<?> updateDailyWaterIntake(@PathVariable Long dailyWaterIntakeId
+    @PutMapping
+    public ResponseEntity<?> updateDailyWaterIntake(@AuthenticationPrincipal UserPrincipal userPrincipal
                                                     , @RequestBody DailyWaterIntakePutReq req){
-        log.info("dailyWaterIntakeId:{}", dailyWaterIntakeId);
+        log.info("dailyWaterIntakeId:{}",req.getDailyWaterIntakeId() );
         log.info("req:{}", req);
-        dailyWaterIntakeService.updateDailyWaterIntake(dailyWaterIntakeId, req);
+        dailyWaterIntakeService.updateDailyWaterIntake( req);
         return ResponseEntity.ok("수정성공");
     }
 }
