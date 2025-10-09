@@ -1,7 +1,10 @@
 package com.otd.otd_msa_back_life.exercise.service;
 
+import com.otd.otd_msa_back_life.admin.mapper.AdminMapper;
+import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
 import com.otd.otd_msa_back_life.common.model.PagingDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.exercise.mapper.ExerciseRecordMapper;
@@ -34,6 +37,7 @@ public class ExerciseRecordService {
     private final ExerciseCatalogRepository exerciseCatalogRepository;
     private final ExerciseRecordMapper exerciseRecordMapper;
     private final ChallengeFeignClient challengeFeignClient;
+    private final AdminMapper adminMapper;
 
     public String challengeName(String str) {
         return switch (str) {

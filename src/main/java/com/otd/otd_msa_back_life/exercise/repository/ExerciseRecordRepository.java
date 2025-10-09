@@ -42,4 +42,8 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
             @Param("userId") Long userId,
             @Param("mealDay") LocalDate mealDay
     );
+
+    void deleteAllByUserId(Long userId);
+
+    List<ExerciseRecord> findAllByUserId(Long userId);
 }
