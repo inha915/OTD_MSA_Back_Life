@@ -28,10 +28,10 @@ public interface BodyCompositionRepository extends JpaRepository<BodyComposition
     @Query("""
             select b from BodyComposition b
                 where b.userId = :userId
-                    and FUNCTION('DATE', b.createdAt) = :day
+                    and FUNCTION('DATE', b.createdAt) = :mealDay
             """)
     BodyComposition findByUserIdAndCreatedDate(
             @Param("userId") Long userId,
-            @Param("day") LocalDate mealDay
+            @Param("mealDay") LocalDate mealDay
     );
 }
