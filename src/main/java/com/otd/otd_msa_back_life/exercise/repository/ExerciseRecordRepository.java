@@ -36,10 +36,10 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
     @Query("""
             select e from ExerciseRecord e
                 where e.userId = :userId
-                    and FUNCTION('DATE', e.createdAt) = :day
+                    and FUNCTION('DATE', e.createdAt) = :mealDay
             """)
     List<ExerciseRecord> findByUserIdAndCreatedDate(
             @Param("userId") Long userId,
-            @Param("day") LocalDate mealDay
+            @Param("mealDay") LocalDate mealDay
     );
 }
