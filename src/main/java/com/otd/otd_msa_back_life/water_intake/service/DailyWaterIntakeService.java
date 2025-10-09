@@ -37,15 +37,18 @@ public class DailyWaterIntakeService {
 //    하루 총 음수량 조회
     public DailyWaterIntakeGetRes getDailyWaterIntake(Long userId, LocalDate intakeDate) {
         DailyWaterIntake dailyWaterIntake = dailyWaterIntakeRepository.findByUserIdAndIntakeDate(userId, intakeDate);
+        if (dailyWaterIntake == null) {
+            return new DailyWaterIntakeGetRes(0L ,intakeDate, 0.0);
+        }
         return new DailyWaterIntakeGetRes(dailyWaterIntake);
 
     }
 
     //    음수량 수정
     @Transactional
-    public void updateDailyWaterIntake(Long dailyWaterIntakeId, DailyWaterIntakePutReq req) {
+    public void updateDailyWaterIntake( DailyWaterIntakePutReq req) {
 
-        DailyWaterIntake dailyWaterIntake = dailyWaterIntakeRepository.findById(dailyWaterIntakeId)
+        DailyWaterIntake dailyWaterIntake = dailyWaterIntakeRepository.findById(req.getDailyWaterIntakeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 id 입니다."));
 
         dailyWaterIntake.updateAmountLiter(req.getAmountLiter());
