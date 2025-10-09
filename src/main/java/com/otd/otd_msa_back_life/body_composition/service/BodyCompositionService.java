@@ -13,9 +13,7 @@ import lombok.ToString;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -29,88 +27,119 @@ public class BodyCompositionService {
 
 //    최신 기록 조회
     public LastestBodyCompositionGetRes getLastestBodyComposition(Long userId) {
-        BodyComposition bodyComposition = bodyCompositionRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
-        LastestBodyCompositionGetRes res = LastestBodyCompositionGetRes.builder()
-                .bmi(bodyComposition.getBmi())
-                .createdAt(bodyComposition.getCreatedAt())
-                .percentBodyFat(bodyComposition.getPercentBodyFat())
-                .height(bodyComposition.getHeight())
-                .weight(bodyComposition.getWeight())
-                .skeletalMuscleMass(bodyComposition.getSkeletalMuscleMass())
-                .measuredId(bodyComposition.getMeasuredId())
-                .userId(userId)
-                .build();
+        Optional<BodyComposition> optionalBodyComposition = bodyCompositionRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
 
-        return res;
-    }
+        if (optionalBodyComposition.isPresent()) {
 
-    // 체성분 변화 그래프
-    public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCompositionSeriesGetReq req) {
+            BodyComposition bodyComposition = optionalBodyComposition.get();
 
-        // 디바이스 타입 전체 선택하면 "All" 로 지정
-        String deviceType = req.getDeviceType() != null ? req.getDeviceType() : "ALL";
+            LastestBodyCompositionGetRes res = LastestBodyCompositionGetRes.builder()
 
-        BodyComposition firstRecord = bodyCompositionRepository
-                .findTopByUserIdOrderByCreatedAtAsc(userId);
-
-        // 받아 온 날짜 범위
-        DateRangeDto range;
-        if (req.getRange() != null) {
-            range = DateRangeDto.builder()
-                    .startDate(req.getRange().getStartDate())
-                    .endDate(req.getRange().getEndDate())
+                    .bmi(bodyComposition.getBmi())
+                    .createdAt(bodyComposition.getCreatedAt())
+                    .percentBodyFat(bodyComposition.getPercentBodyFat())
+                    .height(bodyComposition.getHeight())
+                    .weight(bodyComposition.getWeight())
+                    .skeletalMuscleMass(bodyComposition.getSkeletalMuscleMass())
+                    .measuredId(bodyComposition.getMeasuredId())
+                    .userId(userId)
                     .build();
+            return res;
         } else {
-            range = DateRangeDto.builder()
-                    .startDate(firstRecord.getCreatedAt())
-                    .endDate(LocalDateTime.now())
+
+            return LastestBodyCompositionGetRes.builder()
+                    .userId(userId)
+                    .bmi(0.0)
+                    .percentBodyFat(0.0)
+                    .height(0.0)
+                    .weight(0.0)
+                    .skeletalMuscleMass(0.0)
                     .build();
         }
-
-        List<BodyComposition> bodyCompositions;
-        if("ALL".equalsIgnoreCase(deviceType)) {
-            bodyCompositions = bodyCompositionRepository
-                    .findByUserIdAndCreatedAtBetweenOrderByCreatedAtAsc(
-                      userId
-                    , range.getStartDate()
-                    , range.getEndDate()
-            );
-        } else {
-            bodyCompositions = bodyCompositionRepository
-                    .findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtAsc(
-                              userId
-                            , deviceType
-                            , range.getStartDate()
-                            , range.getEndDate()
-                    );
-        }
-
-//        측정항목 조회 및 매핑
-        List<BodyCompositionMetric> metrics = metricRepository.findAll();
-
-
-        List<BodyCompositionPointDto> pointDto = bodyCompositions.stream()
-                .map(item -> {
-                    Map<String, Double> values = new HashMap<>();
-                    for (BodyCompositionMetric metric : metrics) {
-                       Double value = item.getValueByMetricCode(metric.getMetricCode());
-                       values.put(metric.getMetricCode(), value);
-                    }
-                    return BodyCompositionPointDto.builder()
-                            .date(item.getCreatedAt().toLocalDate())
-                            .values(values)
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-
-        BodyCompositionSeriesGetRes result = BodyCompositionSeriesGetRes.builder()
-                .deviceType(deviceType)
-                .points(pointDto)
-                .range(range)
-                .build();
-        return result;
     }
+
+//    차트용 데이터 조회
+@Transactional
+public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCompositionSeriesGetReq req) {
+
+    // 디바이스 타입 전체 선택하면 "All" 로 지정
+    String deviceType = req.getDeviceType() != null ? req.getDeviceType() : "ALL";
+
+
+    Optional<BodyComposition> optionalFirstRecord = bodyCompositionRepository
+            .findTopByUserIdOrderByCreatedAtAsc(userId);
+    // 받아 온 날짜 범위
+    DateRangeDto range;
+    List<BodyComposition> bodyCompositions;
+
+
+    if (req.getRange() != null) {
+        range = DateRangeDto.builder()
+                .startDate(req.getRange().getStartDate())
+                .endDate(req.getRange().getEndDate())
+                .build();
+    } else if (optionalFirstRecord.isPresent()) {
+
+        BodyComposition firstRecord = optionalFirstRecord.get(); // Optional에서 안전하게 객체 추출
+        range = DateRangeDto.builder()
+                .startDate(firstRecord.getCreatedAt())
+                .endDate(LocalDateTime.now())
+                .build();
+    } else {
+
+        range = DateRangeDto.builder()
+                .startDate(LocalDateTime.now().minusYears(1)) // 기본 시작 날짜 설정
+                .endDate(LocalDateTime.now())
+                .build();
+    }
+
+    if (optionalFirstRecord.isPresent() && "ALL".equalsIgnoreCase(deviceType)) {
+        // 기록이 있고, ALL 타입일 때
+        bodyCompositions = bodyCompositionRepository
+                .findByUserIdAndCreatedAtBetweenOrderByCreatedAtAsc(
+                        userId
+                        , range.getStartDate()
+                        , range.getEndDate()
+                );
+    } else if (optionalFirstRecord.isPresent()) {
+        // 기록이 있고, 특정 타입일 때
+        bodyCompositions = bodyCompositionRepository
+                .findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtAsc(
+                        userId
+                        , deviceType
+                        , range.getStartDate()
+                        , range.getEndDate()
+                );
+    } else {
+        // 기록이 없는 경우: DB 조회를 생략하고 빈 리스트를 반환
+        bodyCompositions = new ArrayList<>();
+    }
+    // 측정항목 조회 및 매핑
+    List<BodyCompositionMetric> metrics = metricRepository.findAll();
+
+    List<BodyCompositionPointDto> pointDto = bodyCompositions.stream()
+            .map(item -> {
+                Map<String, Double> values = new HashMap<>();
+                for (BodyCompositionMetric metric : metrics) {
+                    Double value = item.getValueByMetricCode(metric.getMetricCode());
+                    values.put(metric.getMetricCode(), value);
+                }
+                return BodyCompositionPointDto.builder()
+                        .date(item.getCreatedAt().toLocalDate())
+                        .values(values)
+                        .build();
+            })
+            .collect(Collectors.toList());
+
+
+    BodyCompositionSeriesGetRes result = BodyCompositionSeriesGetRes.builder()
+            .deviceType(deviceType)
+            .points(pointDto)
+            .range(range)
+            .build();
+
+    return result;
+}
 
     //    체성분 기록 리스트 보기
     @Transactional
