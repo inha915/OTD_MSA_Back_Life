@@ -16,34 +16,23 @@ public class PostFileController {
 
     private final PostFileService postFileService;
 
-    /**
-     * 게시글별 파일 목록
-     */
     @GetMapping("/posts/{postId}/files")
     public List<PostFileRes> list(@PathVariable Long postId) {
         return postFileService.listByPost(postId);
     }
 
-    /**
-     * 파일 업로드 (여러 개)
-     * form-data:
-     *   - files: (file[]), 여러개
-     *   - X-MEMBER-ID: 업로더 ID (게이트웨이에서 전달)
-     */
+    @GetMapping("/files")
+    public List<PostFileRes> listByQuery(@RequestParam("postId") Long postId) {
+        return postFileService.listByPost(postId);
+    }
+
     @PostMapping(value = "/posts/{postId}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<PostFileRes> upload(@PathVariable Long postId,
                                     @RequestHeader("X-MEMBER-ID") Long memberNoLogin,
-                                    @RequestPart("files") MultipartFile[] files) {
-        try {
-            return postFileService.upload(postId, memberNoLogin, files);
-        } catch (Exception e) {
-            throw new RuntimeException("업로드 실패", e);
-        }
+                                    @RequestPart("files") MultipartFile[] files) throws Exception {
+        return postFileService.upload(postId, memberNoLogin, files);
     }
 
-    /**
-     * 파일 삭제
-     */
     @DeleteMapping("/files/{fileId}")
     public void delete(@PathVariable Long fileId,
                        @RequestHeader("X-MEMBER-ID") Long requesterId) {

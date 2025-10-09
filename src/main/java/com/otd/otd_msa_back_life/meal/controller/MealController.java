@@ -1,24 +1,23 @@
 package com.otd.otd_msa_back_life.meal.controller;
 
 
-import com.otd.otd_msa_back_life.configuration.model.JwtUser;
+
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.meal.entity.MealFoodDb;
-import com.otd.otd_msa_back_life.meal.model.FindFoodNameReq;
-import com.otd.otd_msa_back_life.meal.model.FindFoodNameRes;
+import com.otd.otd_msa_back_life.meal.entity.MealRecord;
+import com.otd.otd_msa_back_life.meal.entity.MealSaveResultDto;
+import com.otd.otd_msa_back_life.meal.model.*;
 import com.otd.otd_msa_back_life.meal.service.MealService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import lombok.Builder;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 
@@ -29,61 +28,86 @@ import java.util.List;
 public class MealController {
     public final MealService mealService;
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<?> getMeal(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("foodName") String foodName) {
 
         log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
         log.info("넘어오는 값: {}", foodName);
-        log.info("넘어오는 값: {}", foodName);
-        List<MealFoodDb> res = mealService.findFood(foodName);
+
+        List<FoodSearchResultDto> res = mealService.findFood(foodName, userPrincipal.getSignedUserId());
         return ResponseEntity.ok(res);
 
     }
 
+    @PostMapping("/record")
+    public ResponseEntity<?> inputMealRecord(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody InputMealRecordReq mealRecordReq) {
+        log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
+//        mealRecordReq.setMemberNoLogin(userPrincipal.getSignedUserId());
+        log.info("넘어오는 값: {}", mealRecordReq);
 
+        MealSaveResultDto result = mealService.inputMealData(  userPrincipal.getSignedUserId(),mealRecordReq);
+        log.info("결과값 : {}", result);
+        return ResponseEntity.ok(result);
+    }
 
+    @GetMapping
+    public ResponseEntity<?> inputMealRecord(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam LocalDate mealDay) {
+        log.info("유저 아이디: {}", userPrincipal.getSignedUserId());
+        log.info("선택 날 : {}", mealDay);
 
+        List<MealRecord> result = mealService.mealMainListRes(userPrincipal.getSignedUserId(), mealDay);
 
+        return ResponseEntity.ok(result);
+    }
 
+    @GetMapping("/myday")
+    public ResponseEntity<?> myDay(@AuthenticationPrincipal UserPrincipal userPrincipal,  @RequestParam LocalDate mealDay) {
+        log.info("아디 날짜: {} {}", userPrincipal.getSignedUserId(), mealDay);
+        GetMyDayDateDto result = mealService.getToDay(userPrincipal.getSignedUserId(), mealDay);
 
+        return ResponseEntity.ok(result);
 
+    }
 
+    // 일간
+    @GetMapping("/summary/day")
+    public  ResponseEntity<?> day(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate mealDay
+    ) {
 
+        GetSummaryTotalDto result = mealService.getDailyTotal(userPrincipal.getSignedUserId(), mealDay);
 
-    //음식 찾기 이건 내꺼
-//    @GetMapping()
-//    public ResponseEntity<?> findFood(HttpServletRequest httpReq, @ModelAttribute FindFoodNameReq foodInfo)
-//    {
-//        Integer memberId = (Integer) HttpUtils.getSessionValue(httpReq, AccountConstants.MEMBER_ID_NAME);
-//        log.info("foodInfo: {}", foodInfo);
-//
-//        if (foodInfo.getFoodName() == null || foodInfo.getFoodName().isEmpty()) {
-//            List<FindFoodCategoryRes> res =  mealService.findFoodCategory(foodInfo);
-//
-//            return ResponseEntity.ok(res);
-//        }
-//        else {
-//            List<FindFoodNameRes> res =  mealService.findFoodName(foodInfo);
-//            return ResponseEntity.ok(res);
-//        }
-//    }
+        return ResponseEntity.ok(result);
+    }
 
+    // 주간 (start/end 직접 받는 경우)
+    @GetMapping("/summary/week")
+    public  ResponseEntity<?> week(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end
+    ) {
 
-// 아래는 강사님 feed 내용
-//    @PostMapping
-//    public ResultResponse<?> postFeed(@AuthenticationPrincipal UserPrincipal userPrincipal
-//            , @Valid @RequestPart FeedPostReq req
-//            , @RequestPart(name = "pic") List<MultipartFile> pics) {
-//
-//        if(pics.size() > constFile.maxPicCount) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST
-//                    , String.format("사진은 %d장까지 선택 가능합니다.", constFile.maxPicCount));
-//        }
-//        log.info("signedUserId: {}", userPrincipal.getSignedUserId());
-//        log.info("req: {}", req);
-//        log.info("pics.size(): {}", pics.size());
-//        FeedPostRes result = feedService.postFeed(userPrincipal.getSignedUserId(), req, pics);
-//        return new ResultResponse<>("피드 등록 완료", result);
-//    }
+        GetSummaryTotalDto result = mealService.getWeeklyTotal(userPrincipal.getSignedUserId(), start, end);
+        return ResponseEntity.ok(result);
+    }
 
+    // 월간 (YearMonth 사용)
+    @GetMapping("/summary/month")
+    public  ResponseEntity<?> month(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth month
+    ) {
+
+        GetSummaryTotalDto result = mealService.getMonthlyTotal(userPrincipal.getSignedUserId(), month);
+        return ResponseEntity.ok(result);
+    }
 }
+
+
+
+
+
+
+

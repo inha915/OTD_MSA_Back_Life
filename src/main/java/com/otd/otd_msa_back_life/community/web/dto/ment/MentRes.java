@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class MentRes {
-    private Long mentId;
+    private Long commentId;
     private Long postId;
     private Long userId;
     private String content;

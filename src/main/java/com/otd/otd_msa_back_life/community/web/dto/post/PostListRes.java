@@ -15,4 +15,5 @@ public class PostListRes {
     private LocalDateTime createdAt;
     private String categoryKey;
     private String categoryName;
+    private Integer commentCount;
 }

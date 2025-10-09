@@ -7,14 +7,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
 @Setter
+@Getter
 @ToString
-public class GetMealStatisticReq {
-    private int memberNoLogin;
+public class InputMealRecordReq {
+
+    private String mealTime;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
+    private LocalDate mealDay;
+
+    private List<InputMealRecordDetailDto> foods;
+
 }

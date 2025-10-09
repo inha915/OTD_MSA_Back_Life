@@ -4,6 +4,7 @@ import com.otd.otd_msa_back_life.community.entity.CommunityCategory;
 import com.otd.otd_msa_back_life.community.entity.CommunityPost;
 import com.otd.otd_msa_back_life.community.repository.CommunityCategoryRepository;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
+import com.otd.otd_msa_back_life.community.repository.MentRepository;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostListRes;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostRes;
@@ -23,7 +24,7 @@ public class PostService {
 
     private final CommunityPostRepository postRepository;
     private final CommunityCategoryRepository categoryRepository;
-
+    private final MentRepository mentRepository;
     /**
      * 게시글 생성
      * - categoryKey로 카테고리 조회 후 엔티티에 세팅
@@ -79,6 +80,7 @@ public class PostService {
                 .likeCount(p.getLikeCount())
                 .createdAt(p.getCreatedAt())
                 .categoryKey(p.getCategory() != null ? p.getCategory().getCategoryKey() : null)
+                .commentCount((int) mentRepository.countByPost(p))
                 .build()
         );
     }
