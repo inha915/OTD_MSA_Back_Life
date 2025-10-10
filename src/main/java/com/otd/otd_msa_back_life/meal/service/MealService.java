@@ -136,15 +136,24 @@ public class MealService {
 
                 if (sumProtein >= 100) {
                     String challengeName = "단백질 섭취";
-                    MealDataReq feign = MealDataReq.builder()
-                            .userId(userId)
-                            .mealDay(mealRecordReq.getMealDay())
-                            .today(LocalDate.now())
-                            .totalProtein(sumProtein)
-                            .name(challengeName)
-                            .build();
-                    ResponseEntity<Integer> response = challengeFeignClient.updateProgressByMeal(feign);
-                    Integer feignResult = response.getBody();
+                    ResponseEntity<List<String>> myChallenges = challengeFeignClient
+                            .getActiveChallengeNames(userId, mealRecordReq.getMealDay());
+                    List<String> activeChallenges = myChallenges.getBody();
+                    if (activeChallenges != null && !activeChallenges.isEmpty()) {
+                        for (String activeChallenge : activeChallenges) {
+                            if (activeChallenge.equals(challengeName)) {
+                                MealDataReq feign = MealDataReq.builder()
+                                        .userId(userId)
+                                        .recDate(mealRecordReq.getMealDay())
+                                        .today(LocalDate.now())
+                                        .value(sumProtein)
+                                        .name(challengeName)
+                                        .build();
+                                ResponseEntity<Integer> response = challengeFeignClient.updateProgressByMeal(feign);
+                                Integer feignResult = response.getBody();
+                            }
+                        }
+                    }
                 }
                 return new MealSaveResultDto(1, List.of(saved.getMealId()),newUserFoodIds );
             }

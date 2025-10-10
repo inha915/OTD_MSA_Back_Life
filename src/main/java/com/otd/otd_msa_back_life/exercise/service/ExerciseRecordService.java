@@ -86,21 +86,21 @@ public class ExerciseRecordService {
         Long recordId = exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
 
         LocalDate recordDate = req.getStartAt().toLocalDate();
-        ResponseEntity<List<String>> response = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
-        List<String> activeChallenges = response.getBody();
+        ResponseEntity<List<String>> myChallenges = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
+        List<String> activeChallenges = myChallenges.getBody();
         if (activeChallenges != null && !activeChallenges.isEmpty()) {
             ExerciseCountAndSum summary = exerciseRecordRepository.getDailyExerciseSummary(
                     userId,
                     req.getStartAt().toLocalDate().atStartOfDay(),
                     req.getStartAt().toLocalDate().plusDays(1).atStartOfDay()
             );
-            for (String ch : activeChallenges) {
+            for (String ah : activeChallenges) {
                 String mappedChallengeName = challengeName(exercise.getExerciseName());
-                if (ch.equals(mappedChallengeName)) {
+                if (ah.equals(mappedChallengeName)) {
                     ExerciseDataReq feign = ExerciseDataReq.builder()
                             .userId(userId)
                             .recordId(recordId)
-                            .name(ch)
+                            .name(ah)
                             .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
                             .recordDate(req.getStartAt().toLocalDate())
                             .count(summary.getCount())
