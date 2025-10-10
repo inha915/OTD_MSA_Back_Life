@@ -38,6 +38,9 @@ public class ExerciseRecord extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime endAt;            // 운동 종료 시점
 
+    @Column(nullable = false)               // 운동 소요 시간
+    private Integer duration;
+
     private Double distance;                // 거리
 
     private Integer reps;                   // 반복횟수

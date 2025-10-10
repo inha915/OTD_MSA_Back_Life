@@ -3,6 +3,7 @@ package com.otd.otd_msa_back_life.meal.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -26,25 +27,25 @@ public class MealFoodDb {
     @Column(nullable = false)
     private Integer kcal;
 
-    @Positive
+    @PositiveOrZero
     @Column(nullable = false)
-    private Double protein;
+    private Float protein;
 
-    @Positive
+    @PositiveOrZero
     @Column(nullable = false)
-    private Double carbohydrate;
+    private Float carbohydrate;
 
-    @Positive
+    @PositiveOrZero
     @Column(nullable = false)
-    private Double fat;
+    private Float fat;
 
-    @Positive
+    @PositiveOrZero
     @Column(nullable = false)
-    private Double sugar;
+    private Float sugar;
 
-    @Positive
+    @PositiveOrZero
     @Column(nullable = false)
-    private Double natrium;
+    private Float natrium;
 
 
     @Column(nullable = false, length = 10)

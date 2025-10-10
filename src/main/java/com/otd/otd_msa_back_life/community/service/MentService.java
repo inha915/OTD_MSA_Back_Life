@@ -20,21 +20,22 @@ public class MentService {
     private final CommunityPostRepository postRepository;
 
     @Transactional
-    public MentRes create(Long postId, MentCreateReq req) {
+    public MentRes create(Long postId, Long requesterId, MentCreateReq req) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + postId));
 
         Ment ment = Ment.builder()
                 .post(post)
-                .userId(req.getUserId())   // ✅ userId로 변경
+                .userId(requesterId)  // 헤더/인증의 requesterId 사용
                 .content(req.getContent())
                 .build();
 
         Ment saved = mentRepository.save(ment);
+
         return MentRes.builder()
-                .mentId(saved.getCommentId())
+                .commentId(saved.getCommentId())   // ✅ 필드명 통일
                 .postId(post.getPostId())
-                .userId(saved.getUserId()) // ✅ userId로 변경
+                .userId(saved.getUserId())
                 .content(saved.getContent())
                 .createdAt(saved.getCreatedAt())
                 .build();
@@ -44,12 +45,13 @@ public class MentService {
     public List<MentRes> listByPost(Long postId) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + postId));
+
         return mentRepository.findByPostOrderByCreatedAtAsc(post)
                 .stream()
                 .map(m -> MentRes.builder()
-                        .mentId(m.getCommentId())
+                        .commentId(m.getCommentId())   // ✅ 변경
                         .postId(post.getPostId())
-                        .userId(m.getUserId())   // ✅ userId로 변경
+                        .userId(m.getUserId())
                         .content(m.getContent())
                         .createdAt(m.getCreatedAt())
                         .build())
@@ -60,6 +62,7 @@ public class MentService {
     public void delete(Long mentId, Long requesterId) {
         Ment ment = mentRepository.findById(mentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 없음: " + mentId));
+
         if (!ment.getUserId().equals(requesterId)) {
             throw new IllegalStateException("삭제 권한 없음");
         }
