@@ -31,4 +31,15 @@
         WHERE er.user_id = #{userId}
         ORDER BY er.start_at DESC
     </select>
+
+    <select id="findAllCommunity">
+        SELECT
+        cp.post_id, cp.user_id, cp.`title`, cp.`content`,
+        cp.is_deleted, cp.like_count, cp.created_at,
+        cp.updated_at, cc.name AS category
+        FROM community_post cp
+        INNER JOIN community_category cc
+        ON cc.category_id = cp.category_id
+        ORDER BY cp.post_id DESC
+    </select>
 </mapper>

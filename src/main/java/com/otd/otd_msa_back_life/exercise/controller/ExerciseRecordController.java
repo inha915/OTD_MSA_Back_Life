@@ -80,11 +80,4 @@ public class ExerciseRecordController {
         exerciseRecordService.deleteExerciseRecord(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok("삭제 성공");
     }
-// challenge feign client
-    @GetMapping("/exercise/feign")
-    public int getAllExerciseRecordCount(@RequestParam Long userId,
-                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                         LocalDate recDate){
-        return exerciseRecordService.countExerciseRecordByDate(userId, recDate);
-    }
 }

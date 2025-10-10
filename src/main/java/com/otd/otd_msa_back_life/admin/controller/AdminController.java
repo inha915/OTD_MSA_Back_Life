@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.admin.controller;
 
+import com.otd.otd_msa_back_life.admin.model.AdminCommunityGetRes;
 import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
 import com.otd.otd_msa_back_life.admin.model.AdminMealDataDto;
 import com.otd.otd_msa_back_life.admin.service.AdminService;
@@ -23,6 +24,11 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+
+    @GetMapping("/community")
+    public List<AdminCommunityGetRes> getCommunity() {
+        return adminService.getCommunity();
+    }
 
     @GetMapping("/meal/{userId}")
     public List<AdminMealDataDto> getMealData(@PathVariable Long userId){
