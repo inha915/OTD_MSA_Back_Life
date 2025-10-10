@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@FeignClient(name = "${constants.feign-client.challenge.name}" ,url = "${constants.feign-client.challenge.url:}"   )
 public interface ChallengeFeignClient {
 
     @PostMapping("/progress/exercise")
