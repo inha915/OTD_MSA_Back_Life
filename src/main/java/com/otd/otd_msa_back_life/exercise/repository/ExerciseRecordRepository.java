@@ -21,6 +21,7 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
             LocalDateTime startOfWeek,
             LocalDateTime endOfWeek
     );
+    int countByUserIdAndStartAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT COUNT(er) AS count, COALESCE(SUM(er.activityKcal), 0) AS totalKcal " +
             "FROM ExerciseRecord er " +
