@@ -15,16 +15,16 @@ import java.util.List;
 @FeignClient(name = "${constants.feign-client.challenge.name}" ,url = "${constants.feign-client.challenge.url}")
 public interface ChallengeFeignClient {
 
-    @PostMapping("/progress/exercise")
+    @PostMapping("/api/OTD/challenge/progress/exercise")
     ResponseEntity<Integer> updateProgressByExercise(@RequestBody ExerciseDataReq req);
 
-    @DeleteMapping("/record/delete")
+    @DeleteMapping("/api/OTD/challenge/record/delete")
     ResponseEntity<Integer> deleteRecordByExercise(@RequestBody ChallengeRecordDeleteReq req);
 
-    @PostMapping("/progress/meal")
+    @PostMapping("/api/OTD/challenge/progress/meal")
     ResponseEntity<Integer> updateProgressByMeal(@RequestBody MealDataReq req);
 
-    @GetMapping("/progress/challenges/{userId}")
+    @GetMapping("/api/OTD/challenge/progress/challenges/{userId}")
     ResponseEntity<List<String>> getActiveChallengeNames(@PathVariable("userId") Long userId
                                                         ,@RequestParam("recordDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime recordDate);
 }
