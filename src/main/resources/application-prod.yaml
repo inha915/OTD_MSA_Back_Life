@@ -1,6 +1,9 @@
 constants:
   file:
     directory: /home/download
+  feign-client:
+    challenge:
+      url: otd-user/api/OTD/challenge
 
 server:
   port: 8080
@@ -31,6 +34,3 @@ spring:
     hibernate:
       ddl-auto: update
 
-  feign-client:
-    challenge:
-      url: otd-user/api/OTD/challenge
