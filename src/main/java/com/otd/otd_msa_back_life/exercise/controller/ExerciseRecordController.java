@@ -1,6 +1,8 @@
 package com.otd.otd_msa_back_life.exercise.controller;
 
+import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
 import com.otd.otd_msa_back_life.common.model.PagingReq;
+import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;

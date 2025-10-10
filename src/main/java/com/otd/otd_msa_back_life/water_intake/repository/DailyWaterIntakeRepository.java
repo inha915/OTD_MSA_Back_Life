@@ -10,4 +10,6 @@ import java.time.LocalDate;
 
 public interface DailyWaterIntakeRepository extends JpaRepository<DailyWaterIntake, Long> {
     DailyWaterIntake findByUserIdAndIntakeDate(Long userId, LocalDate date);
+
+    void deleteAllByUserId(Long userId);
 }

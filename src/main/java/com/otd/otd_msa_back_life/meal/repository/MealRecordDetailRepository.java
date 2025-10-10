@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface MealRecordDetailRepository extends JpaRepository<MealRecordDetail, Long> {
     @Modifying
@@ -41,4 +42,8 @@ public interface MealRecordDetailRepository extends JpaRepository<MealRecordDeta
     GetSummaryTotalDto sumBetween(@Param("userId") Long userId,
                                   @Param("startDay") LocalDate startDay,
                                   @Param("endDay") LocalDate endDay);
+
+    void deleteAllByUserId(Long userId);
+
+    List<MealRecordDetail> findAllByUserId(Long userId);
 }

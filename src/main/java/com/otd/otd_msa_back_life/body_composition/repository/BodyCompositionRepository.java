@@ -8,11 +8,11 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BodyCompositionRepository extends JpaRepository<BodyComposition, Long> {
-
-    BodyComposition findTopByUserIdOrderByCreatedAtDesc(Long userId);
-    BodyComposition findTopByUserIdOrderByCreatedAtAsc(Long userId);
+    Optional<BodyComposition> findTopByUserIdOrderByCreatedAtDesc(Long userId);
+    Optional<BodyComposition> findTopByUserIdOrderByCreatedAtAsc(Long userId);
     List<BodyComposition> findByUserIdAndDeviceTypeAndCreatedAtBetweenOrderByCreatedAtAsc(
             Long userId
             , String deviceType

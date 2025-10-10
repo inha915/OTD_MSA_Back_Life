@@ -49,6 +49,7 @@ public class BodyCompositionController {
     @GetMapping
     public ResponseEntity<?> getMetrics() {
     List<BodyCompositionMetric> result = bodyCompositionService.getMetrics();
+    log.info("getMetrics:{}", result);
     return ResponseEntity.ok(result);
     }
 }
