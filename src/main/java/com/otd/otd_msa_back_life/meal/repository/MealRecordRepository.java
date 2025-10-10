@@ -25,4 +25,6 @@ public interface MealRecordRepository extends JpaRepository<MealRecord, Long> {
           and mr.mealRecordIds.mealDay = :mealDay
     """)
     List<MealRecord> findForMain(Long userId, LocalDate mealDay);
+
+    List<MealRecord> findAllByUserId(Long userId);
 }

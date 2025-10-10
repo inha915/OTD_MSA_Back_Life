@@ -9,4 +9,6 @@ import java.util.List;
 public interface MentRepository extends JpaRepository<Ment, Long> {
     List<Ment> findByPostOrderByCreatedAtAsc(CommunityPost post);
     long countByPost(CommunityPost post);
+
+    void deleteAllByUserId(Long userId);
 }

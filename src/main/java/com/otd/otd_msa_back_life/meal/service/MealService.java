@@ -1,11 +1,14 @@
 package com.otd.otd_msa_back_life.meal.service;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.otd.otd_msa_back_life.admin.mapper.AdminMapper;
+import com.otd.otd_msa_back_life.admin.model.AdminMealDataDto;
 import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
 import com.otd.otd_msa_back_life.body_composition.repository.BodyCompositionRepository;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
 import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
+import com.otd.otd_msa_back_life.feign.model.MealDataReq;
 import com.otd.otd_msa_back_life.meal.entity.*;
 import com.otd.otd_msa_back_life.meal.model.*;
 import com.otd.otd_msa_back_life.meal.repository.MealFoodDbRepository;
@@ -15,6 +18,7 @@ import com.otd.otd_msa_back_life.meal.repository.MealRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Limit;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -38,6 +42,7 @@ public class MealService {
     // 운동 기록 가져올려는거
     private final BodyCompositionRepository bodyCompositionRepository;
     private final ExerciseRecordRepository exerciseRecordRepository;
+    private final AdminMapper adminMapper;
 
     public List<FoodSearchResultDto> findFood(String foodName , Long userId)
     {
@@ -127,6 +132,20 @@ public class MealService {
                                 .userFood(null)
                                 .build()
                 );
+                Double sumProtein = mealRecordDetailRepository.findTotalProteinByUserAndDay(userId, mealRecordReq.getMealDay());
+
+                if (sumProtein >= 100) {
+                    String challengeName = "단백질 섭취";
+                    MealDataReq feign = MealDataReq.builder()
+                            .userId(userId)
+                            .mealDay(mealRecordReq.getMealDay())
+                            .today(LocalDate.now())
+                            .totalProtein(sumProtein)
+                            .name(challengeName)
+                            .build();
+                    ResponseEntity<Integer> response = challengeFeignClient.updateProgressByMeal(feign);
+                    Integer feignResult = response.getBody();
+                }
                 return new MealSaveResultDto(1, List.of(saved.getMealId()),newUserFoodIds );
             }
             else if (food.getFoodDbId() != null && food.getFoodDbId() == 0) {
@@ -261,6 +280,5 @@ public class MealService {
         LocalDate endDay = ym.plusMonths(1).atDay(1); // exclusive
         return mealRecordDetailRepository.sumBetween(userId, startDay, endDay);
     }
-
 
 }

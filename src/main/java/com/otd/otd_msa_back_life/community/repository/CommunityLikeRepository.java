@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface CommunityLikeRepository extends JpaRepository<CommunityLike, Long> {
     Optional<CommunityLike> findByPostAndUserId(CommunityPost post, Long userId);
     long countByPost(CommunityPost post);
+
+    void deleteAllByUserId(Long userId);
 }
