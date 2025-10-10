@@ -1,10 +1,7 @@
 constants:
   file:
     directory: /home/download
-  feign-client:
-    challenge:
-      name: otd-user
-      url: ""
+
 
 server:
   port: 8080
