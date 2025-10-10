@@ -12,4 +12,5 @@ public class MentRes {
     private Long userId;
     private String content;
     private LocalDateTime createdAt;
+    private String authorNickname;
 }
