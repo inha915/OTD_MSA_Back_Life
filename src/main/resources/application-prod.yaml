@@ -3,7 +3,7 @@ constants:
     directory: /home/download
   feign-client:
     challenge:
-      url: otd-user/api/OTD/challenge
+      url: otd-user/OTD/challenge
 
 server:
   port: 8080
