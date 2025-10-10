@@ -82,4 +82,4 @@ constants:
   feign-client:
     challenge:
       name: otd-user
-      url: http://localhost:8082/api/OTD/challenge
+      url: http://localhost:8082
