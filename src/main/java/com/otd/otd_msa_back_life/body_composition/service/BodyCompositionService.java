@@ -142,8 +142,44 @@ public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCom
 }
 
     //    체성분 기록 리스트 보기
+//    @Transactional
+//    public List<BodyCompositionListGetRes> getBodyCompositionList(Long userId, BodyCompositionListGetReq req) {
+//        BodyCompositionListGetDto dto = BodyCompositionListGetDto.builder()
+//                .startDate(req.getStartDate())
+//                .endDate(req.getEndDate())
+//                .size(req.getRowPerPage())
+//                .startIdx((req.getPage() - 1) * req.getRowPerPage())
+//                .deviceType(req.getDeviceType())
+//                .userId(userId)
+//                .build();
+//
+//        return bodyCompositionMapper.findByLimitTo(dto);
+//    }
+
+    // 체성분 기록 리스트 보기 (JPA Repository 사용)
     @Transactional
     public List<BodyCompositionListGetRes> getBodyCompositionList(Long userId, BodyCompositionListGetReq req) {
+
+        // 1. 요청 (req) 값이 없을 경우, DB에서 사용자 기록의 최소/최대 날짜를 조회하여 기본값 설정
+        if (req.getStartDate() == null || req.getEndDate() == null) {
+            MinMaxDateDto minMaxDates = bodyCompositionRepository.findMinMaxDatesByUserId(userId);
+
+            if (minMaxDates != null) {
+                if (req.getStartDate() == null) {
+                    req.setStartDate(minMaxDates.getStartDate());
+                }
+                if (req.getEndDate() == null) {
+                    req.setEndDate(minMaxDates.getEndDate());
+                }
+            }
+        }
+
+        // 2. 디바이스 타입 기본값 설정 (요청값이 null이거나 "ALL"일 경우 필터링하지 않도록 null로 설정)
+        if (req.getDeviceType() == null || "ALL".equalsIgnoreCase(req.getDeviceType())) {
+            req.setDeviceType(null);
+        }
+
+        // 3. 페이징 및 필터링 DTO 구성 (기존 로직 유지)
         BodyCompositionListGetDto dto = BodyCompositionListGetDto.builder()
                 .startDate(req.getStartDate())
                 .endDate(req.getEndDate())
@@ -153,8 +189,15 @@ public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCom
                 .userId(userId)
                 .build();
 
-        return bodyCompositionMapper.findByLimitTo(dto);
+        // 4. ⭐ 목록 조회 (JPA 환경에 맞는 Custom Repository 메서드 호출로 변경 필요)
+        // DTO를 받아 동적 쿼리를 처리하는 Custom Repository 메서드라고 가정합니다.
+        // return bodyCompositionRepository.findByFiltersAndPagination(dto); // 예시
+
+        // 현재는 기존 코드의 반환 형태를 유지하기 위해 임시로 기존 매퍼 이름을 사용합니다.
+        // 실제 JPA 환경에서는 BodyCompositionRepository의 적절한 메서드로 대체해야 합니다.
+        return bodyCompositionMapper.findByLimitTo(dto); // ⚠️ 이 부분은 실제 JPA 구현으로 변경해야 합니다.
     }
+
 
 //    [GET] metrics
     public List<BodyCompositionMetric> getMetrics() {
