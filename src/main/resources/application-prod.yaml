@@ -21,6 +21,8 @@ management:
 spring:
   cloud:
     kubernetes:
+      loadbalancer:
+        enabled: true
       discovery:
         enabled: true
       reload:
