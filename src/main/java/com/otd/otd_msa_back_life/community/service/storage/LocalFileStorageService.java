@@ -2,6 +2,7 @@ package com.otd.otd_msa_back_life.community.service.storage;
 
 import com.otd.otd_msa_back_life.community.config.FileProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "file", name = "upload-directory", matchIfMissing = false)
 public class LocalFileStorageService implements FileStorageService {
 
     private final FileProperties props;
@@ -33,6 +35,10 @@ public class LocalFileStorageService implements FileStorageService {
         Path target = dir.resolve(safeName);
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
 
+        // ⬇ 저장 경로와 반환 URL 로그
+        System.out.println("[StaticSave] to=" + target.toAbsolutePath()
+                + " -> url=" + URL_PREFIX + safeName);
+
         // 브라우저 접근 URL 반환
         return URL_PREFIX + safeName;
     }
@@ -41,7 +47,9 @@ public class LocalFileStorageService implements FileStorageService {
     public boolean delete(String filePathOrUrl) throws IOException {
         if (filePathOrUrl == null || filePathOrUrl.isBlank()) return false;
         Path real = toRealPath(filePathOrUrl);
-        return Files.deleteIfExists(real);
+        boolean deleted = Files.deleteIfExists(real);
+        System.out.println("[StaticDelete] target=" + real + ", deleted=" + deleted);
+        return deleted;
     }
 
     @Override
@@ -55,6 +63,9 @@ public class LocalFileStorageService implements FileStorageService {
             BufferedImage img = ImageIO.read(file.getInputStream());
             if (img != null) { width = img.getWidth(); height = img.getHeight(); }
         } catch (Exception ignore) {}
+
+        System.out.println("[StaticSaveMeta] url=" + url + ", ct=" + ct + ", size=" + size
+                + ", w=" + width + ", h=" + height);
 
         return new StoredFileMeta(url, ct, size, width, height);
     }

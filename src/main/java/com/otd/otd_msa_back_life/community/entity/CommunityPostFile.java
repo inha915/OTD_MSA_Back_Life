@@ -1,4 +1,4 @@
-// src/main/java/com/otd/otd_msa_back_life/community/entity/CommunityPostFile.java
+
 package com.otd.otd_msa_back_life.community.entity;
 
 import com.otd.otd_msa_back_life.common.entity.BaseTimeEntity;
