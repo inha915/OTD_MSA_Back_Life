@@ -1,8 +1,6 @@
-package com.otd.otd_msa_back_life.otd_community.web.controller;
+package com.otd.otd_msa_back_life.community.web.controller;
 
 import com.otd.otd_msa_back_life.community.service.PostService;
-import com.otd.otd_msa_back_life.community.service.PostFileService;
-import com.otd.otd_msa_back_life.community.web.dto.file.PostFileRes;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostListRes;
 import com.otd.otd_msa_back_life.community.web.dto.post.PostRes;
@@ -16,15 +14,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/OTD/community")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
-    private final PostFileService postFileService;
 
     // 생성
     @PostMapping("/posts")
@@ -58,11 +53,8 @@ public class PostController {
         return postService.get(postId);
     }
 
-    // 해당 게시글의 파일 목록 조회
-    @GetMapping("/posts/{postId}/files")
-    public List<PostFileRes> listFiles(@PathVariable Long postId) {
-        return postFileService.listByPost(postId);
-    }
+    // ⚠️ 중복이던 파일목록 엔드포인트(/posts/{postId}/files)는 제거했습니다.
+    // 파일 목록/업로드/삭제는 PostFileController 가 전담합니다.
 
     // 수정
     @PutMapping("/posts/{postId}")

@@ -48,6 +48,10 @@ public class PostFileService {
         if (valid.size() > MAX_FILES_PER_REQ)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "파일 개수 초과");
 
+        // 현재 게시글에 저장된 파일 개수(다음 orderIdx 기준)
+        long existing = fileRepository.countByPost(post);
+        int nextOrder = (int) existing;
+
         for (MultipartFile f : valid) {
             if (f.getSize() > MAX_FILE_SIZE)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "파일 용량 초과");
@@ -62,16 +66,18 @@ public class PostFileService {
                             .post(post)
                             .userId(memberNoLogin)
                             .fileName(f.getOriginalFilename())
-                            .filePath(meta.filePath())          // 반드시 /static/community/.. URL
+                            .filePath(meta.filePath())              // "/static/community/xxx"
                             .fileType(normContentType(ct))
+                            .fileSize(meta.size())
+                            .width(meta.width())
+                            .height(meta.height())
+                            .orderIdx(nextOrder++)
                             .build()
             );
 
-            // 필요시 로그
             System.out.println("[PostFileService] saved fileId=" + saved.getId() + ", path=" + saved.getFilePath());
         }
 
-        // 업로드 후 최신 목록 반환
         return listByPost(postId);
     }
 
@@ -80,7 +86,7 @@ public class PostFileService {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글 없음: " + postId));
 
-        return fileRepository.findByPost(post).stream()
+        return fileRepository.findByPostOrderByOrderIdxAsc(post).stream()
                 .map(saved -> PostFileRes.builder()
                         .fileId(saved.getId())
                         .postId(post.getPostId())
@@ -88,6 +94,11 @@ public class PostFileService {
                         .fileName(saved.getFileName())
                         .filePath(saved.getFilePath())
                         .fileType(saved.getFileType())
+                        .fileSize(saved.getFileSize())
+                        .width(saved.getWidth())
+                        .height(saved.getHeight())
+                        .orderIdx(saved.getOrderIdx())
+                        .createdAt(saved.getCreatedAt())
                         .build())
                 .toList();
     }
