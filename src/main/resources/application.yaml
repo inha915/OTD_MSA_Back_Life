@@ -11,6 +11,8 @@ file:
   profile-pic: profile
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: otd_life
 
@@ -18,7 +20,7 @@ spring:
     time-zone: Asia/Seoul
 
   servlet:
-    multipart:
+    multipart: # 파일 업로드(커뮤니티 첨부파일용)
       max-file-size: 15MB
       max-request-size: 30MB
 
@@ -32,7 +34,7 @@ spring:
     database: mysql
     open-in-view: false
     defer-datasource-initialization: true
-    hibernate:
+#    hibernate:
     # ddl-auto: update
     # ddl-auto: create
     properties:
@@ -71,10 +73,15 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
 
+
+# 커뮤니티 파일 저장 루트(로컬 저장 시) — LocalFileStorageService에서 사용
 constants:
+
   comment:
     start-index: 0
     need-for-view-count: 3
+
   feign-client:
     challenge:
-      url: http://localhost:8082/api/OTD/challenge
+      name: otd-user
+      url: http://localhost:8082
