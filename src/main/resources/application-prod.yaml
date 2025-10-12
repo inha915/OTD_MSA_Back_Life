@@ -6,8 +6,6 @@ constants:
       name: otd-user
       url: http://otd-user:8080
 
-server:
-  port: 8080
 
 management:
   endpoint:
@@ -33,18 +31,7 @@ spring:
     url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
     username: pih
     password: green502
+
   jpa:
     hibernate:
       ddl-auto: update
-
-server:
-  port: 8080
-
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: "*"
