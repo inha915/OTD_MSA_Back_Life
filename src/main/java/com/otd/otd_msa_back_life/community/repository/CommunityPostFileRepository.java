@@ -2,7 +2,10 @@ package com.otd.otd_msa_back_life.community.repository;
 
 import com.otd.otd_msa_back_life.community.entity.CommunityPost;
 import com.otd.otd_msa_back_life.community.entity.CommunityPostFile;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +26,12 @@ public interface CommunityPostFileRepository extends JpaRepository<CommunityPost
 
     // 필요 시 postId 기반으로 직접 조회도 가능
     List<CommunityPostFile> findByPost_PostId(Long postId);
+
+    void deleteAllByUserId(Long userId);
+
+    @Modifying
+    @Query("DELETE FROM CommunityPostFile f WHERE f.post.postId = :postId")
+    int deleteByPostId(Long postId);
+
+    List<CommunityPostFile> findByPostPostId(Long postId);
 }
