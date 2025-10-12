@@ -1,8 +1,10 @@
 package com.otd.otd_msa_back_life.community.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,20 +13,33 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
+@RequiredArgsConstructor
 public class StaticResourceConfig implements WebMvcConfigurer {
 
-    // application.yml: constants.file.directory: D:\inha\healthcare\img  (예시)
-    @Value("${constants.file.directory}")
-    private String rootDir;
+    private final FileProperties props;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path dir = Paths.get(rootDir).toAbsolutePath().normalize();
-        // file:/ 스킴을 포함한 URI로 변환 (윈도우/리눅스 모두 호환)
-        String location = dir.toUri().toString();
+        String root = props.getUploadDirectory();
+        if (!StringUtils.hasText(root)) {
+            throw new IllegalStateException("'file.upload-directory' 가 비어있습니다.");
+        }
 
+        // /static/community/** -> [uploadDir]/community/
+        Path communityDir = Paths.get(root, "community").toAbsolutePath().normalize();
         registry.addResourceHandler("/static/community/**")
-                .addResourceLocations(location) // 디스크 폴더 매핑
-                .setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic());
+                .addResourceLocations(toFileLocation(communityDir));
+
+        // /static/profile/** -> [uploadDir]/[profilePic]/
+        String profileFolder = StringUtils.hasText(props.getProfilePic()) ? props.getProfilePic() : "profile";
+        Path profileDir = Paths.get(root, profileFolder).toAbsolutePath().normalize();
+        registry.addResourceHandler("/static/profile/**")
+                .addResourceLocations(toFileLocation(profileDir));
+    }
+
+    private String toFileLocation(Path dir) {
+        // 반드시 "file:/abs/path/" 형태로 끝에 슬래시 포함
+        String uri = dir.toUri().toString();
+        return uri.endsWith("/") ? uri : uri + "/";
     }
 }

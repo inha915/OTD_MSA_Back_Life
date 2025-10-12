@@ -45,4 +45,8 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
     Page<CommunityPost> searchInCategory(@Param("categoryKey") String categoryKey,
                                          @Param("q") String q,
                                          Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE CommunityPost p SET p.isDeleted = true WHERE p.userId = :userId")
+    int softDeleteByUserId(@Param("userId") Long userId);
 }
