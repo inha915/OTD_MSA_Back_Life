@@ -86,7 +86,7 @@ public class ExerciseRecordService {
                 .build();
         Long recordId = exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
 
-        LocalDateTime recordDate = req.getStartAt();
+        LocalDate recordDate = req.getStartAt().toLocalDate();
         ResponseEntity<List<String>> response = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
         List<String> activeChallenges = response.getBody();
         if (activeChallenges != null && !activeChallenges.isEmpty()) {
