@@ -1,29 +1,11 @@
-file:
-  upload-directory: /home/green/download
-  profile-pic: profile
+constants:
+  file:
+    directory: /home/download
+  feign-client:
+    challenge:
+      name: otd-user
+      url: http://otd-user:8080
 
-spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 20MB
-  cloud:
-    kubernetes:
-      discovery:
-        enabled: true
-      reload:
-        enabled: true
-        strategy: refresh
-  datasource:
-    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
-    username: pih
-    password: green502
-  jpa:
-    hibernate:
-      ddl-auto: update
-
-server:
-  port: 8080
 
 management:
   endpoint:
@@ -33,3 +15,23 @@ management:
     web:
       exposure:
         include: "*"
+
+spring:
+  cloud:
+    kubernetes:
+      loadbalancer:
+        enabled: true
+      discovery:
+        enabled: true
+      reload:
+        enabled: true
+        strategy: refresh
+
+  datasource:
+    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
+    username: pih
+    password: green502
+
+  jpa:
+    hibernate:
+      ddl-auto: update

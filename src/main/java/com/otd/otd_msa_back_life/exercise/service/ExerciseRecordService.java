@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -86,21 +87,21 @@ public class ExerciseRecordService {
         Long recordId = exerciseRecordRepository.save(exerciseRecord).getExerciseRecordId();
 
         LocalDate recordDate = req.getStartAt().toLocalDate();
-        ResponseEntity<List<String>> myChallenges = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
-        List<String> activeChallenges = myChallenges.getBody();
+        ResponseEntity<List<String>> response = challengeFeignClient.getActiveChallengeNames(userId, recordDate);
+        List<String> activeChallenges = response.getBody();
         if (activeChallenges != null && !activeChallenges.isEmpty()) {
             ExerciseCountAndSum summary = exerciseRecordRepository.getDailyExerciseSummary(
                     userId,
                     req.getStartAt().toLocalDate().atStartOfDay(),
                     req.getStartAt().toLocalDate().plusDays(1).atStartOfDay()
             );
-            for (String ah : activeChallenges) {
+            for (String ch : activeChallenges) {
                 String mappedChallengeName = challengeName(exercise.getExerciseName());
-                if (ah.equals(mappedChallengeName)) {
+                if (ch.equals(mappedChallengeName)) {
                     ExerciseDataReq feign = ExerciseDataReq.builder()
                             .userId(userId)
                             .recordId(recordId)
-                            .name(ah)
+                            .name(ch)
                             .record(exercise.getHasDistance() ? req.getDistance() : req.getReps().doubleValue())
                             .recordDate(req.getStartAt().toLocalDate())
                             .count(summary.getCount())
