@@ -49,4 +49,12 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
     @Modifying
     @Query("UPDATE CommunityPost p SET p.isDeleted = true WHERE p.userId = :userId")
     int softDeleteByUserId(@Param("userId") Long userId);
+
+
+    //사용자가 작성한 게시글 목록
+    Page<CommunityPost> findByUserIdAndIsDeletedFalse(Long userId, Pageable pageable);
+
+    //사용자가 작성한 게시글 총 개수
+    long countByUserIdAndIsDeletedFalse(Long userId);
 }
+
