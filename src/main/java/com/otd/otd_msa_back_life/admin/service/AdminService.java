@@ -1,14 +1,13 @@
 package com.otd.otd_msa_back_life.admin.service;
 
 import com.otd.otd_msa_back_life.admin.mapper.AdminMapper;
-import com.otd.otd_msa_back_life.admin.model.AdminCommunityGetRes;
-import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
-import com.otd.otd_msa_back_life.admin.model.AdminMealDataDto;
+import com.otd.otd_msa_back_life.admin.model.*;
 import com.otd.otd_msa_back_life.community.repository.CommunityLikeRepository;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostFileRepository;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
 import com.otd.otd_msa_back_life.community.repository.MentRepository;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
+import com.otd.otd_msa_back_life.meal.entity.MealRecordDetail;
 import com.otd.otd_msa_back_life.meal.repository.MealRecordDetailRepository;
 import com.otd.otd_msa_back_life.water_intake.repository.DailyWaterIntakeRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +39,15 @@ public class AdminService {
     public List<AdminExerciseDto> getExerciseData(Long userId){
         return adminMapper.findExerciseDataByUserId(userId);
     }
-    public List<AdminMealDataDto> getMealData(Long userId) {
-        return adminMapper.findMealDataByUserId(userId);
+
+    public List<MealRecordDetail> getMealData(Long userId) {
+        return mealRecordDetailRepository.findAllByUserId(userId);
     }
+
+    public List<AdminMealDetailGetRes> getMealDetail(AdminMealDetailGetReq req) {
+        return adminMapper.findMealDetailByUserIdAndMealDayAndMealTime(req);
+    }
+
     @Transactional
     public void removeUser(Long userId) {
         try {

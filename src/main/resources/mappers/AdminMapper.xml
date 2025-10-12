@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.otd.otd_msa_back_life.admin.mapper.AdminMapper">
-    <select id="findMealDataByUserId">
-        SELECT
-        COALESCE(mfd.food_name, mfmd.food_name) AS foodName,
-        mr.meal_id, mr.meal_time, mr.meal_day, mr.food_amount,
-        mrd.total_carbohydrate, mrd.total_fat, mrd.total_kcal,
-        mrd.total_natrium, mrd.total_protein, mrd.total_sugar
-        FROM meal_record mr
-        LEFT JOIN meal_food_db mfd
-        ON mr.food_id = mfd.food_db_id
-        LEFT JOIN meal_food_make_db mfmd
-        ON mr.user_food_id = mfmd.user_food_id
-        LEFT JOIN meal_record_detail mrd
-        ON mr.user_id = mrd.user_id
-        AND mr.meal_day = mrd.meal_day
-        AND mr.meal_time = mrd.meal_time
-        WHERE mr.user_id = #{userId}
-        ORDER BY mr.meal_day DESC, mr.meal_time
+    <select id="findMealDetailByUserIdAndMealDayAndMealTime">
+        SELECT m.food_amount,
+        m.meal_day,
+        m.meal_time,
+        COALESCE(f.carbohydrate, u.carbohydrate) AS carbohydrate,
+        COALESCE(f.kcal, u.kcal) AS kcal,
+        COALESCE(f.natrium, u.natrium) AS natrium,
+        COALESCE(f.protein, u.protein) AS protein,
+        COALESCE(f.fat, u.fat) AS fat,
+        COALESCE(f.sugar, u.sugar) AS sugar,
+        COALESCE(f.flag, u.flag) AS flag,
+        COALESCE(f.food_name, u.food_name) AS foodName
+        FROM meal_record m
+        LEFT JOIN meal_food_db f
+        ON m.food_id IS NOT NULL AND m.food_id = f.food_db_id
+        LEFT JOIN meal_food_make_db u
+        ON m.user_food_id IS NOT NULL AND m.user_food_id = u.user_food_id
+        WHERE m.meal_day = #{mealDay}
+        AND m.meal_time = #{mealTime}
+        AND m.user_id = #{userId}
+        AND(food_id IS NULL OR food_id != -10000);
     </select>
 
     <select id="findExerciseDataByUserId">
