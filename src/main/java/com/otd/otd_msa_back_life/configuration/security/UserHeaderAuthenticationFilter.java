@@ -1,14 +1,7 @@
 package com.otd.otd_msa_back_life.configuration.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.otd.otd_msa_back_life.configuration.enumcode.model.EnumUserRole;
 import com.otd.otd_msa_back_life.configuration.model.JwtUser;
-import com.otd.otd_msa_back_life.configuration.model.JwtUserDto;
-import com.otd.otd_msa_back_life.configuration.model.SignedUser;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -26,7 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,18 +25,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserHeaderAuthenticationFilter extends OncePerRequestFilter {
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
         // 1) 헤더에서 값 읽기
-        final String idHeader = request.getHeader("X-User-Id");
-        final String rolesCsv  = request.getHeader("X-User-Roles"); // "ROLE_USER,ROLE_ADMIN" or null/empty
+        final String idHeader       = opt(request.getHeader("X-User-Id"),
+                request.getHeader("X-MEMBER-ID")); // 구버전 호환
+        final String rolesCsv       = request.getHeader("X-User-Roles");      // e.g. "ROLE_USER,ROLE_ADMIN"
+        final String nickNameHeader = request.getHeader("X-User-Nickname");   // 닉네임(있으면 사용)
 
         if (idHeader == null || idHeader.isBlank()) {
-            // 게이트웨이가 헤더를 안 붙인 요청은 익명으로 통과
             filterChain.doFilter(request, response);
             return;
         }
@@ -78,31 +69,37 @@ public class UserHeaderAuthenticationFilter extends OncePerRequestFilter {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
 
-        // 3) JwtUser 생성 후 UserPrincipal 생성 (UserPrincipal이 내부에서 ROLE_ 접두어로 SimpleGrantedAuthority를 만듦)
+        // 3) JwtUser 생성 및 닉네임 세팅
         JwtUser jwtUser = new JwtUser(userId, enumRoles);
+        if (nickNameHeader != null && !nickNameHeader.isBlank()) {
+            jwtUser.setNickName(nickNameHeader);
+        }
 
-
+        // 4) Principal/Authentication 구성
         UserPrincipal principal = new UserPrincipal(jwtUser);
-
-        // 4) Authentication 구성 (authorities는 principal.getAuthorities() 사용)
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                         principal,
                         null,
-                        principal.getAuthorities() // Collection<? extends GrantedAuthority>
+                        principal.getAuthorities()
                 );
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         // 5) SecurityContext 설정
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // (선택) 디버깅 로그
         if (log.isDebugEnabled()) {
             String granted = principal.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-            log.debug("[LIFE] Auth set -> userId={}, authorities={}", userId, granted);
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.joining(","));
+            log.debug("[LIFE] Auth set -> userId={}, nickName='{}', authorities={}",
+                    userId, jwtUser.getNickName(), granted);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private static String opt(String a, String b) {
+        return (a != null && !a.isBlank()) ? a : b;
     }
 }

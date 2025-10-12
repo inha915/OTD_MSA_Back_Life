@@ -1,6 +1,7 @@
 package com.otd.otd_msa_back_life.admin.service;
 
 import com.otd.otd_msa_back_life.admin.mapper.AdminMapper;
+import com.otd.otd_msa_back_life.admin.model.AdminCommunityGetRes;
 import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
 import com.otd.otd_msa_back_life.admin.model.AdminMealDataDto;
 import com.otd.otd_msa_back_life.community.repository.CommunityLikeRepository;
@@ -32,6 +33,9 @@ public class AdminService {
     private final CommunityLikeRepository communityLikeRepository;
     private final CommunityPostFileRepository communityPostFileRepository;
 
+    public List<AdminCommunityGetRes> getCommunity() {
+        return adminMapper.findAllCommunity();
+    }
 
     public List<AdminExerciseDto> getExerciseData(Long userId){
         return adminMapper.findExerciseDataByUserId(userId);
@@ -57,10 +61,10 @@ public class AdminService {
             communityLikeRepository.deleteAllByUserId(userId);
             // 게시글 파일 삭제
 
-            // 게시글 삭제
-
+            // 게시글 삭제(소프트 딜리트)
+            int result = communityPostRepository.softDeleteByUserId(userId);
             log.info("Life 서버: 유저 {} 관련 데이터 삭제 완료", userId);
-
+            log.info("Life 게시글 삭제 수 : {}", result);
         } catch (Exception e) {
             log.error("Life 서버: 유저 {} 데이터 삭제 중 오류 발생", userId, e);
             throw e; // controller에서 catch해서 실패 Response 내려줌

@@ -6,17 +6,24 @@ server:
       enabled: true
       force: true
 
+file:
+  upload-directory: /home/green/download
+  profile-pic: profile
+
 spring:
   main:
     allow-bean-definition-overriding: true
   application:
     name: otd_life
+
   jackson:
-    time-zone: Asia/Seoul          # 로컬 시간대 고정(로그/응답 일관성)
+    time-zone: Asia/Seoul
+
   servlet:
     multipart: # 파일 업로드(커뮤니티 첨부파일용)
       max-file-size: 15MB
       max-request-size: 30MB
+
   datasource:
     url: jdbc:log4jdbc:mariadb://112.222.157.157:5012/pih
     username: pih
@@ -25,12 +32,11 @@ spring:
 
   jpa:
     database: mysql
-    open-in-view: false            # 영속성 컨텍스트 요청-응답 분리
+    open-in-view: false
     defer-datasource-initialization: true
-    hibernate:
-      #ddl-auto: update
-      #ddl-auto: create
-
+#    hibernate:
+    # ddl-auto: update
+    # ddl-auto: create
     properties:
       hibernate:
         jdbc:
@@ -38,11 +44,9 @@ spring:
         format_sql: true
         order_updates: true
         show_sql: true
-        default_batch_fetch_size: 100  # N+1 완화에 도움
+        default_batch_fetch_size: 100
 
-
-
-feign:                              # 서버-투-서버 통신(유저 서비스 등)
+feign:
   client:
     config:
       default:
@@ -59,10 +63,10 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
-    org.springframework.cloud.openfeign: info   # 필요시 debug로 내리면 상세통신 확인
-#    org.springframework.security: TRACE
-#    org.springframework.beans.factory.support: DEBUG #빈등록시 실패하는부분확인
-#    org.springframework.web: DEBUG
+    org.springframework.cloud.openfeign: info
+    # org.springframework.security: TRACE
+    # org.springframework.beans.factory.support: DEBUG
+    # org.springframework.web: DEBUG
 
 mybatis:
   configuration:
@@ -72,8 +76,6 @@ mybatis:
 
 # 커뮤니티 파일 저장 루트(로컬 저장 시) — LocalFileStorageService에서 사용
 constants:
-  file:
-    directory: "D:/inha/healthcare/img/item"
 
   comment:
     start-index: 0
