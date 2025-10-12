@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.otd.otd_msa_back_life.admin.mapper.AdminMapper">
+<!--    식단 상세 내용-->
     <select id="findMealDetailByUserIdAndMealDayAndMealTime">
         SELECT m.food_amount,
         m.meal_day,
@@ -21,7 +22,7 @@
         WHERE m.meal_day = #{mealDay}
         AND m.meal_time = #{mealTime}
         AND m.user_id = #{userId}
-        AND(food_id IS NULL OR food_id != -10000);
+        AND(food_id IS NULL OR food_id != -10000)
     </select>
 
     <select id="findExerciseDataByUserId">
@@ -46,4 +47,137 @@
         ON cc.category_id = cp.category_id
         ORDER BY cp.post_id DESC
     </select>
+
+<!--    좋아요순 TOP5 -->
+    <select id="getTop5PostByLike">
+        SELECT
+        cp.post_id,
+        cp.title,
+        cc.`name` AS categoryName,
+        COUNT(DISTINCT cl.id) AS likeCount,
+        cp.created_at
+        FROM community_post cp
+        JOIN community_category cc ON cp.category_id = cc.category_id
+        LEFT JOIN community_like cl ON cp.post_id = cl.post_id
+        WHERE cp.is_deleted = false
+        GROUP BY cp.post_id
+        ORDER BY likeCount DESC
+        LIMIT 5
+    </select>
+
+<!--    댓글순 TOP5 -->
+    <select id="getTop5PostByComment">
+        SELECT
+        cp.post_id,
+        cp.title,
+        cc.name AS categoryName,
+        COUNT(DISTINCT cm.comment_id) AS commentCount,
+        cp.created_at
+        FROM community_post cp
+        JOIN community_category cc ON cp.category_id = cc.category_id
+        LEFT JOIN community_comment cm ON cp.post_id = cm.post_id
+        WHERE cp.is_deleted = false
+        GROUP BY cp.post_id
+        ORDER BY commentCount DESC
+        LIMIT 5
+    </select>
+
+<!--    일 평균 운동 시간-->
+    <select id="getDailyExerciseAvg">
+        SELECT ROUND(AVG(user_daily_avg), 1) AS exerciseRecord
+        FROM (
+            SELECT AVG(daily_sum) AS user_daily_avg
+            FROM (
+            SELECT user_id, DATE(created_at) AS record_date, SUM(duration) AS daily_sum
+            FROM exercise_record
+            GROUP BY user_id, DATE(created_at)
+            ) AS daily
+            GROUP BY user_id
+        ) AS user_avg
+    </select>
+
+<!--    6개월 게시글 추이-->
+    <select id="countByPost">
+        WITH RECURSIVE month_seq AS (
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01') AS month_start
+            UNION ALL
+            SELECT DATE_ADD(month_start, INTERVAL 1 MONTH)
+            FROM month_seq
+            WHERE month_start &lt; DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        )
+        SELECT DATE_FORMAT(m.month_start, '%Y-%m') AS month,
+            COUNT(p.post_id) AS postCount
+        FROM month_seq m
+        LEFT JOIN community_post p
+        ON DATE_FORMAT(p.created_at, '%Y-%m') = DATE_FORMAT(m.month_start, '%Y-%m')
+        AND p.is_deleted = false
+        GROUP BY month_start
+    </select>
+
+<!--    6개월 운동 기록 추이-->
+    <select id="countByExerciseRecord">
+        WITH RECURSIVE month_seq AS (
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01') AS month_start
+            UNION ALL
+            SELECT DATE_ADD(month_start, INTERVAL 1 MONTH)
+            FROM month_seq
+            WHERE month_start &lt; DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        )
+        SELECT DATE_FORMAT(m.month_start, '%Y-%m') AS month,
+            COUNT(e.exercise_id) AS recordCount
+        FROM month_seq m
+        LEFT JOIN exercise_record e
+        ON DATE_FORMAT(e.start_at, '%Y-%m') = DATE_FORMAT(m.month_start, '%Y-%m')
+        GROUP BY month_start
+    </select>
+
+<!--    운동종목별 기록 수-->
+    <select id="countByExerciseName">
+        SELECT c.exercise_name AS exerciseName,
+            COUNT(r.exercise_record_id) AS recordCount
+        FROM exercise_record r
+        JOIN exercise_catalog c
+        ON r.exercise_id = c.exercise_id
+        GROUP BY c.exercise_name
+        ORDER BY recordCount DESC
+    </select>
+
+<!--    시간대별 운동 분포-->
+    <select id="countExerciseTimeDistribution">
+        SELECT CASE
+            WHEN HOUR(start_at) BETWEEN 0 AND 5 THEN '00시~06시'
+            WHEN HOUR(start_at) BETWEEN 6 AND 11 THEN '06시~12시'
+            WHEN HOUR(start_at) BETWEEN 12 AND 17 THEN '12시~18시'
+            ELSE '18~24시'
+            END AS timeRange,
+            COUNT(*) AS count
+        FROM exercise_record
+        GROUP BY timeRange
+    </select>
+
+<!--    6개월 식단 기록 추이-->
+    <select id="countByMealRecord">
+        WITH RECURSIVE month_seq AS (
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m-01') AS month_start
+            UNION ALL
+            SELECT DATE_ADD(month_start, INTERVAL 1 MONTH)
+            FROM month_seq
+            WHERE month_start &lt; DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        )
+        SELECT DATE_FORMAT(m.month_start, '%Y-%m') AS month,
+        COUNT(*) AS recordCount
+        FROM month_seq m
+        LEFT JOIN meal_record_detail md
+        ON DATE_FORMAT(meal_day, '%Y-%m') = DATE_FORMAT(m.month_start, '%Y-%m')
+        GROUP BY month_start
+    </select>
+    
+<!--    탄단지 평균 섭취량-->
+    <select id="getMacroAvg">
+        SELECT ROUND(AVG(total_carbohydrate), 1) AS averageCarbohydrate,
+            ROUND(AVG(total_protein), 1) AS averageProtein,
+            ROUND(AVG(total_fat), 1) AS averageFat
+        FROM meal_record_detail
+    </select>
 </mapper>
+

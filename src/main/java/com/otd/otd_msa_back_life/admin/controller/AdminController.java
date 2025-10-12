@@ -1,6 +1,12 @@
 package com.otd.otd_msa_back_life.admin.controller;
 
 import com.otd.otd_msa_back_life.admin.model.*;
+import com.otd.otd_msa_back_life.admin.model.dashboard.AdminDashBoardCommunityDto;
+import com.otd.otd_msa_back_life.admin.model.dashboard.AdminDashBoardExerciseDto;
+import com.otd.otd_msa_back_life.admin.model.dashboard.AdminDashBoardMealDto;
+import com.otd.otd_msa_back_life.admin.model.statistics.AdminStatisticsCommunityDto;
+import com.otd.otd_msa_back_life.admin.model.statistics.AdminStatisticsExerciseDto;
+import com.otd.otd_msa_back_life.admin.model.statistics.AdminStatisticsMealDto;
 import com.otd.otd_msa_back_life.admin.service.AdminService;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostFileRepository;
 import com.otd.otd_msa_back_life.community.repository.MentRepository;
@@ -107,4 +113,35 @@ public class AdminController {
         return new ResultResponse<>("댓글 삭제 완료", commentId);
     }
 
+    // 대시보드
+    @GetMapping("/dash/community")
+    public AdminDashBoardCommunityDto getCommunityDashBoard() {
+        return adminService.getCommunityDashBoard();
+    }
+
+    @GetMapping("/dash/exercise")
+    public AdminDashBoardExerciseDto getExerciseDashBoard() {
+        return adminService.getExerciseDashBoard();
+    }
+
+    @GetMapping("/dash/meal")
+    public AdminDashBoardMealDto getMealDashBoard() {
+        return adminService.getMealDashBoard();
+    }
+
+    // 통계
+    @GetMapping("/statistics/community")
+    public AdminStatisticsCommunityDto getCommunityStatistics() {
+        return adminService.getCommunityStatistics();
+    }
+
+    @GetMapping("/statistics/exercise")
+    public AdminStatisticsExerciseDto getExerciseStatistics() {
+        return adminService.getExerciseStatistics();
+    }
+
+    @GetMapping("/statistics/meal")
+    public AdminStatisticsMealDto getMealStatistics() {
+        return adminService.getMealStatistics();
+    }
 }

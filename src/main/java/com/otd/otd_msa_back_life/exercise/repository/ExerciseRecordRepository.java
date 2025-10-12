@@ -47,4 +47,17 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
     void deleteAllByUserId(Long userId);
 
     List<ExerciseRecord> findAllByUserId(Long userId);
+
+    // 대시보드
+    // 총 운동 기록 수
+    @Query("SELECT COUNT(e) FROM ExerciseRecord e")
+    int countTotalRecord();
+
+    // 이번 주 기록 유저 수
+    @Query("""
+        SELECT COUNT(DISTINCT e.userId)
+        FROM ExerciseRecord e
+        WHERE e.startAt >= :monday
+    """)
+    int countWeeklyRecordUser(@Param("monday") LocalDateTime monday);
 }

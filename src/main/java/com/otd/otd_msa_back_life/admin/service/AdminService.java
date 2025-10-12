@@ -5,10 +5,9 @@ import com.otd.otd_msa_back_life.admin.model.*;
 import com.otd.otd_msa_back_life.admin.model.AdminCommunityDataDto;
 import com.otd.otd_msa_back_life.admin.model.AdminCommunityGetRes;
 import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
-import com.otd.otd_msa_back_life.admin.model.AdminMealDataDto;
+import com.otd.otd_msa_back_life.admin.model.dashboard.*;
+import com.otd.otd_msa_back_life.admin.model.statistics.*;
 import com.otd.otd_msa_back_life.community.entity.CommunityPost;
-import com.otd.otd_msa_back_life.community.entity.CommunityPostFile;
-import com.otd.otd_msa_back_life.community.entity.Ment;
 import com.otd.otd_msa_back_life.community.repository.CommunityLikeRepository;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostFileRepository;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
@@ -20,11 +19,12 @@ import com.otd.otd_msa_back_life.meal.repository.MealRecordDetailRepository;
 import com.otd.otd_msa_back_life.water_intake.repository.DailyWaterIntakeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -58,6 +58,119 @@ public class AdminService {
         return adminMapper.findMealDetailByUserIdAndMealDayAndMealTime(req);
     }
 
+    // 대시보드 커뮤니티
+    public AdminDashBoardCommunityDto getCommunityDashBoard(){
+        AdminDashBoardCommunityDto dto = new AdminDashBoardCommunityDto();
+
+        // 총 게시물 수
+        int totalPostCount = communityPostRepository.countAllPost();
+        // 이번주 게시글 수
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDateTime startOfWeek = monday.atStartOfDay();
+        int totalWeeklyPostCount = communityPostRepository.countWeeklyPost(startOfWeek);
+        // 카테고리별 게시글 수
+        List<CategoryPostCountRes> categoryPostCountRes = communityPostRepository.countPostByCategory();
+        // 좋아요 top5 게시글
+        List<TopLikePostRes> topLikePostRes = adminMapper.getTop5PostByLike();
+        // 댓글 top5 게시글
+        List<TopCommentPostRes> topCommentPostRes = adminMapper.getTop5PostByComment();
+
+        dto.setTotalPostCount(totalPostCount);
+        dto.setWeeklyNewPostCount(totalWeeklyPostCount);
+        dto.setCategoryPostCount(categoryPostCountRes);
+        dto.setTopLikePost(topLikePostRes);
+        dto.setTopCommentPost(topCommentPostRes);
+
+        return dto;
+    }
+
+    // 대시보드 운동
+    public AdminDashBoardExerciseDto getExerciseDashBoard(){
+        AdminDashBoardExerciseDto dto = new AdminDashBoardExerciseDto();
+
+        // 총 운동기록 수
+        int totalRecordCount = exerciseRecordRepository.countTotalRecord();
+        // 이번 주 기록 유저 수
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDateTime startOfWeek = monday.atStartOfDay();
+        int weeklyRecordUserCount = exerciseRecordRepository.countWeeklyRecordUser(startOfWeek);
+        // 일 평균 운동 시간
+        Double dailyExerciseAvg = adminMapper.getDailyExerciseAvg();
+
+        dto.setTotalRecordCount(totalRecordCount);
+        dto.setWeeklyRecordUserCount(weeklyRecordUserCount);
+        dto.setDailyExerciseAverage(dailyExerciseAvg);
+
+        return dto;
+    }
+
+    // 대시보드 식단
+    public AdminDashBoardMealDto getMealDashBoard(){
+        AdminDashBoardMealDto dto = new AdminDashBoardMealDto();
+
+        // 총 식단기록 수
+        int totalRecordCount = mealRecordDetailRepository.countAllMealRecord();
+        // 이번 주 기록 유저 수
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        int weeklyRecordUserCount = mealRecordDetailRepository.countWeeklyRecordUser(monday);
+        // 1인당 평균 칼로리 섭취
+        Double calorieAvg = mealRecordDetailRepository.getCalorieAvg();
+        calorieAvg = calorieAvg != null ? Math.round(calorieAvg * 10) / 10.0 : 0.0;
+
+        dto.setTotalRecordCount(totalRecordCount);
+        dto.setWeeklyRecordUserCount(weeklyRecordUserCount);
+        dto.setCalorieAverage(calorieAvg);
+
+        return dto;
+    }
+
+    // 통계 커뮤니티
+    public AdminStatisticsCommunityDto getCommunityStatistics(){
+        AdminStatisticsCommunityDto dto = new AdminStatisticsCommunityDto();
+
+        // 카테고리별 게시글 수
+        List<CategoryPostCountRes> categoryPostCount = communityPostRepository.countPostByCategory();
+        // 6개월간 게시글 추이
+        List<PostCountRes> postCount = adminMapper.countByPost();
+
+        dto.setCategoryPostCount(categoryPostCount);
+        dto.setPostCount(postCount);
+
+        return dto;
+    }
+
+    // 통계 운동
+    public AdminStatisticsExerciseDto getExerciseStatistics(){
+        AdminStatisticsExerciseDto dto = new AdminStatisticsExerciseDto();
+
+        // 6개월간 운동기록 추이
+        List<ExerciseRecordCountRes> exerciseRecordCount = adminMapper.countByExerciseRecord();
+        // 운동종목별 기록 수
+        List<ExerciseNameRecordCountRes> exerciseNameRecordCount = adminMapper.countByExerciseName();
+        // 시간대별 운동 분포
+        List<ExerciseDistributionCountRes> exerciseDistributionCount = adminMapper.countExerciseTimeDistribution();
+
+        dto.setExerciseRecordCountResList(exerciseRecordCount);
+        dto.setExerciseNameRecordCountResList(exerciseNameRecordCount);
+        dto.setExerciseDistributionCountResList(exerciseDistributionCount);
+
+        return dto;
+    }
+
+    // 통계 식단
+    public AdminStatisticsMealDto getMealStatistics(){
+        AdminStatisticsMealDto dto = new AdminStatisticsMealDto();
+
+        // 6개월간 식단기록 추이
+        List<MealRecordCountRes> mealRecordCount = adminMapper.countByMealRecord();
+        // 탄단지 평균 섭취량
+        MealMacroAverageRes mealMacroAvg = adminMapper.getMacroAvg();
+
+        dto.setMealRecordCount(mealRecordCount);
+        dto.setMealMacroAverage(mealMacroAvg);
+
+        return dto;
+    }
     @Transactional
     public void removeUser(Long userId) {
         try {
