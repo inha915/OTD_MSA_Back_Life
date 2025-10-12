@@ -1,10 +1,12 @@
 package com.otd.otd_msa_back_life.community.repository;
 
+import com.otd.otd_msa_back_life.admin.model.AdminCommunityDataDto;
 import com.otd.otd_msa_back_life.community.entity.Ment;
 import com.otd.otd_msa_back_life.community.entity.CommunityPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,7 +18,7 @@ public interface MentRepository extends JpaRepository<Ment, Long> {
 
     void deleteAllByUserId(Long userId);
 
-
+    List<Ment> findByPostPostId(Long postId);
     //사용자가 작성한 댓글목록
     @Query("""
         SELECT m FROM Ment m
@@ -28,4 +30,8 @@ public interface MentRepository extends JpaRepository<Ment, Long> {
 
     //사용자가 작성한 댓글 총개수
     long countByUserId(Long userId);
+
+    @Modifying
+    @Query("DELETE FROM Ment c WHERE c.post.postId = :postId")
+    int deleteByPostId(Long postId);
 }

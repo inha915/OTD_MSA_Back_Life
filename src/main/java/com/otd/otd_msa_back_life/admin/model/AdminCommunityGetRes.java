@@ -14,9 +14,7 @@ public class AdminCommunityGetRes {
     private Long userId;
     private String category;
     private String title;
-    private String content;
     private boolean isDeleted;
-    private int likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
