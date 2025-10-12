@@ -26,5 +26,5 @@ public interface ChallengeFeignClient {
 
     @GetMapping("/api/OTD/challenge/progress/challenges/{userId}")
     ResponseEntity<List<String>> getActiveChallengeNames(@PathVariable("userId") Long userId
-                                                        ,@RequestParam("recordDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate recordDate);
+            ,@RequestParam("recordDate") LocalDate recordDate);
 }
