@@ -34,8 +34,8 @@
 
     <select id="findAllCommunity">
         SELECT
-        cp.post_id, cp.user_id, cp.`title`, cp.`content`,
-        cp.is_deleted, cp.like_count, cp.created_at,
+        cp.post_id, cp.user_id, cp.`title`,
+        cp.is_deleted, cp.created_at,
         cp.updated_at, cc.name AS category
         FROM community_post cp
         INNER JOIN community_category cc
