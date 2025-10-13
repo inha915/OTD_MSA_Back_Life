@@ -82,5 +82,13 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
         ORDER BY COUNT(p) DESC
     """)
     List<CategoryPostCountRes> countPostByCategory();
+
+    @Query("update CommunityPost c set c.nickName = :nickname where c.userId = :userId")
+    @Modifying
+    int updateNickNameByUserId(Long userId, String nickname);
+
+    @Query("update CommunityPost c set c.profile = :profile where c.userId = :userId")
+    @Modifying
+    int updateProfileByUserId(String profile, Long userId);
 }
 

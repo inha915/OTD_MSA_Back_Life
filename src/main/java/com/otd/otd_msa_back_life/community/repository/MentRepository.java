@@ -34,4 +34,8 @@ public interface MentRepository extends JpaRepository<Ment, Long> {
     @Modifying
     @Query("DELETE FROM Ment c WHERE c.post.postId = :postId")
     int deleteByPostId(Long postId);
+
+    @Modifying
+    @Query("update Ment m set m.nickName = :nickname where m.userId = :userId")
+    int updateNickNameByUserId(Long userId, String nickname);
 }
