@@ -18,4 +18,13 @@
     </select>
 
 
+    <select id="findAverageDurationGroupedByDate" resultType="com.otd.otd_msa_back_life.exercise.model.AverageExerciseDurationDto">
+        SELECT
+        DATE(start_at) AS date,
+        ROUND(AVG(duration), 2) AS averageDuration
+        FROM exercise_record
+        GROUP BY DATE(start_at)
+        ORDER BY DATE(start_at)
+    </select>
+
 </mapper>
