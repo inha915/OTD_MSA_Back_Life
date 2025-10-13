@@ -12,6 +12,7 @@ import java.util.List;
 public class AdminCommunityDataDto {
     private String nickName;
     private String title;
+    private String category;
     private String content;
     private int likeCount;
     private boolean isDeleted;

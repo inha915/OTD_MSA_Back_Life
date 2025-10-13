@@ -5,10 +5,7 @@ import com.otd.otd_msa_back_life.community.entity.CommunityPost;
 import com.otd.otd_msa_back_life.community.repository.CommunityCategoryRepository;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
 import com.otd.otd_msa_back_life.community.repository.MentRepository;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostCreateReq;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostListRes;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostRes;
-import com.otd.otd_msa_back_life.community.web.dto.post.PostUpdateReq;
+import com.otd.otd_msa_back_life.community.web.dto.post.*;
 import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +22,8 @@ public class PostService {
     private final CommunityPostRepository postRepository;
     private final CommunityCategoryRepository categoryRepository;
     private final MentRepository mentRepository;
+    private final CommunityPostRepository communityPostRepository;
+
     /**
      * 게시글 생성
      * - categoryKey로 카테고리 조회 후 엔티티에 세팅
@@ -147,5 +146,25 @@ public class PostService {
                 .createdAt(p.getCreatedAt())
                 .updatedAt(p.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public int updateUserInfo(ProfilePicPutDto dto) {
+        int result = communityPostRepository.updateNickNameByUserId(dto.getUserId(), dto.getNickname());
+        int result2 = mentRepository.updateNickNameByUserId(dto.getUserId(), dto.getNickname());
+        int result3 = communityPostRepository.updateProfileByUserId(dto.getImgPath(), dto.getUserId());
+        return result + result2 + result3;
+    }
+
+    @Transactional
+    public int updateNickName(ProfilePicPutDto dto) {
+        int result = communityPostRepository.updateNickNameByUserId(dto.getUserId(), dto.getNickname());
+        int result2 = mentRepository.updateNickNameByUserId(dto.getUserId(), dto.getNickname());
+        return result + result2;
+    }
+
+    @Transactional
+    public int updateImgPath(ProfilePicPutDto dto) {
+        return communityPostRepository.updateProfileByUserId(dto.getImgPath(), dto.getUserId());
     }
 }

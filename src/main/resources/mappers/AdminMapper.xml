@@ -41,7 +41,8 @@
         SELECT
         cp.post_id, cp.user_id, cp.`title`,
         cp.is_deleted, cp.created_at,
-        cp.updated_at, cc.name AS category
+        cp.updated_at, cc.name AS category,
+        cp.nick_name
         FROM community_post cp
         INNER JOIN community_category cc
         ON cc.category_id = cp.category_id

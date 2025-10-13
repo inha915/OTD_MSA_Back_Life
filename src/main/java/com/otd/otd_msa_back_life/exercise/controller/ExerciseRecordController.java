@@ -5,10 +5,7 @@ import com.otd.otd_msa_back_life.common.model.PagingReq;
 import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
-import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordDetailGetRes;
-import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordGetRes;
-import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordPostReq;
-import com.otd.otd_msa_back_life.exercise.model.ExerciseRecordWeeklyGetReq;
+import com.otd.otd_msa_back_life.exercise.model.*;
 import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +68,13 @@ public class ExerciseRecordController {
                                             , @PathVariable("exerciseRecordId") Long exerciseRecordId) {
         ExerciseRecordDetailGetRes result = exerciseRecordService.getExerciseRecordDetail(userPrincipal.getSignedUserId(), exerciseRecordId);
         return ResponseEntity.ok(result);
+    }
+
+//    [GET] average
+    @GetMapping("/average/duration")
+    public ResponseEntity<?> getAverageDuration() {
+        List<AverageExerciseDurationDto> result = exerciseRecordService.getAverageExerciseDurations();
+    return ResponseEntity.ok(result);
     }
 
 //    [DELETE]
