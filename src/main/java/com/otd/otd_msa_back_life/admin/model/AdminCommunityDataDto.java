@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminCommunityDataDto {
+    private String nickName;
     private String title;
     private String content;
     private int likeCount;

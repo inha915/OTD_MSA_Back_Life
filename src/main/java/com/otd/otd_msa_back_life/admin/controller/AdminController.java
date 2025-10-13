@@ -1,6 +1,12 @@
 package com.otd.otd_msa_back_life.admin.controller;
 
 import com.otd.otd_msa_back_life.admin.model.*;
+import com.otd.otd_msa_back_life.admin.model.dashboard.AdminDashBoardCommunityDto;
+import com.otd.otd_msa_back_life.admin.model.dashboard.AdminDashBoardExerciseDto;
+import com.otd.otd_msa_back_life.admin.model.dashboard.AdminDashBoardMealDto;
+import com.otd.otd_msa_back_life.admin.model.statistics.AdminStatisticsCommunityDto;
+import com.otd.otd_msa_back_life.admin.model.statistics.AdminStatisticsExerciseDto;
+import com.otd.otd_msa_back_life.admin.model.statistics.AdminStatisticsMealDto;
 import com.otd.otd_msa_back_life.admin.service.AdminService;
 import com.otd.otd_msa_back_life.community.repository.CommunityPostFileRepository;
 import com.otd.otd_msa_back_life.community.repository.MentRepository;
@@ -11,6 +17,7 @@ import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseCatalog;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseCatalogRepository;
 import com.otd.otd_msa_back_life.exercise.service.ExerciseRecordService;
+import com.otd.otd_msa_back_life.meal.entity.MealRecordDetail;
 import com.otd.otd_msa_back_life.meal.entity.MealFoodDb;
 import com.otd.otd_msa_back_life.meal.entity.MealFoodMakeDb;
 import com.otd.otd_msa_back_life.meal.repository.MealFoodDbRepository;
@@ -42,8 +49,14 @@ public class AdminController {
     }
 
     @GetMapping("/meal/{userId}")
-    public List<AdminMealDataDto> getMealData(@PathVariable Long userId){
+    public List<MealRecordDetail> getMealData(@PathVariable Long userId){
         return adminService.getMealData(userId);
+    }
+
+    @GetMapping("/meal/detail")
+    public List<AdminMealDetailGetRes> getMealDetail(@ModelAttribute AdminMealDetailGetReq req) {
+        System.out.println("req" + req);
+        return adminService.getMealDetail(req);
     }
 
     @GetMapping("/exercise/{userId}")
@@ -98,5 +111,37 @@ public class AdminController {
     public ResultResponse<?> deleteComment(@PathVariable Long commentId) {
         mentRepository.deleteById(commentId);
         return new ResultResponse<>("댓글 삭제 완료", commentId);
+    }
+
+    // 대시보드
+    @GetMapping("/dash/community")
+    public AdminDashBoardCommunityDto getCommunityDashBoard() {
+        return adminService.getCommunityDashBoard();
+    }
+
+    @GetMapping("/dash/exercise")
+    public AdminDashBoardExerciseDto getExerciseDashBoard() {
+        return adminService.getExerciseDashBoard();
+    }
+
+    @GetMapping("/dash/meal")
+    public AdminDashBoardMealDto getMealDashBoard() {
+        return adminService.getMealDashBoard();
+    }
+
+    // 통계
+    @GetMapping("/statistics/community")
+    public AdminStatisticsCommunityDto getCommunityStatistics() {
+        return adminService.getCommunityStatistics();
+    }
+
+    @GetMapping("/statistics/exercise")
+    public AdminStatisticsExerciseDto getExerciseStatistics() {
+        return adminService.getExerciseStatistics();
+    }
+
+    @GetMapping("/statistics/meal")
+    public AdminStatisticsMealDto getMealStatistics() {
+        return adminService.getMealStatistics();
     }
 }
