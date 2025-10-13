@@ -63,11 +63,6 @@ public class AdminController {
         return adminService.getMealDetail(req);
     }
 
-    @GetMapping("/exercise/{userId}")
-    public List<AdminExerciseDto> getExData(@PathVariable Long userId) {
-        return adminService.getExerciseData(userId);
-    }
-
     @GetMapping("/meal")
     public AdminMealDto searchMeals(
             @RequestParam(required = false) String keyword,
@@ -76,10 +71,79 @@ public class AdminController {
         return adminService.searchMeals(keyword, page, size);
     }
 
+    @PostMapping("/meal")
+    public ResponseEntity<MealFoodDb> addMeal(@RequestBody MealFoodDb meal) {
+        MealFoodDb save = mealFoodDbRepository.save(meal);
+        return ResponseEntity.ok().body(save);
+    }
+
+    @PutMapping("/meal/{mealId}")
+    public MealFoodDb updateMeal(@PathVariable Long mealId, @RequestBody MealFoodDb food) {
+        MealFoodDb mf = mealFoodDbRepository.findById(mealId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 음식 ID: " + mealId));
+
+        MealFoodDb updated = mf.toBuilder()
+                .foodName(food.getFoodName())
+                .flag(food.getFlag())
+                .kcal(food.getKcal())
+                .protein(food.getProtein())
+                .carbohydrate(food.getCarbohydrate())
+                .fat(food.getFat())
+                .sugar(food.getSugar())
+                .natrium(food.getNatrium())
+                .foodCapacity(food.getFoodCapacity())
+                .build();
+
+        return mealFoodDbRepository.save(updated);
+    }
+
+    @DeleteMapping("/meal/{mealId}")
+    public void deleteMeal(@PathVariable Long mealId) {
+        mealFoodDbRepository.deleteById(mealId);
+    }
+
+    @DeleteMapping("/mealmake/{mealId}")
+    public void deleteMealMake(@PathVariable Long mealId) {
+        mealFoodMakeDbRepository.deleteById(mealId);
+    }
+
+    @GetMapping("/exercise/{userId}")
+    public List<AdminExerciseDto> getExData(@PathVariable Long userId) {
+        return adminService.getExerciseData(userId);
+    }
+
+    @PostMapping("/exercise")
+    public ResponseEntity<?> addExercise(@RequestBody ExerciseCatalog exerciseCatalog) {
+        System.out.println("받은 데이터: " + exerciseCatalog);
+        ExerciseCatalog ex = exerciseCatalogRepository.save(exerciseCatalog);
+        return ResponseEntity.ok().body(ex);
+    }
+
+
     @GetMapping("/exercise")
     public List<ExerciseCatalog> getExercises() {
         return exerciseCatalogRepository.findAll();
     }
+
+    @PutMapping("/exercise/{exerciseId}")
+    public ExerciseCatalog updateExercise(@PathVariable Long exerciseId
+            , @RequestBody ExerciseCatalog ec) {
+        ExerciseCatalog ex = exerciseCatalogRepository.findByExerciseId(exerciseId);
+
+        ExerciseCatalog updated = ex.toBuilder()
+                .exerciseId(exerciseId)
+                .exerciseMet(ec.getExerciseMet())
+                .exerciseName(ec.getExerciseName())
+                .hasDistance(ec.getHasDistance())
+                .hasReps(ec.getHasReps()).build();
+        return exerciseCatalogRepository.save(updated);
+    }
+
+    @DeleteMapping("/exercise/{exerciseId}")
+    public void deleteExercise(@PathVariable Long exerciseId) {
+        exerciseCatalogRepository.deleteById(exerciseId);
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<ResultResponse<?>> deleteUserData(@PathVariable Long userId) {
         try {

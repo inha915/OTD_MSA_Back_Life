@@ -26,11 +26,11 @@ public class MealRecord {
     private Long userId;
 
     @ManyToOne
-    @JoinColumn(name = "food_id")
+    @JoinColumn(name = "food_id", foreignKey = @ForeignKey(name = "fk_meal_record_food"))
     private MealFoodDb foodDb;
 
     @ManyToOne
-    @JoinColumn(name = "user_food_id")
+    @JoinColumn(name = "user_food_id", foreignKey = @ForeignKey(name = "fk_meal_record_user_food"))
     private MealFoodMakeDb userFood;
 
     @PrePersist
@@ -40,6 +40,5 @@ public class MealRecord {
     }
     @Embedded
     private MealRecordIds mealRecordIds;
-
 
 }
