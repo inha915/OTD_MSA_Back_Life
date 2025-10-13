@@ -4,12 +4,10 @@ import com.otd.otd_msa_back_life.feign.model.ExerciseDataReq;
 import com.otd.otd_msa_back_life.feign.model.ChallengeRecordDeleteReq;
 import com.otd.otd_msa_back_life.feign.model.MealDataReq;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @FeignClient(name = "${constants.feign-client.challenge.name}" ,url = "${constants.feign-client.challenge.url}")

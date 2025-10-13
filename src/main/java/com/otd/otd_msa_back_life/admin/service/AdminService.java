@@ -14,6 +14,7 @@ import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
 import com.otd.otd_msa_back_life.community.repository.MentRepository;
 import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
+import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
 import com.otd.otd_msa_back_life.meal.repository.MealRecordDetailRepository;
 import com.otd.otd_msa_back_life.water_intake.repository.DailyWaterIntakeRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +40,11 @@ public class AdminService {
     private final CommunityPostRepository communityPostRepository;
     private final CommunityLikeRepository communityLikeRepository;
     private final CommunityPostFileRepository communityPostFileRepository;
+    private final ChallengeFeignClient challengeFeignClient;
 
     public List<AdminCommunityGetRes> getCommunity() {
-        return adminMapper.findAllCommunity();
+        List<AdminCommunityGetRes> posts = adminMapper.findAllCommunity();
+        return posts;
     }
 
     public List<AdminExerciseDto> getExerciseData(Long userId){
