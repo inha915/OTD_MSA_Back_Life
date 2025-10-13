@@ -43,6 +43,8 @@ public class PostService {
                 .content(req.getContent())
                 .likeCount(0)
                 .isDeleted(false)
+                .nickName(req.getNickName())
+                .profile(req.getProfile())
                 .build();
 
         CommunityPost saved = postRepository.save(post);
@@ -78,6 +80,7 @@ public class PostService {
                 .title(p.getTitle())
                 .content(summarize(p.getContent(), 140)) // ★ 추가
                 .likeCount(p.getLikeCount())
+                .nickName(p.getNickName())
                 .createdAt(p.getCreatedAt())
                 .categoryKey(p.getCategory() != null ? p.getCategory().getCategoryKey() : null)
                 .commentCount((int) mentRepository.countByPost(p))
