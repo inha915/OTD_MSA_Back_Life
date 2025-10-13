@@ -5,6 +5,7 @@ import com.otd.otd_msa_back_life.meal.entity.MealFoodMakeDb;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,6 +13,6 @@ import java.util.List;
 @Setter
 @ToString
 public class AdminMealDto {
-    private List<MealFoodDb> mealFoodDbs;
+    private Page<MealFoodDb> mealFoodDbs;
     private List<MealFoodMakeDb> mealFoodMakeDbs;
 }

@@ -25,6 +25,10 @@ import com.otd.otd_msa_back_life.meal.repository.MealFoodMakeDbRepository;
 import com.otd.otd_msa_back_life.meal.service.MealService;
 import com.otd.otd_msa_back_life.water_intake.service.DailyWaterIntakeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,25 +63,87 @@ public class AdminController {
         return adminService.getMealDetail(req);
     }
 
+    @GetMapping("/meal")
+    public AdminMealDto searchMeals(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        return adminService.searchMeals(keyword, page, size);
+    }
+
+    @PostMapping("/meal")
+    public ResponseEntity<MealFoodDb> addMeal(@RequestBody MealFoodDb meal) {
+        MealFoodDb save = mealFoodDbRepository.save(meal);
+        return ResponseEntity.ok().body(save);
+    }
+
+    @PutMapping("/meal/{mealId}")
+    public MealFoodDb updateMeal(@PathVariable Long mealId, @RequestBody MealFoodDb food) {
+        MealFoodDb mf = mealFoodDbRepository.findById(mealId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 음식 ID: " + mealId));
+
+        MealFoodDb updated = mf.toBuilder()
+                .foodName(food.getFoodName())
+                .flag(food.getFlag())
+                .kcal(food.getKcal())
+                .protein(food.getProtein())
+                .carbohydrate(food.getCarbohydrate())
+                .fat(food.getFat())
+                .sugar(food.getSugar())
+                .natrium(food.getNatrium())
+                .foodCapacity(food.getFoodCapacity())
+                .build();
+
+        return mealFoodDbRepository.save(updated);
+    }
+
+    @DeleteMapping("/meal/{mealId}")
+    public void deleteMeal(@PathVariable Long mealId) {
+        mealFoodDbRepository.deleteById(mealId);
+    }
+
+    @DeleteMapping("/mealmake/{mealId}")
+    public void deleteMealMake(@PathVariable Long mealId) {
+        mealFoodMakeDbRepository.deleteById(mealId);
+    }
+
     @GetMapping("/exercise/{userId}")
     public List<AdminExerciseDto> getExData(@PathVariable Long userId) {
         return adminService.getExerciseData(userId);
     }
 
-    @GetMapping("/meal")
-    public AdminMealDto getMeals() {
-        AdminMealDto dto = new AdminMealDto();
-        List<MealFoodDb> mf = mealFoodDbRepository.findAll();
-        List<MealFoodMakeDb> mm = mealFoodMakeDbRepository.findAll();
-        dto.setMealFoodDbs(mf);
-        dto.setMealFoodMakeDbs(mm);
-        return dto;
+    @PostMapping("/exercise")
+    public ResponseEntity<?> addExercise(@RequestBody ExerciseCatalog exerciseCatalog) {
+        System.out.println("받은 데이터: " + exerciseCatalog);
+        ExerciseCatalog ex = exerciseCatalogRepository.save(exerciseCatalog);
+        return ResponseEntity.ok().body(ex);
     }
+
 
     @GetMapping("/exercise")
     public List<ExerciseCatalog> getExercises() {
         return exerciseCatalogRepository.findAll();
     }
+
+    @PutMapping("/exercise/{exerciseId}")
+    public ExerciseCatalog updateExercise(@PathVariable Long exerciseId
+            , @RequestBody ExerciseCatalog ec) {
+        ExerciseCatalog ex = exerciseCatalogRepository.findByExerciseId(exerciseId);
+
+        ExerciseCatalog updated = ex.toBuilder()
+                .exerciseId(exerciseId)
+                .exerciseMet(ec.getExerciseMet())
+                .exerciseName(ec.getExerciseName())
+                .hasDistance(ec.getHasDistance())
+                .hasReps(ec.getHasReps()).build();
+        return exerciseCatalogRepository.save(updated);
+    }
+
+    @DeleteMapping("/exercise/{exerciseId}")
+    public void deleteExercise(@PathVariable Long exerciseId) {
+        exerciseCatalogRepository.deleteById(exerciseId);
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<ResultResponse<?>> deleteUserData(@PathVariable Long userId) {
         try {
