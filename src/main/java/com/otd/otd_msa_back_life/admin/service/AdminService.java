@@ -7,11 +7,9 @@ import com.otd.otd_msa_back_life.admin.model.AdminCommunityGetRes;
 import com.otd.otd_msa_back_life.admin.model.AdminExerciseDto;
 import com.otd.otd_msa_back_life.admin.model.dashboard.*;
 import com.otd.otd_msa_back_life.admin.model.statistics.*;
+import com.otd.otd_msa_back_life.community.entity.CommunityCategory;
 import com.otd.otd_msa_back_life.community.entity.CommunityPost;
-import com.otd.otd_msa_back_life.community.repository.CommunityLikeRepository;
-import com.otd.otd_msa_back_life.community.repository.CommunityPostFileRepository;
-import com.otd.otd_msa_back_life.community.repository.CommunityPostRepository;
-import com.otd.otd_msa_back_life.community.repository.MentRepository;
+import com.otd.otd_msa_back_life.community.repository.*;
 import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
 import com.otd.otd_msa_back_life.meal.entity.MealRecordDetail;
@@ -43,6 +41,7 @@ public class AdminService {
     private final CommunityLikeRepository communityLikeRepository;
     private final CommunityPostFileRepository communityPostFileRepository;
     private final ChallengeFeignClient challengeFeignClient;
+    private final CommunityCategoryRepository communityCategoryRepository;
 
     public List<AdminCommunityGetRes> getCommunity() {
         List<AdminCommunityGetRes> posts = adminMapper.findAllCommunity();
@@ -205,7 +204,6 @@ public class AdminService {
     public AdminCommunityDataDto getCommunityData(Long postId) {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("게시글 삭제 됨"));
-
         List<AdminCommunityDataDto.CommentDto> comments =
                 mentRepository.findByPostPostId(postId).stream()
                         .map(c -> new AdminCommunityDataDto.CommentDto(c.getCommentId(), c.getContent()))
@@ -218,6 +216,7 @@ public class AdminService {
 
         return AdminCommunityDataDto.builder()
                 .title(post.getTitle())
+                .category(post.getCategory().getName())
                 .content(post.getContent())
                 .likeCount(post.getLikeCount())
                 .isDeleted(post.getIsDeleted())
