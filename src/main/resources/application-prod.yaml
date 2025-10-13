@@ -6,6 +6,8 @@ constants:
       name: otd-user
       url: http://otd-user:8080
 
+server:
+  port: 8080
 
 management:
   endpoint:
