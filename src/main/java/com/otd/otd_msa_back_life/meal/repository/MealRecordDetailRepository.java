@@ -46,4 +46,24 @@ public interface MealRecordDetailRepository extends JpaRepository<MealRecordDeta
     void deleteAllByUserId(Long userId);
 
     List<MealRecordDetail> findAllByUserId(Long userId);
+
+    // 대시보드
+    // 총 식단 기록 수
+    @Query("SELECT COUNT(m) FROM MealRecordDetail m")
+    int countAllMealRecord();
+
+    // 이번 주 기록 유저 수
+    @Query("""
+        SELECT COUNT(DISTINCT m.userId)
+        FROM MealRecordDetail m
+        WHERE m.mealRecordIds.mealDay >= :monday
+    """)
+    int countWeeklyRecordUser(@Param("monday") LocalDate monday);
+
+    // 1인당 평균 칼로리 섭취
+    @Query("""
+        SELECT SUM(m.totalKcal) * 1.0 / COUNT(DISTINCT m.userId)
+        FROM MealRecordDetail m
+    """)
+    Double getCalorieAvg();
 }
