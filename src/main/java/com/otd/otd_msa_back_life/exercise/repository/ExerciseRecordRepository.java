@@ -2,6 +2,7 @@ package com.otd.otd_msa_back_life.exercise.repository;
 
 import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
 import com.otd.otd_msa_back_life.exercise.entity.ExerciseRecord;
+import com.otd.otd_msa_back_life.exercise.model.AverageExerciseDurationDto;
 import com.otd.otd_msa_back_life.feign.model.ExerciseCountAndSum;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExerciseRecordRepository extends JpaRepository<ExerciseRecord, Long> {
-ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordId);
+    ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordId);
 
 
     List<ExerciseRecord> findByUserIdAndStartAtBetween(
@@ -30,6 +31,15 @@ ExerciseRecord findByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordI
     ExerciseCountAndSum getDailyExerciseSummary(@Param("userId") Long userId,
                                                 @Param("start") LocalDateTime start,
                                                 @Param("end") LocalDateTime end);
+
+    //    @Query(value = """
+//                    SELECT DATE(start_at) as startAt, AVG(duration) as averageDuration
+//                    FROM exercise_record
+//                    GROUP BY DATE(start_at)
+//                    ORDER BY DATE(start_at)
+//                   """
+//            , nativeQuery = true)
+//    List<AverageExerciseDurationDto> findAverageDurationGroupedByDateNative();
 
     void deleteByUserIdAndExerciseRecordId(Long userId, Long exerciseRecordId);
 
