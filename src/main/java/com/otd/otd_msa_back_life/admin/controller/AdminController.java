@@ -25,6 +25,10 @@ import com.otd.otd_msa_back_life.meal.repository.MealFoodMakeDbRepository;
 import com.otd.otd_msa_back_life.meal.service.MealService;
 import com.otd.otd_msa_back_life.water_intake.service.DailyWaterIntakeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,13 +69,11 @@ public class AdminController {
     }
 
     @GetMapping("/meal")
-    public AdminMealDto getMeals() {
-        AdminMealDto dto = new AdminMealDto();
-        List<MealFoodDb> mf = mealFoodDbRepository.findAll();
-        List<MealFoodMakeDb> mm = mealFoodMakeDbRepository.findAll();
-        dto.setMealFoodDbs(mf);
-        dto.setMealFoodMakeDbs(mm);
-        return dto;
+    public AdminMealDto searchMeals(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        return adminService.searchMeals(keyword, page, size);
     }
 
     @GetMapping("/exercise")

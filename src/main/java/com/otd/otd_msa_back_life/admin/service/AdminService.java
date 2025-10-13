@@ -12,12 +12,20 @@ import com.otd.otd_msa_back_life.community.entity.CommunityPost;
 import com.otd.otd_msa_back_life.community.repository.*;
 import com.otd.otd_msa_back_life.configuration.model.ResultResponse;
 import com.otd.otd_msa_back_life.exercise.repository.ExerciseRecordRepository;
+import com.otd.otd_msa_back_life.meal.entity.MealFoodDb;
+import com.otd.otd_msa_back_life.meal.entity.MealFoodMakeDb;
 import com.otd.otd_msa_back_life.meal.entity.MealRecordDetail;
 import com.otd.otd_msa_back_life.feign.ChallengeFeignClient;
+import com.otd.otd_msa_back_life.meal.repository.MealFoodDbRepository;
+import com.otd.otd_msa_back_life.meal.repository.MealFoodMakeDbRepository;
 import com.otd.otd_msa_back_life.meal.repository.MealRecordDetailRepository;
 import com.otd.otd_msa_back_life.water_intake.repository.DailyWaterIntakeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +50,8 @@ public class AdminService {
     private final CommunityPostFileRepository communityPostFileRepository;
     private final ChallengeFeignClient challengeFeignClient;
     private final CommunityCategoryRepository communityCategoryRepository;
+    private final MealFoodMakeDbRepository mealFoodMakeDbRepository;
+    private final MealFoodDbRepository mealFoodDbRepository;
 
     public List<AdminCommunityGetRes> getCommunity() {
         List<AdminCommunityGetRes> posts = adminMapper.findAllCommunity();
@@ -83,6 +93,24 @@ public class AdminService {
         dto.setTopLikePost(topLikePostRes);
         dto.setTopCommentPost(topCommentPostRes);
 
+        return dto;
+    }
+    public AdminMealDto searchMeals(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("foodName").ascending());
+
+        Page<MealFoodDb> dbPage;
+        if (keyword != null && !keyword.isBlank()) {
+            dbPage = mealFoodDbRepository.findByFoodNameContaining(keyword, pageable);
+        } else {
+            dbPage = mealFoodDbRepository.findAll(pageable);
+        }
+
+        // 커스텀 음식은 전체 조회 (필요하다면 여기도 검색/페이징 추가 가능)
+        List<MealFoodMakeDb> makeFoods = mealFoodMakeDbRepository.findAll();
+
+        AdminMealDto dto = new AdminMealDto();
+        dto.setMealFoodDbs(dbPage);
+        dto.setMealFoodMakeDbs(makeFoods);
         return dto;
     }
 
