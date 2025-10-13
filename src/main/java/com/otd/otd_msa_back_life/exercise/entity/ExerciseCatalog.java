@@ -5,12 +5,13 @@ import lombok.*;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 public class ExerciseCatalog {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long exerciseId;                // 운동종목 id
 
     @Column(nullable = false, length = 30)
