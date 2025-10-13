@@ -41,4 +41,10 @@ public class CommunityPost extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Boolean isDeleted;
+
+    @Column(length = 30)
+    private String nickName;
+
+    @Column(length = 100)
+    private String profile;
 }

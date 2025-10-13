@@ -28,6 +28,7 @@ public class MentService {
                 .post(post)
                 .userId(requesterId)  // 헤더/인증의 requesterId 사용
                 .content(req.getContent())
+                .nickName(req.getNickName())
                 .build();
 
         Ment saved = mentRepository.save(ment);
@@ -38,6 +39,7 @@ public class MentService {
                 .userId(saved.getUserId())
                 .content(saved.getContent())
                 .createdAt(saved.getCreatedAt())
+                .nickName(saved.getNickName())
                 .build();
     }
 
@@ -54,6 +56,7 @@ public class MentService {
                         .userId(m.getUserId())
                         .content(m.getContent())
                         .createdAt(m.getCreatedAt())
+                        .nickName(m.getNickName())
                         .build())
                 .toList();
     }

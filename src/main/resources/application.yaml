@@ -35,7 +35,7 @@ spring:
     open-in-view: false
     defer-datasource-initialization: true
 #    hibernate:
-    # ddl-auto: update
+#     ddl-auto: update
     # ddl-auto: create
     properties:
       hibernate:
