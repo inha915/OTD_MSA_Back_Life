@@ -1,11 +1,15 @@
 package com.otd.otd_msa_back_life.community.repository;
 
+import com.otd.otd_msa_back_life.admin.model.dashboard.CategoryPostCountRes;
 import com.otd.otd_msa_back_life.community.entity.CommunityPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long> {
@@ -58,5 +62,25 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
 
     //사용자가 작성한 게시글 총 개수
     long countByUserIdAndIsDeletedFalse(Long userId);
+
+    // 대시보드
+    // 총 게시글 수
+    @Query("SELECT COUNT(p) FROM CommunityPost p WHERE p.isDeleted = false")
+    int countAllPost();
+
+    // 이번 주 신규 게시글 수
+    @Query("SELECT COUNT(p) FROM CommunityPost p WHERE p.isDeleted = false AND p.createdAt >= :monday")
+    int countWeeklyPost(@Param("monday") LocalDateTime monday);
+
+    // 카테고리별 게시글 수
+    @Query("""
+        SELECT new com.otd.otd_msa_back_life.admin.model.dashboard.CategoryPostCountRes(c.name, COUNT(p))
+        FROM CommunityPost p
+        JOIN p.category c
+        WHERE p.isDeleted = false
+        GROUP BY c.name
+        ORDER BY COUNT(p) DESC
+    """)
+    List<CategoryPostCountRes> countPostByCategory();
 }
 

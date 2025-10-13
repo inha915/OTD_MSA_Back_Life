@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class AdminCommunityGetRes {
     private Long postId;
     private Long userId;
+    private String nickName;
     private String category;
     private String title;
     private boolean isDeleted;
