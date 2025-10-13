@@ -18,9 +18,6 @@ public class Ment extends BaseTimeEntity {
     @Column(name = "comment_id")
     private Long commentId;
 
-    @Column(name = "author_nickname", length = 100)
-    private String authorNickname;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private CommunityPost post;
@@ -31,4 +28,7 @@ public class Ment extends BaseTimeEntity {
     @Lob
     @Column(nullable = false)
     private String content;
+
+    @Column(length = 30)
+    private String nickName;
 }
