@@ -77,7 +77,7 @@ public class BodyCompositionService {
     }
 
 //    차트용 데이터 조회
-@Transactional
+
 public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCompositionSeriesGetReq req) {
 
     // 디바이스 타입 전체 선택하면 "All" 로 지정
@@ -160,7 +160,6 @@ public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCom
 }
 
     // 체성분 기록 리스트 보기 (JPA Repository 사용)
-    @Transactional
     public List<BodyCompositionListGetRes> getBodyCompositionList(Long userId, BodyCompositionListGetReq req) {
 
         // 1. 요청 (req) 값이 없을 경우, DB에서 사용자 기록의 최소/최대 날짜를 조회하여 기본값 설정
