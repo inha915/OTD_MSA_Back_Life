@@ -29,6 +29,10 @@ public class Ment extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(length = 30)
+    @Column(name = "nick_name", length = 30)
     private String nickName;
+
+    // 새로 추가된 칼럼 (NULL 허용)
+    @Column(name = "profile", length = 512)
+    private String profile;
 }

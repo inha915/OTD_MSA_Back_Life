@@ -17,4 +17,5 @@ public class PostListRes {
     private String categoryKey;
     private String categoryName;
     private Integer commentCount;
+    private String profile;
 }

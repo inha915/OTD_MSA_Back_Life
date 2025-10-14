@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.community.web.controller;
 
+import com.otd.otd_msa_back_life.community.entity.*;
 import com.otd.otd_msa_back_life.community.service.MentService;
 import com.otd.otd_msa_back_life.community.web.dto.ment.MentCreateReq;
 import com.otd.otd_msa_back_life.community.web.dto.ment.MentRes;
