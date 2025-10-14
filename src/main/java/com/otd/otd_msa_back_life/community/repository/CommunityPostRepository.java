@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long> {
@@ -90,5 +91,9 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
     @Query("update CommunityPost c set c.profile = :profile where c.userId = :userId")
     @Modifying
     int updateProfileByUserId(String profile, Long userId);
+
+    // CommunityPostRepository.java
+    Optional<CommunityPost> findTopByUserIdOrderByPostIdDesc(Long userId);
+
 }
 

@@ -38,4 +38,8 @@ public interface MentRepository extends JpaRepository<Ment, Long> {
     @Modifying
     @Query("update Ment m set m.nickName = :nickname where m.userId = :userId")
     int updateNickNameByUserId(Long userId, String nickname);
+
+    @Query("update Ment m set m.profile = :profile where m.userId = :userId")
+    @Modifying
+    int updateProfileByUserId(String profile, Long userId);
 }

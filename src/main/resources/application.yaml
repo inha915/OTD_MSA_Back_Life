@@ -6,6 +6,10 @@ server:
       enabled: true
       force: true
 
+app:
+  user-profile:
+    lookup: true
+
 file:
   upload-directory: /home/green/download
   profile-pic: profile
