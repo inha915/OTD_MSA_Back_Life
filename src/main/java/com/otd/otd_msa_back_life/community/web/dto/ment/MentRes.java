@@ -13,4 +13,5 @@ public class MentRes {
     private String content;
     private LocalDateTime createdAt;
     private String nickName;
+    private String profile;
 }
