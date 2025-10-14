@@ -4,6 +4,7 @@ import com.otd.otd_msa_back_life.body_composition.entity.BodyCompositionMetric;
 import com.otd.otd_msa_back_life.body_composition.model.*;
 import com.otd.otd_msa_back_life.body_composition.service.BodyCompositionService;
 import com.otd.otd_msa_back_life.configuration.model.UserPrincipal;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BodyCompositionController {
     private final BodyCompositionService bodyCompositionService;
+
+    @PostMapping
+    public ResponseEntity<?> saveUserBasicBodyInfo(@AuthenticationPrincipal UserPrincipal userPrincipal
+                                                    ,@Valid @RequestBody BasicBodyInfoPostReq req) {
+        Long result = bodyCompositionService.saveBasicBodyInfo(userPrincipal.getSignedUserId(), req);
+        return ResponseEntity.ok(result);
+    }
 
 //    최신 기록 조회
 @GetMapping("/lastest")
@@ -51,5 +59,14 @@ public class BodyCompositionController {
     List<BodyCompositionMetric> result = bodyCompositionService.getMetrics();
     log.info("getMetrics:{}", result);
     return ResponseEntity.ok(result);
+    }
+
+//    기초 신체 정보 가져오기
+    @GetMapping
+    public ResponseEntity<?> getUserBasicBodyInfo(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        log.info("getUserBasicBodyInfo:{}", userPrincipal);
+        List<BasicBodyInfoGetRes> result = bodyCompositionService.getBasicBodyInfo(userPrincipal.getSignedUserId());
+        log.info("getUserBasicBodyInfo:{}", result);
+        return ResponseEntity.ok(result);
     }
 }
