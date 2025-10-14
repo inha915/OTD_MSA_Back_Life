@@ -6,6 +6,10 @@ server:
       enabled: true
       force: true
 
+app:
+  user-profile:
+    lookup: true
+
 file:
   upload-directory: /home/green/download
   profile-pic: profile
@@ -40,9 +44,9 @@ spring:
     database: mysql
     open-in-view: false
     defer-datasource-initialization: true
-#    hibernate:
-#     ddl-auto: update
-    # ddl-auto: create
+    hibernate:
+      #ddl-auto: update
+
     properties:
       hibernate:
         jdbc:
