@@ -1,5 +1,6 @@
 package com.otd.otd_msa_back_life.body_composition.repository;
 
+import com.otd.otd_msa_back_life.body_composition.entity.BasicBodyInfo;
 import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
 import com.otd.otd_msa_back_life.body_composition.model.MinMaxDateDto;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,6 @@ public interface BodyCompositionRepository extends JpaRepository<BodyComposition
             FROM BodyComposition b WHERE b.userId = :userId
             """)
     MinMaxDateDto findMinMaxDatesByUserId(@Param("userId") Long userId);
+
+
 }

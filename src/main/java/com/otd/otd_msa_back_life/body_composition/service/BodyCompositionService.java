@@ -1,16 +1,20 @@
 package com.otd.otd_msa_back_life.body_composition.service;
 
+import com.otd.otd_msa_back_life.body_composition.entity.BasicBodyInfo;
 import com.otd.otd_msa_back_life.body_composition.entity.BodyComposition;
 import com.otd.otd_msa_back_life.body_composition.entity.BodyCompositionMetric;
 import com.otd.otd_msa_back_life.body_composition.mapper.BodyCompositionMapper;
 import com.otd.otd_msa_back_life.body_composition.model.*;
+import com.otd.otd_msa_back_life.body_composition.repository.BasicBodyInfoRepository;
 import com.otd.otd_msa_back_life.body_composition.repository.BodyCompositionMetricRepository;
 import com.otd.otd_msa_back_life.body_composition.repository.BodyCompositionRepository;
 import com.otd.otd_msa_back_life.common.model.DateRangeDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -24,6 +28,21 @@ public class BodyCompositionService {
     private final BodyCompositionRepository bodyCompositionRepository;
     private final BodyCompositionMetricRepository metricRepository;
     private final BodyCompositionMapper bodyCompositionMapper;
+    private final BasicBodyInfoRepository basicBodyInfoRepository;
+
+    //    기초 신체 정보 입력
+    @Transactional
+    public Long saveBasicBodyInfo(Long userId, BasicBodyInfoPostReq req) {
+        BasicBodyInfo basicBodyInfo = BasicBodyInfo.builder()
+                .userId(userId)
+                .weight(req.getWeight())
+                .height(req.getHeight())
+                .bmi(req.getBmi())
+                .bmr(req.getBmr())
+                .build();
+
+        return basicBodyInfoRepository.save(basicBodyInfo).getId();
+    }
 
 //    최신 기록 조회
     public LastestBodyCompositionGetRes getLastestBodyComposition(Long userId) {
@@ -141,21 +160,6 @@ public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCom
     return result;
 }
 
-    //    체성분 기록 리스트 보기
-//    @Transactional
-//    public List<BodyCompositionListGetRes> getBodyCompositionList(Long userId, BodyCompositionListGetReq req) {
-//        BodyCompositionListGetDto dto = BodyCompositionListGetDto.builder()
-//                .startDate(req.getStartDate())
-//                .endDate(req.getEndDate())
-//                .size(req.getRowPerPage())
-//                .startIdx((req.getPage() - 1) * req.getRowPerPage())
-//                .deviceType(req.getDeviceType())
-//                .userId(userId)
-//                .build();
-//
-//        return bodyCompositionMapper.findByLimitTo(dto);
-//    }
-
     // 체성분 기록 리스트 보기 (JPA Repository 사용)
     @Transactional
     public List<BodyCompositionListGetRes> getBodyCompositionList(Long userId, BodyCompositionListGetReq req) {
@@ -203,5 +207,26 @@ public BodyCompositionSeriesGetRes getBodyCompositionSeries(Long userId, BodyCom
     public List<BodyCompositionMetric> getMetrics() {
         List<BodyCompositionMetric> metrics = metricRepository.findAll();
     return metrics;
+    }
+
+//    [GET] 기본 신체정보
+    public List<BasicBodyInfoGetRes> getBasicBodyInfo(Long userId) {
+       List<BasicBodyInfo> basicBodyInfo = basicBodyInfoRepository.findByUserId(userId);
+
+        if (basicBodyInfo.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "회원의 기본 신체 정보가 존재하지 않습니다.");
+        }
+
+        List<BasicBodyInfoGetRes> res = basicBodyInfo.stream()
+                         .map(item -> {
+                             return BasicBodyInfoGetRes.builder()
+                                     .height(item.getHeight())
+                                     .weight(item.getWeight())
+                                     .bmi(item.getBmi())
+                                     .bmr(item.getBmr())
+                                     .build();
+                         }).collect(Collectors.toList());
+
+         return res;
     }
 }

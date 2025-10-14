@@ -15,4 +15,6 @@ public class PostRes {
     private Boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String nickName;
+    private String profile;
 }
