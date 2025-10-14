@@ -29,9 +29,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/OTD/exercise/**").authenticated()
                         .requestMatchers("/api/OTD/meal/**").authenticated()
                         .requestMatchers("/api/OTD/community/**", "/api/OTD/community/posts/**").authenticated()
-                        // 그 외는 허용
-                        .anyRequest().permitAll()
-                )
-                .build();
+                        .anyRequest().permitAll())
+        .build();
     }
 }
