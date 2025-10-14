@@ -31,7 +31,6 @@ public class BodyCompositionService {
     private final BasicBodyInfoRepository basicBodyInfoRepository;
 
     //    기초 신체 정보 입력
-    @Transactional
     public Long saveBasicBodyInfo(Long userId, BasicBodyInfoPostReq req) {
         BasicBodyInfo basicBodyInfo = BasicBodyInfo.builder()
                 .userId(userId)
