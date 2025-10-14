@@ -62,7 +62,7 @@ public class BodyCompositionController {
     }
 
 //    기초 신체 정보 가져오기
-    @GetMapping
+    @GetMapping("/basic")
     public ResponseEntity<?> getUserBasicBodyInfo(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         log.info("getUserBasicBodyInfo:{}", userPrincipal);
         List<BasicBodyInfoGetRes> result = bodyCompositionService.getBasicBodyInfo(userPrincipal.getSignedUserId());
