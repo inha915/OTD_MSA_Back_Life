@@ -1,0 +1,42 @@
+constants:
+  file:
+    directory: /home/green/download
+  feign-client:
+    challenge:
+      name: otd-user
+      url: http://otd-user:8080
+
+
+file:
+  upload-directory: /home/download
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  cloud:
+    kubernetes:
+      loadbalancer:
+        enabled: true
+      discovery:
+        enabled: true
+      reload:
+        enabled: true
+        strategy: refresh
+
+  datasource:
+    url: jdbc:log4jdbc:mariadb://192.168.0.93/pih
+    username: pih
+    password: green502
+
+  jpa:
+    hibernate:
+      ddl-auto: update
